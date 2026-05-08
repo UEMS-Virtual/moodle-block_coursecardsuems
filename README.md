@@ -1,8 +1,8 @@
 # block_coursecardsuems
 
-Bloco Moodle planejado para exibir cards de cursos personalizados para uso exclusivo da UEMS.
+Bloco Moodle para exibir cards de cursos personalizados para uso exclusivo da UEMS.
 
-> **Importante:** as fases abaixo são apenas sugestões iniciais de organização do trabalho. Elas não representam uma decisão final de escopo, arquitetura ou ordem de implementação.
+Este repositório contém um MVP funcional para validação inicial no Moodle. As decisões de produto e design continuam documentadas em `docs/`.
 
 ## Ideia geral
 
@@ -21,8 +21,8 @@ Sugestão inicial:
 
 - criar estrutura básica do bloco Moodle;
 - listar cursos vinculados ao usuário logado;
-- exibir card com imagem/banner, nome e descrição;
-- usar renderização server-side com PHP + Mustache;
+- exibir card sem imagem/banner, seguindo o padrão visual 02 documentado em `docs/DESIGN.md`;
+- usar renderização server-side com PHP;
 - evitar AJAX, filtros e paginação complexa neste primeiro momento.
 
 ### Fase 2 — Campos personalizados dos cursos
@@ -32,7 +32,7 @@ Sugestão inicial:
 - avaliar uso de campos personalizados de curso do Moodle;
 - mapear quais campos a UEMS precisa exibir nos cards;
 - exemplos possíveis:
-  - banner alternativo;
+  - rótulo vertical do card;
   - descrição curta;
   - carga horária;
   - nível;
@@ -69,7 +69,8 @@ Sugestão inicial, caso seja necessário:
 - O bloco aparecerá apenas no Dashboard, em Meus cursos ou em outras páginas também?
 - Deve mostrar apenas cursos inscritos do usuário ou também cursos disponíveis?
 - A descrição virá do resumo padrão do curso ou de um campo personalizado específico?
-- O banner usará a imagem padrão do curso ou um campo próprio?
+- Qual será a origem do rótulo vertical do card?
+- O período/semestre será calculado ou virá do sistema acadêmico?
 - Quais campos personalizados são obrigatórios para a UEMS?
 - O bloco precisa reproduzir algum comportamento do Course overview original?
 
