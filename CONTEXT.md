@@ -34,6 +34,10 @@
 - O **Bloco UEMS de cursos** não deve substituir a **Visão geral nativa** como regra de produto.
 - O plugin deve funcionar como outro bloco, complementar ao resumo/listagem padrão do Moodle.
 - O escopo inicial do bloco deve focar nas disciplinas do semestre e na comunicação clara do estado de cada disciplina para o aluno.
+- Mudança de escopo confirmada: o bloco deve abordar apenas disciplinas **EaD** do **semestre vigente**.
+- Como a listagem passa a representar somente o **semestre vigente**, a tag de **Período letivo** deixa de ser necessária no card por ser redundante.
+- O espaço visual antes usado pela tag de **Período letivo** pode ser reaproveitado para exibir a **Série**.
+- Na faixa lateral, o card deve exibir a **Turma acadêmica**.
 - O plugin não deve depender de uma alteração irreversível na instalação Moodle para cumprir sua função principal.
 
 ## Fatos confirmados
@@ -43,14 +47,13 @@
 - Categorias de modalidade **Distância** não possuem separação por **Unidade** antes dos cursos.
 - Na modalidade **Distância**, existe **Série** como último nível de categoria antes das disciplinas.
 - Na modalidade **Presencial**, existe **Série** e, dentro dela, **Ano da série** antes das disciplinas.
-- Para modalidade **Distância**, o card deve destacar o **Curso acadêmico** como informação principal do agrupamento visual e exibir a **Turma acadêmica** como informação secundária/desfocada, por exemplo: **Pedagogia** em destaque e **Turma 2024** como complemento.
-- Para modalidade **Presencial**, o card deve destacar o **Curso acadêmico** como informação principal do agrupamento visual e exibir a **Unidade** como informação secundária/desfocada.
-- A **Faixa lateral** deve exibir apenas o **Curso acadêmico** principal.
-- A informação secundária do agrupamento visual deve ficar no corpo do card em texto menor/desfocado: **Turma acadêmica** para **Distância** e **Unidade** para **Presencial**.
-- A **Série** deve aparecer como metadado secundário discreto/desfocado junto com **Turma acadêmica** ou **Unidade**.
+- Para modalidade **Distância**, no escopo anterior, o card destacava o **Curso acadêmico** como informação principal do agrupamento visual e exibia a **Turma acadêmica** como informação secundária/desfocada.
+- Regra vigente de escopo: como o bloco deve exibir apenas disciplinas **EaD** do **semestre vigente**, a **Faixa lateral** deve exibir a **Turma acadêmica**.
+- A **Série** deve ocupar o espaço da antiga tag de **Período letivo**, já que o semestre vigente estará implícito na própria listagem.
+- Regras específicas para modalidade **Presencial** ficam fora do escopo atual do plugin.
 - O **Ano da série**, quando existir, também pode aparecer como metadado secundário discreto/desfocado.
 - O título principal no corpo do card deve ser o **Componente curricular**, derivado do nome específico do curso Moodle, evitando repetir o **Curso acadêmico** já exibido na faixa lateral.
-- O **Período letivo** deve vir de dado acadêmico externo ou campo personalizado quando disponível; enquanto isso, pode ser calculado pelas datas do curso Moodle como fallback provisório.
+- O **Período letivo** pode continuar existindo como dado de domínio, mas não deve ser exibido no card enquanto o bloco estiver limitado ao **semestre vigente**.
 - O **Período letivo** não deve ser confundido com **Turma acadêmica**, **Série** ou **Ano da série**.
 - O plugin deve distinguir a **Janela de acesso Moodle** do **Período informativo da disciplina**.
 - A **Janela de acesso Moodle** pode cobrir o semestre inteiro para permitir acesso contínuo a materiais e avaliações, mesmo quando a disciplina já aconteceu.
@@ -78,6 +81,14 @@
 
 - Criar uma aba ou alternância superior por papel do usuário, pois **Aluno**, **Tutor** e **Docente** podem precisar de visualizações diferentes.
 - A primeira fase deve manter o escopo apenas na visão do **Aluno**.
+
+## Regras vigentes de escopo visual
+
+- Mostrar apenas disciplinas **EaD** do **semestre vigente**.
+- Não exibir tag de **Período letivo** no card, pois o semestre vigente é implícito na listagem.
+- Usar a tag inferior da faixa lateral para exibir a **Série**.
+- Usar a faixa lateral para exibir a **Turma acadêmica**.
+- Tratar regras de cursos **Presenciais** como fora do escopo atual.
 
 ## Problemas em aberto
 

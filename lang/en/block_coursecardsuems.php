@@ -23,6 +23,7 @@
  */
 
 $string['pluginname'] = 'UEMS course cards';
+$string['currentsemester'] = 'Semester {$a}';
 $string['coursecardsuems:addinstance'] = 'Add a UEMS course cards block';
 $string['coursecardsuems:myaddinstance'] = 'Add a UEMS course cards block to Dashboard';
 $string['nocourses'] = 'No courses to display.';

@@ -23,6 +23,7 @@
  */
 
 $string['pluginname'] = 'Resumo dos cursos';
+$string['currentsemester'] = 'Semestre {$a}';
 $string['coursecardsuems:addinstance'] = 'Adicionar bloco Cards de cursos UEMS';
 $string['coursecardsuems:myaddinstance'] = 'Adicionar bloco Cards de cursos UEMS ao Painel';
 $string['nocourses'] = 'Nenhum curso para exibir.';

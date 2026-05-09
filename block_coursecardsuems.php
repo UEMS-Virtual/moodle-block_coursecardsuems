@@ -31,11 +31,28 @@ require_once($CFG->libdir . '/enrollib.php');
  * Displays the user's enrolled courses as compact UEMS cards.
  */
 class block_coursecardsuems extends block_base {
+    /** @var array Cached category metadata indexed by category id. */
+    private $categorycache = [];
+
     /**
      * Initialises the block title.
      */
     public function init() {
-        $this->title = get_string('pluginname', 'block_coursecardsuems');
+        $this->title = get_string('currentsemester', 'block_coursecardsuems', $this->get_current_semester_label());
+    }
+
+    /**
+     * Returns the current semester label.
+     *
+     * @return string Semester label in YYYY/S format.
+     */
+    private function get_current_semester_label() {
+        $now = time();
+        $year = userdate($now, '%Y');
+        $month = (int) userdate($now, '%m');
+        $semester = $month <= 6 ? 1 : 2;
+
+        return $year . '/' . $semester;
     }
 
     /**
@@ -91,10 +108,19 @@ class block_coursecardsuems extends block_base {
         ];
 
         foreach ($courses as $course) {
+            $categorydata = $this->get_category_data($course);
+            if (!$categorydata['isdistance']) {
+                continue;
+            }
+
             $informativeperiod = $this->get_informative_period($course->id);
+            if (!$this->is_current_semester_course($course, $informativeperiod)) {
+                continue;
+            }
+
             [$statusclass, $statuslabel] = $this->get_status($course, $informativeperiod);
             $groups[$statusclass][] = [
-                'html' => $this->render_course_card($course, $informativeperiod, $statusclass, $statuslabel),
+                'html' => $this->render_course_card($course, $informativeperiod, $categorydata, $statusclass, $statuslabel),
                 'sortkey' => $this->get_sort_key($course, $informativeperiod, $statusclass),
             ];
         }
@@ -105,9 +131,14 @@ class block_coursecardsuems extends block_base {
             });
         }
 
+        if (empty($groups['open']) && empty($groups['comingsoon']) && empty($groups['closed'])) {
+            $this->content->text = html_writer::div(get_string('nocourses', 'block_coursecardsuems'), 'coursecardsuems-empty');
+            return $this->content;
+        }
+
         $sections = [];
-        $sections[] = $this->render_course_section(get_string('openplural', 'block_coursecardsuems'), $groups['open']);
-        $sections[] = $this->render_course_section(get_string('comingsoonplural', 'block_coursecardsuems'), $groups['comingsoon']);
+        $sections[] = $this->render_course_section(get_string('openplural', 'block_coursecardsuems'), $groups['open'], false, true);
+        $sections[] = $this->render_course_section(get_string('comingsoonplural', 'block_coursecardsuems'), $groups['comingsoon'], true);
         $sections[] = $this->render_course_section(get_string('closedplural', 'block_coursecardsuems'), $groups['closed'], true);
 
         $this->content->text = html_writer::div(implode('', $sections), 'coursecardsuems-sections');
@@ -120,21 +151,28 @@ class block_coursecardsuems extends block_base {
      * @param string $title Section title.
      * @param array $items Section card data.
      * @param bool $collapsed Whether the section starts collapsed.
+     * @param bool $collapsible Whether the section can be collapsed.
      * @return string HTML.
      */
-    private function render_course_section($title, array $items, $collapsed = false) {
+    private function render_course_section($title, array $items, $collapsed = false, $collapsible = false) {
         $count = count($items);
         $countbadge = html_writer::span($count, 'coursecardsuems-section-count');
-        $content = $count ? html_writer::div(implode('', array_column($items, 'html')), 'coursecardsuems-grid') :
+        $layoutclass = $collapsed ? 'coursecardsuems-list' : 'coursecardsuems-grid';
+        $content = $count ? html_writer::div(implode('', array_column($items, 'html')), $layoutclass) :
             html_writer::div(get_string('nocoursesinsection', 'block_coursecardsuems'), 'coursecardsuems-empty coursecardsuems-section-empty');
 
-        if ($collapsed) {
+        if ($collapsed || $collapsible) {
+            $attributes = ['class' => 'coursecardsuems-section coursecardsuems-section-collapsible'];
+            if (!$collapsed) {
+                $attributes['open'] = 'open';
+            }
+
             return html_writer::tag('details',
                 html_writer::tag('summary',
                     html_writer::span($title, 'coursecardsuems-section-title-text') . $countbadge,
                     ['class' => 'coursecardsuems-section-summary']
                 ) . $content,
-                ['class' => 'coursecardsuems-section coursecardsuems-section-collapsible']
+                $attributes
             );
         }
 
@@ -181,16 +219,17 @@ class block_coursecardsuems extends block_base {
      *
      * @param stdClass $course Course record.
      * @param array $informativeperiod Informative date range.
+     * @param array $categorydata Category labels for the card.
      * @param string $statusclass Status class.
      * @param string $statuslabel Status label.
      * @return string HTML.
      */
-    private function render_course_card($course, array $informativeperiod, $statusclass, $statuslabel) {
+    private function render_course_card($course, array $informativeperiod, array $categorydata, $statusclass, $statuslabel) {
         $context = context_course::instance($course->id);
         $courseurl = new moodle_url('/course/view.php', ['id' => $course->id]);
         $coursename = format_string(get_course_display_name_for_list($course), true, ['context' => $context]);
-        $categoryname = $this->get_category_name($course);
-        $period = $this->get_period_label($course);
+        $turmaname = $this->get_course_group_label($course, $categorydata);
+        $seriesname = $categorydata['series'] ?: get_string('periodunknown', 'block_coursecardsuems');
         $teachers = $this->get_teachers($context);
 
         $badges = html_writer::span(get_string('offer', 'block_coursecardsuems'), 'coursecardsuems-pill coursecardsuems-pill-offer');
@@ -198,7 +237,7 @@ class block_coursecardsuems extends block_base {
             $badges .= html_writer::span(get_string('hidden', 'block_coursecardsuems'), 'coursecardsuems-pill coursecardsuems-pill-hidden');
         }
 
-        $body = html_writer::tag('h3', $coursename, ['class' => 'coursecardsuems-title']);
+        $body = html_writer::tag('h3', $this->render_course_title($coursename), ['class' => 'coursecardsuems-title']);
         $body .= $this->render_teachers($teachers);
         $body .= html_writer::div(
             html_writer::div($badges, 'coursecardsuems-badges') .
@@ -206,8 +245,8 @@ class block_coursecardsuems extends block_base {
             'coursecardsuems-footerline'
         );
 
-        $side = html_writer::div(s($categoryname), 'coursecardsuems-category-label');
-        $side .= html_writer::span(s($period), 'coursecardsuems-period');
+        $side = html_writer::div(s($turmaname), 'coursecardsuems-category-label');
+        $side .= html_writer::span(s($seriesname), 'coursecardsuems-period');
 
         $card = html_writer::div($side, 'coursecardsuems-side');
         $card .= html_writer::div($body, 'coursecardsuems-main');
@@ -217,6 +256,40 @@ class block_coursecardsuems extends block_base {
             'class' => 'coursecardsuems-card coursecardsuems-card-' . $statusclass,
             'aria-label' => $coursename,
         ]);
+    }
+
+    /**
+     * Returns the compact course group label shown in the vertical band.
+     *
+     * EaD shortnames usually start with course acronym and class year, for example
+     * CISOL_23_2S_* or PEDG_24_*. In the current visual scope this is more compact than
+     * spelling out "Turma 2023".
+     *
+     * @param stdClass $course Course record.
+     * @param array $categorydata Category labels for the card.
+     * @return string
+     */
+    private function get_course_group_label($course, array $categorydata) {
+        if (preg_match('/^([A-Z]+)_([0-9]{2})(?:_|$)/u', $course->shortname, $matches)) {
+            return $matches[1] . '-' . $matches[2];
+        }
+
+        return $categorydata['turma'] ?: $this->get_category_name($course);
+    }
+
+    /**
+     * Renders the visual title, splitting the identification code from the discipline name.
+     *
+     * @param string $coursename Formatted course display name.
+     * @return string HTML.
+     */
+    private function render_course_title($coursename) {
+        if (preg_match('/^(\[[^\]]+\])\s*(.+)$/u', $coursename, $matches)) {
+            return html_writer::span($matches[1], 'coursecardsuems-title-code') .
+                html_writer::span($matches[2], 'coursecardsuems-title-name');
+        }
+
+        return html_writer::span($coursename, 'coursecardsuems-title-name');
     }
 
     /**
@@ -239,21 +312,101 @@ class block_coursecardsuems extends block_base {
     }
 
     /**
-     * Calculates a simple semester label from the course start date.
+     * Returns category-derived labels and modality information for a course.
+     *
+     * In the current scope, only EaD courses from the current semester are shown. The vertical
+     * band displays the academic group (Turma) and the lower tag displays the Série.
      *
      * @param stdClass $course Course record.
-     * @return string
+     * @return array{isdistance:bool,turma:string,series:string}
      */
-    private function get_period_label($course) {
-        if (empty($course->startdate)) {
-            return get_string('periodunknown', 'block_coursecardsuems');
+    private function get_category_data($course) {
+        if (isset($this->categorycache[$course->category])) {
+            return $this->categorycache[$course->category];
         }
 
-        $year = userdate($course->startdate, '%Y');
-        $month = (int) userdate($course->startdate, '%m');
-        $semester = $month <= 6 ? 1 : 2;
+        $data = [
+            'isdistance' => false,
+            'turma' => '',
+            'series' => '',
+        ];
 
-        return $year . '/' . $semester;
+        try {
+            $category = core_course_category::get($course->category, IGNORE_MISSING, true);
+            if (!$category) {
+                return $data;
+            }
+
+            $pathids = array_values(array_filter(explode('/', trim($category->path, '/'))));
+            $categories = [];
+            foreach ($pathids as $categoryid) {
+                $pathcategory = core_course_category::get((int) $categoryid, IGNORE_MISSING, true);
+                if ($pathcategory) {
+                    $categories[] = $pathcategory;
+                }
+            }
+
+            foreach ($categories as $pathcategory) {
+                if (core_text::strtolower($pathcategory->name) === 'distância') {
+                    $data['isdistance'] = true;
+                }
+            }
+
+            $data['series'] = $category->get_formatted_name();
+
+            for ($i = count($categories) - 2; $i >= 0; $i--) {
+                $name = $categories[$i]->get_formatted_name();
+                $plainname = trim(strip_tags($name));
+                if (core_text::strtolower($plainname) === 'disciplinas de reoferta') {
+                    continue;
+                }
+                if (core_text::strpos(core_text::strtolower($plainname), 'turma') === 0) {
+                    $data['turma'] = $name;
+                    break;
+                }
+            }
+        } catch (moodle_exception $exception) {
+            // Keep the safe defaults.
+        }
+
+        $this->categorycache[$course->category] = $data;
+        return $data;
+    }
+
+    /**
+     * Checks whether the course belongs to the current academic semester window.
+     *
+     * @param stdClass $course Course record.
+     * @param array $informativeperiod Informative date range.
+     * @return bool
+     */
+    private function is_current_semester_course($course, array $informativeperiod) {
+        $now = time();
+        $year = (int) userdate($now, '%Y');
+        $month = (int) userdate($now, '%m');
+        $startmonth = $month <= 6 ? 1 : 7;
+        $endmonth = $month <= 6 ? 7 : 1;
+        $endyear = $month <= 6 ? $year : $year + 1;
+
+        $semesterstart = make_timestamp($year, $startmonth, 1, 0, 0, 0);
+        $semesterend = make_timestamp($endyear, $endmonth, 1, 0, 0, 0) - 1;
+
+        $startdate = $informativeperiod['start'] ?? 0;
+        $enddate = $informativeperiod['end'] ?? 0;
+
+        if (empty($startdate) && empty($enddate)) {
+            $startdate = $course->startdate ?? 0;
+            $enddate = $course->enddate ?? 0;
+        }
+
+        if (empty($startdate) && empty($enddate)) {
+            return false;
+        }
+
+        $rangestart = $startdate ?: $enddate;
+        $rangeend = $enddate ?: $startdate;
+
+        return $rangestart <= $semesterend && $rangeend >= $semesterstart;
     }
 
     /**
