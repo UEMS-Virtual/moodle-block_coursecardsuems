@@ -60,4 +60,27 @@ class current_semester {
 
         return $year . '/' . $semester;
     }
+
+    /**
+     * Returns Unix timestamp bounds for a semester label.
+     *
+     * @param string $semesterlabel Semester label in YYYY/S format.
+     * @return array{0:int,1:int} Start and end timestamps.
+     */
+    public static function bounds_from_label(string $semesterlabel): array {
+        if (!preg_match('/^(\\d{4})\\/([12])$/', $semesterlabel, $matches)) {
+            throw new \invalid_argument_exception('Invalid semester label: ' . $semesterlabel);
+        }
+
+        $year = (int) $matches[1];
+        $semester = (int) $matches[2];
+        $startmonth = $semester === 1 ? 1 : 7;
+        $endmonth = $semester === 1 ? 7 : 1;
+        $endyear = $semester === 1 ? $year : $year + 1;
+
+        $start = make_timestamp($year, $startmonth, 1, 0, 0, 0);
+        $end = make_timestamp($endyear, $endmonth, 1, 0, 0, 0) - 1;
+
+        return [$start, $end];
+    }
 }

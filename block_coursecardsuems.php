@@ -73,10 +73,16 @@ class block_coursecardsuems extends block_base {
         $this->content = new stdClass();
         $this->content->footer = '';
 
+        $semesterlabel = \block_coursecardsuems\local\current_semester::from_timestamp();
         $repository = new \block_coursecardsuems\local\course_repository();
+        $coursefilter = new \block_coursecardsuems\local\course_filter();
+        $courses = $coursefilter->filter_current_semester_distance_courses(
+            $repository->get_enrolled_courses_for_current_user(),
+            $semesterlabel
+        );
         $courses = array_values(array_map(static function($course): string {
             return format_string(get_course_display_name_for_list($course));
-        }, $repository->get_enrolled_courses_for_current_user()));
+        }, $courses));
 
         $renderer = $PAGE->get_renderer('block_coursecardsuems');
         $summary = new \block_coursecardsuems\output\summary(
