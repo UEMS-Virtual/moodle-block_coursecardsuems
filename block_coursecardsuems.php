@@ -33,7 +33,11 @@ class block_coursecardsuems extends block_base {
      * Initialises the block title.
      */
     public function init() {
-        $this->title = get_string('pluginname', 'block_coursecardsuems');
+        $this->title = get_string(
+            'currentsemester',
+            'block_coursecardsuems',
+            \block_coursecardsuems\local\current_semester::from_timestamp()
+        );
     }
 
     /**
