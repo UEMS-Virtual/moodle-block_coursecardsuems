@@ -1,79 +1,108 @@
 # block_coursecardsuems
 
-Bloco Moodle para exibir cards de cursos personalizados para uso exclusivo da UEMS.
+Plugin Moodle do tipo bloco para exibir disciplinas EaD da UEMS Virtual em cards/listas organizados por status no semestre vigente.
 
-Este repositório contém um MVP funcional para validação inicial no Moodle. As decisões de produto e design continuam documentadas em `docs/`.
+## Estado atual
 
-## Ideia geral
+Este repositório contém um **protótipo visual/funcional** que validou a direção de UX, mas que será reconstruído para respeitar padrões Moodle.
 
-Criar um plugin de bloco Moodle novo, inspirado conceitualmente no `block_myoverview` / Course overview, mas com comportamento próprio e layout altamente personalizado para a universidade.
+A implementação atual não deve ser tratada como arquitetura final.
 
-Nome técnico sugerido/adotado:
+Leia antes de implementar:
 
-- Pasta: `blocks/coursecardsuems`
-- Componente Moodle: `block_coursecardsuems`
+- `CONTEXT.md` — escopo vigente do domínio;
+- `docs/PROTOTYPE.md` — o que foi validado no protótipo e o que não deve ser reaproveitado sem revisão;
+- `docs/adr/0001-reconstruir-plugin-apos-prototipo.md` — decisão de reconstrução.
 
-## Sugestões de fases
+## Escopo do produto
 
-### Fase 1 — Bloco novo simples
+O bloco deve mostrar, para o aluno, apenas disciplinas **EaD** do **semestre vigente**.
 
-Sugestão inicial:
+O título do bloco deve ser dinâmico, por exemplo:
 
-- criar estrutura básica do bloco Moodle;
-- listar cursos vinculados ao usuário logado;
-- exibir card sem imagem/banner, seguindo o padrão visual 02 documentado em `docs/DESIGN.md`;
-- usar renderização server-side com PHP;
-- evitar AJAX, filtros e paginação complexa neste primeiro momento.
+```text
+Semestre 2026/1
+```
 
-### Fase 2 — Campos personalizados dos cursos
+As disciplinas são separadas por status:
 
-Sugestão inicial:
+- **Abertas** — seção colapsável aberta por padrão, exibida em cards.
+- **Em breve** — seção colapsável fechada por padrão, exibida em lista/resumo.
+- **Encerradas** — seção colapsável fechada por padrão, exibida em lista/resumo com visual apagado.
 
-- avaliar uso de campos personalizados de curso do Moodle;
-- mapear quais campos a UEMS precisa exibir nos cards;
-- exemplos possíveis:
-  - rótulo vertical do card;
-  - descrição curta;
-  - carga horária;
-  - nível;
-  - selo/badge;
-  - modalidade;
-  - área/trilha;
-  - cor ou variação visual do card.
+## Dados principais
 
-### Fase 3 — Configurações do bloco
+- O período informativo da disciplina vem dos campos customizados:
+  - `ead_inicio`
+  - `ead_final`
+- As datas nativas do Moodle (`course.startdate` e `course.enddate`) representam janela de acesso e não devem ser exibidas como período da disciplina.
+- A janela de acesso Moodle pode ser usada como fallback provisório para status quando o período informativo estiver ausente.
+- A faixa lateral usa agrupamento compacto derivado do `shortname`, como `PEDG-24`.
+- A tag secundária usa a **Série**, como `2ª Série`.
+- O código entre colchetes no nome do curso é exibido com menor destaque; o nome real da disciplina é o título principal.
 
-Sugestão inicial:
+## Arquitetura desejada
 
-- permitir configurar quantidade máxima de cursos exibidos;
-- escolher ordenação;
-- decidir se cursos finalizados, futuros ou ocultos aparecem;
-- permitir selecionar quais campos aparecem no card;
-- avaliar filtros por categoria, campo personalizado ou status do curso.
+A versão final deve seguir convenções Moodle e separar responsabilidades:
 
-### Fase 4 — Comportamentos avançados
+```text
+block_coursecardsuems.php
+classes/
+  local/
+    course_repository.php
+    current_semester.php
+    course_status_resolver.php
+    course_card_mapper.php
+    category_parser.php
+  output/
+    renderer.php
+    course_card.php
+    course_section.php
+templates/
+  course_card.mustache
+  course_list_item.mustache
+  course_section.mustache
+lang/
+  en/
+  pt_br/
+tests/
+```
 
-Sugestão inicial, caso seja necessário:
+Diretrizes:
 
-- busca;
-- paginação;
-- filtros dinâmicos;
-- agrupamentos por status do curso;
-- favoritos;
-- ocultar curso no bloco;
-- preferências por usuário;
-- carregamento assíncrono via AMD/AJAX.
+- `block_coursecardsuems.php` deve apenas orquestrar o bloco.
+- HTML não trivial deve ir para templates Mustache.
+- Texto visível deve ir para arquivos de idioma.
+- Regras de domínio devem ser testáveis sem depender de HTML.
+- Acesso a dados deve usar APIs Moodle.
+- Mudanças persistentes devem seguir `db/install.xml`, `db/upgrade.php` e bump em `version.php`.
 
-## Decisões ainda em aberto
+## Desenvolvimento
 
-- O bloco aparecerá apenas no Dashboard, em Meus cursos ou em outras páginas também?
-- Deve mostrar apenas cursos inscritos do usuário ou também cursos disponíveis?
-- A descrição virá do resumo padrão do curso ou de um campo personalizado específico?
-- Qual será a origem do rótulo vertical do card?
-- O período/semestre será calculado ou virá do sistema acadêmico?
-- Quais campos personalizados são obrigatórios para a UEMS?
-- O bloco precisa reproduzir algum comportamento do Course overview original?
+Este plugin segue práticas Moodle. Antes de editar código, consulte a skill/documentação de desenvolvimento Moodle disponível no ambiente do agente.
 
-## Observação arquitetural
+Validações mínimas esperadas durante a reconstrução:
 
-A ideia inicial é criar um plugin novo e independente, usando o `block_myoverview` apenas como referência de comportamento e APIs quando fizer sentido, evitando herança direta do bloco core.
+```bash
+php -l block_coursecardsuems.php
+```
+
+Quando houver testes:
+
+```bash
+vendor/bin/phpunit blocks/coursecardsuems/tests/...
+```
+
+Em ambiente Docker local deste projeto, limpeza de cache já foi feita com:
+
+```bash
+docker exec moodle45-app php /var/www/html/admin/cli/purge_caches.php
+```
+
+## Fora do escopo atual
+
+- Cursos presenciais.
+- Visões específicas para tutor/docente.
+- Histórico de todos os semestres.
+- Substituir a visão geral nativa do Moodle.
+- Busca, paginação, filtros avançados e preferências por usuário.
