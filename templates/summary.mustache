@@ -58,50 +58,98 @@
                     {{#hascourses}}
                         <div class="{{#isgrid}}coursecardsuems-grid{{/isgrid}}{{#islist}}coursecardsuems-list{{/islist}}">
                             {{#courses}}
-                                <article class="coursecardsuems-card {{#isclosed}}coursecardsuems-card-closed{{/isclosed}}">
-                                    <div class="coursecardsuems-side">
-                                        {{#hasgroup}}
-                                            <span class="coursecardsuems-category-label">{{group}}</span>
-                                        {{/hasgroup}}
-                                        {{#period.hasperiod}}
-                                            <span class="coursecardsuems-period">{{period.label}}</span>
-                                        {{/period.hasperiod}}
-                                    </div>
-                                    <div class="coursecardsuems-main">
-                                        <span class="coursecardsuems-status {{statusclass}}">{{statuslabel}}</span>
-                                        <h4 class="coursecardsuems-title">
-                                            {{#hascode}}
-                                                <span class="coursecardsuems-title-code">{{code}}</span>
-                                            {{/hascode}}
-                                            <span class="coursecardsuems-title-name">{{title}}</span>
-                                        </h4>
-                                        <div class="coursecardsuems-footerline">
-                                            <div class="coursecardsuems-teacher">
-                                                <span class="coursecardsuems-avatar" aria-hidden="true">{{firstteacherinitials}}</span>
-                                                <span class="coursecardsuems-teacher-text">
-                                                    <span class="coursecardsuems-teacher-label">{{#str}}teacher, block_coursecardsuems{{/str}}</span>
-                                                    <span class="coursecardsuems-teacher-name">{{firstteachername}}</span>
-                                                    {{#hasteacherextra}}
-                                                        <span class="coursecardsuems-teacher-extra">{{teacherextra}}</span>
-                                                    {{/hasteacherextra}}
-                                                </span>
-                                            </div>
-                                            <div class="coursecardsuems-badges">
-                                                {{#hasseries}}
-                                                    <span class="coursecardsuems-pill">{{series}}</span>
-                                                {{/hasseries}}
-                                            </div>
+                                {{#hasurl}}
+                                    <a class="coursecardsuems-card {{#isclosed}}coursecardsuems-card-closed{{/isclosed}}" href="{{url}}" aria-label="{{linklabel}}">
+                                        <div class="coursecardsuems-side">
+                                            {{#hasgroup}}
+                                                <span class="coursecardsuems-category-label">{{group}}</span>
+                                            {{/hasgroup}}
                                             {{#period.hasperiod}}
-                                                <div class="coursecardsuems-dates">
-                                                    <span class="coursecardsuems-date-icon" aria-hidden="true">▦</span>
-                                                    <span class="coursecardsuems-date-value">{{period.startlabel}}</span>
-                                                    <span class="coursecardsuems-date-separator">–</span>
-                                                    <span class="coursecardsuems-date-value">{{period.endlabel}}</span>
-                                                </div>
+                                                <span class="coursecardsuems-period">{{period.label}}</span>
                                             {{/period.hasperiod}}
                                         </div>
-                                    </div>
-                                </article>
+                                        <div class="coursecardsuems-main">
+                                            <span class="coursecardsuems-status {{statusclass}}">{{statuslabel}}</span>
+                                            <h4 class="coursecardsuems-title">
+                                                {{#hascode}}
+                                                    <span class="coursecardsuems-title-code">{{code}}</span>
+                                                {{/hascode}}
+                                                <span class="coursecardsuems-title-name">{{title}}</span>
+                                            </h4>
+                                            <div class="coursecardsuems-footerline">
+                                                <div class="coursecardsuems-teacher">
+                                                    <span class="coursecardsuems-avatar" aria-hidden="true">{{firstteacherinitials}}</span>
+                                                    <span class="coursecardsuems-teacher-text">
+                                                        <span class="coursecardsuems-teacher-label">{{#str}}teacher, block_coursecardsuems{{/str}}</span>
+                                                        <span class="coursecardsuems-teacher-name">{{firstteachername}}</span>
+                                                        {{#hasteacherextra}}
+                                                            <span class="coursecardsuems-teacher-extra">{{teacherextra}}</span>
+                                                        {{/hasteacherextra}}
+                                                    </span>
+                                                </div>
+                                                <div class="coursecardsuems-badges">
+                                                    {{#hasseries}}
+                                                        <span class="coursecardsuems-pill">{{series}}</span>
+                                                    {{/hasseries}}
+                                                </div>
+                                                {{#period.hasperiod}}
+                                                    <div class="coursecardsuems-dates">
+                                                        <span class="coursecardsuems-date-icon" aria-hidden="true">▦</span>
+                                                        <span class="coursecardsuems-date-value">{{period.startlabel}}</span>
+                                                        <span class="coursecardsuems-date-separator">–</span>
+                                                        <span class="coursecardsuems-date-value">{{period.endlabel}}</span>
+                                                    </div>
+                                                {{/period.hasperiod}}
+                                            </div>
+                                        </div>
+                                    </a>
+                                {{/hasurl}}
+                                {{^hasurl}}
+                                    <article class="coursecardsuems-card coursecardsuems-card-disabled {{#isclosed}}coursecardsuems-card-closed{{/isclosed}}" aria-disabled="true">
+                                        <div class="coursecardsuems-side">
+                                            {{#hasgroup}}
+                                                <span class="coursecardsuems-category-label">{{group}}</span>
+                                            {{/hasgroup}}
+                                            {{#period.hasperiod}}
+                                                <span class="coursecardsuems-period">{{period.label}}</span>
+                                            {{/period.hasperiod}}
+                                        </div>
+                                        <div class="coursecardsuems-main">
+                                            <span class="coursecardsuems-status {{statusclass}}">{{statuslabel}}</span>
+                                            <h4 class="coursecardsuems-title">
+                                                {{#hascode}}
+                                                    <span class="coursecardsuems-title-code">{{code}}</span>
+                                                {{/hascode}}
+                                                <span class="coursecardsuems-title-name">{{title}}</span>
+                                            </h4>
+                                            <div class="coursecardsuems-footerline">
+                                                <div class="coursecardsuems-teacher">
+                                                    <span class="coursecardsuems-avatar" aria-hidden="true">{{firstteacherinitials}}</span>
+                                                    <span class="coursecardsuems-teacher-text">
+                                                        <span class="coursecardsuems-teacher-label">{{#str}}teacher, block_coursecardsuems{{/str}}</span>
+                                                        <span class="coursecardsuems-teacher-name">{{firstteachername}}</span>
+                                                        {{#hasteacherextra}}
+                                                            <span class="coursecardsuems-teacher-extra">{{teacherextra}}</span>
+                                                        {{/hasteacherextra}}
+                                                    </span>
+                                                </div>
+                                                <div class="coursecardsuems-badges">
+                                                    {{#hasseries}}
+                                                        <span class="coursecardsuems-pill">{{series}}</span>
+                                                    {{/hasseries}}
+                                                </div>
+                                                {{#period.hasperiod}}
+                                                    <div class="coursecardsuems-dates">
+                                                        <span class="coursecardsuems-date-icon" aria-hidden="true">▦</span>
+                                                        <span class="coursecardsuems-date-value">{{period.startlabel}}</span>
+                                                        <span class="coursecardsuems-date-separator">–</span>
+                                                        <span class="coursecardsuems-date-value">{{period.endlabel}}</span>
+                                                    </div>
+                                                {{/period.hasperiod}}
+                                            </div>
+                                        </div>
+                                    </article>
+                                {{/hasurl}}
                             {{/courses}}
                         </div>
                     {{/hascourses}}

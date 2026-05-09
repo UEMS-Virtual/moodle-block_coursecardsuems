@@ -81,7 +81,10 @@ class course_card_mapper {
      */
     public function map(object $course): array {
         $period = $this->periodreader->get_period((int) $course->id);
-        $status = $this->statusresolver->resolve($period, $course, $this->now);
+        $temporalstatus = $this->statusresolver->resolve($period, $course, $this->now);
+        $isvisible = !property_exists($course, 'visible') || (bool) $course->visible;
+        $status = $this->get_display_status($temporalstatus, $isvisible);
+        $isclickable = $this->is_clickable($status, $isvisible);
         $context = context_course::instance($course->id);
         [$code, $title] = $this->split_course_title(get_course_display_name_for_list($course));
         $group = $this->shortnameparser->get_compact_group($course->shortname ?? '');
@@ -93,6 +96,9 @@ class course_card_mapper {
         return [
             'id' => (int) $course->id,
             'url' => (new moodle_url('/course/view.php', ['id' => $course->id]))->out(false),
+            'hasurl' => $isclickable,
+            'linklabel' => get_string('opencourse', 'block_coursecardsuems', format_string($title, true, ['context' => $context])),
+            'isavailable' => $isvisible,
             'code' => $code,
             'hascode' => $code !== '',
             'title' => format_string($title, true, ['context' => $context]),
@@ -108,6 +114,7 @@ class course_card_mapper {
                 'startlabel' => $this->format_date($period->startdate),
                 'endlabel' => $this->format_date($period->enddate),
             ],
+            'temporalstatus' => $temporalstatus,
             'status' => $status,
             'statuslabel' => $this->statusresolver->get_label($status),
             'statusclass' => 'coursecardsuems-status-' . $status,
@@ -120,6 +127,36 @@ class course_card_mapper {
             'teacherextra' => $teachercount > 1 ? get_string('others', 'block_coursecardsuems', $teachercount - 1) : '',
             'hasteacherextra' => $teachercount > 1,
         ];
+    }
+
+    /**
+     * Returns the status presented to students after Moodle availability rules.
+     *
+     * @param string $temporalstatus Status resolved from dates.
+     * @param bool $isvisible Whether Moodle course is visible/available.
+     * @return string Display status.
+     */
+    private function get_display_status(string $temporalstatus, bool $isvisible): string {
+        if (!$isvisible && $temporalstatus === course_status_resolver::OPEN) {
+            return course_status_resolver::COMINGSOON;
+        }
+
+        return $temporalstatus;
+    }
+
+    /**
+     * Returns whether the course card should link to the Moodle room.
+     *
+     * @param string $status Display status.
+     * @param bool $isvisible Whether Moodle course is visible/available.
+     * @return bool
+     */
+    private function is_clickable(string $status, bool $isvisible): bool {
+        if (!$isvisible) {
+            return false;
+        }
+
+        return $status === course_status_resolver::OPEN || $status === course_status_resolver::CLOSED;
     }
 
     /**

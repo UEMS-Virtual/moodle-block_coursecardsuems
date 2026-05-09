@@ -702,3 +702,16 @@
     margin: .85rem 0 0;
     color: #667085;
 }
+
+.block_coursecardsuems .coursecardsuems-card-disabled,
+.block_coursecardsuems .coursecardsuems-card-disabled:hover,
+.block_coursecardsuems .coursecardsuems-card-disabled:focus {
+    cursor: default;
+    box-shadow: 0 3px 8px rgba(15, 23, 42, .10);
+    transform: none;
+}
+
+.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card-disabled:hover,
+.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card-disabled:focus {
+    box-shadow: none;
+}

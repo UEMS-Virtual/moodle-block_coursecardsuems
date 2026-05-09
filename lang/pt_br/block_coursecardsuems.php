@@ -29,6 +29,7 @@ $string['coursecardsuems:myaddinstance'] = 'Adicionar bloco Cards de cursos UEMS
 $string['nocourses'] = 'Nenhum curso para exibir.';
 $string['reconstructiontitle'] = 'Reconstrução em andamento';
 $string['reconstructionmessage'] = 'O bloco UEMS de cursos está sendo reconstruído com classes de saída e templates Moodle.';
+$string['opencourse'] = 'Abrir disciplina {$a}';
 $string['open'] = 'Aberta';
 $string['comingsoon'] = 'Em breve';
 $string['closed'] = 'Encerrada';
