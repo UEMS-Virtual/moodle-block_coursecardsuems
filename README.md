@@ -89,23 +89,29 @@ Diretrizes:
 - Acesso a dados deve usar APIs Moodle.
 - Mudanças persistentes devem seguir `db/install.xml`, `db/upgrade.php` e bump em `version.php`.
 
-## Desenvolvimento
+## Desenvolvimento e validação
 
 Este plugin segue práticas Moodle. Antes de editar código, consulte a skill/documentação de desenvolvimento Moodle disponível no ambiente do agente.
 
-Validações mínimas esperadas durante a reconstrução:
+O checklist completo está em `docs/VALIDATION.md`.
+
+Lint PHP:
 
 ```bash
-php -l block_coursecardsuems.php
+find . -path ./.git -prune -o -name '*.php' -print | sort | xargs -n1 php -l
 ```
 
-Quando houver testes:
+PHPUnit no ambiente Docker local:
 
 ```bash
-vendor/bin/phpunit blocks/coursecardsuems/tests/...
+for f in tests/*_test.php; do
+  docker exec -u www-data moodle45-app php /var/www/html/vendor/bin/phpunit \
+    --configuration /var/www/html/phpunit.xml \
+    "/var/www/html/blocks/coursecardsuems/$f"
+done
 ```
 
-Em ambiente Docker local deste projeto, limpeza de cache já foi feita com:
+Após alterações de template/CSS, limpe cache:
 
 ```bash
 docker exec moodle45-app php /var/www/html/admin/cli/purge_caches.php
