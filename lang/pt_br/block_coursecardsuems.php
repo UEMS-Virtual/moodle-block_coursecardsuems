@@ -41,6 +41,7 @@ $string['hidden'] = 'Oculto';
 $string['startdate'] = 'Início';
 $string['enddate'] = 'Término';
 $string['teacher'] = 'Docente';
+$string['teacherunknown'] = 'Docente a definir';
 $string['teachers'] = 'Docentes';
 $string['others'] = '+ {$a} outros';
 $string['periodunknown'] = '—';

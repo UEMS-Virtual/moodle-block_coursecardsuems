@@ -56,9 +56,17 @@ final class course_card_mapper_test extends \advanced_testcase {
         self::assertSame('2ª Série', $viewmodel['series']);
         self::assertSame(course_status_resolver::OPEN, $viewmodel['status']);
         self::assertSame(get_string('open', 'block_coursecardsuems'), $viewmodel['statuslabel']);
+        self::assertSame('coursecardsuems-status-open', $viewmodel['statusclass']);
+        self::assertFalse($viewmodel['isclosed']);
         self::assertSame($start, $viewmodel['period']['start']);
         self::assertSame($end, $viewmodel['period']['end']);
+        self::assertSame(userdate($start, get_string('strftimedateshort')), $viewmodel['period']['startlabel']);
+        self::assertSame(userdate($end, get_string('strftimedateshort')), $viewmodel['period']['endlabel']);
         self::assertSame('Maria Docente', $viewmodel['teachers'][0]['name']);
+        self::assertSame('MD', $viewmodel['teachers'][0]['initials']);
+        self::assertTrue($viewmodel['hasteachers']);
+        self::assertSame('Maria Docente', $viewmodel['firstteachername']);
+        self::assertSame('MD', $viewmodel['firstteacherinitials']);
         self::assertStringContainsString('/course/view.php', $viewmodel['url']);
         self::assertStringNotContainsString('<', $viewmodel['title']);
     }

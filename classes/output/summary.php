@@ -68,7 +68,9 @@ class summary implements renderable, templatable {
     public function export_for_template(renderer_base $output) {
         $data = new stdClass();
         $data->title = $this->title;
+        $data->hastitle = trim($this->title) !== '';
         $data->message = $this->message;
+        $data->hasmessage = trim($this->message) !== '';
         $data->hascourses = !empty($this->courses);
         $data->courses = $this->courses;
         $data->sections = $this->get_sections();

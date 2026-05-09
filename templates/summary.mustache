@@ -17,56 +17,96 @@
 {{!
     @template block_coursecardsuems/summary
 
-    Minimal reconstruction tracer bullet for the Course Cards UEMS block.
+    Course sections for the UEMS EaD discipline block.
 
     Context variables required for this template:
-    * title - short title shown inside the block
-    * message - supporting message shown inside the block
-    * hascourses - whether the current user has enrolled courses
+    * hastitle - whether title should be rendered
+    * title - optional title shown inside the block
+    * hasmessage - whether supporting message should be rendered
+    * message - optional supporting message
     * hassections - whether sections are available
     * sections - status sections with course summaries
 
     Example context (json):
     {
-        "title": "Reconstruction in progress",
-        "message": "The block architecture is being rebuilt.",
-        "hascourses": true,
+        "hastitle": false,
+        "title": "",
+        "hasmessage": false,
+        "message": "",
         "hassections": true,
         "sections": [
-            {"title": "Open", "count": 1, "isopen": true, "isgrid": true, "hascourses": true, "courses": [{"title": "Course name", "code": "CODE", "group": "CISOL-23", "series": "2ª Série", "period": {"hasperiod": true, "label": "10/02/2026 – 20/05/2026"}, "statuslabel": "Open"}]}
+            {"title": "Abertas", "count": 1, "isopen": true, "isgrid": true, "hascourses": true, "courses": [{"title": "Course name", "code": "CODE", "hascode": true, "group": "CISOL-23", "series": "2ª Série", "hasseries": true, "period": {"hasperiod": true, "label": "10/02/2026 – 20/05/2026", "startlabel": "10/02/2026", "endlabel": "20/05/2026"}, "statuslabel": "Aberta", "statusclass": "coursecardsuems-status-open", "firstteachername": "Maria Docente", "firstteacherinitials": "MD"}]}
         ]
     }
 }}
 <div class="coursecardsuems-summary">
-    <h3 class="coursecardsuems-summary-title">{{title}}</h3>
-    <p class="coursecardsuems-summary-message">{{message}}</p>
+    {{#hastitle}}
+        <h3 class="coursecardsuems-summary-title">{{title}}</h3>
+    {{/hastitle}}
+    {{#hasmessage}}
+        <p class="coursecardsuems-summary-message">{{message}}</p>
+    {{/hasmessage}}
     {{#hassections}}
-        <div class="coursecardsuems-summary-sections">
+        <div class="coursecardsuems-sections">
             {{#sections}}
-                <details class="coursecardsuems-summary-section coursecardsuems-summary-section-{{key}}" {{#isopen}}open{{/isopen}}>
-                    <summary class="coursecardsuems-summary-section-heading">
-                        <span class="coursecardsuems-summary-section-title">{{title}}</span>
-                        <span class="coursecardsuems-summary-section-count">{{count}}</span>
+                <details class="coursecardsuems-section coursecardsuems-section-{{key}}" {{#isopen}}open{{/isopen}}>
+                    <summary class="coursecardsuems-section-summary">
+                        <span class="coursecardsuems-section-title-text">{{title}}</span>
+                        <span class="coursecardsuems-section-count">{{count}}</span>
                     </summary>
+
                     {{#hascourses}}
-                        <ul class="coursecardsuems-summary-courses {{#isgrid}}coursecardsuems-summary-courses-grid{{/isgrid}}{{#islist}}coursecardsuems-summary-courses-list{{/islist}}">
+                        <div class="{{#isgrid}}coursecardsuems-grid{{/isgrid}}{{#islist}}coursecardsuems-list{{/islist}}">
                             {{#courses}}
-                                <li class="coursecardsuems-summary-course coursecardsuems-summary-course-{{status}}">
-                                    {{#hascode}}
-                                        <span class="coursecardsuems-summary-course-code">{{code}}</span>
-                                    {{/hascode}}
-                                    <span class="coursecardsuems-summary-course-name">{{title}}</span>
-                                    <span class="coursecardsuems-summary-course-meta">{{group}} · {{series}}</span>
-                                    <span class="coursecardsuems-summary-course-status">{{statuslabel}}</span>
-                                    {{#period.hasperiod}}
-                                        <span class="coursecardsuems-summary-course-period">{{period.label}}</span>
-                                    {{/period.hasperiod}}
-                                </li>
+                                <article class="coursecardsuems-card {{#isclosed}}coursecardsuems-card-closed{{/isclosed}}">
+                                    <div class="coursecardsuems-side">
+                                        {{#hasgroup}}
+                                            <span class="coursecardsuems-category-label">{{group}}</span>
+                                        {{/hasgroup}}
+                                        {{#period.hasperiod}}
+                                            <span class="coursecardsuems-period">{{period.label}}</span>
+                                        {{/period.hasperiod}}
+                                    </div>
+                                    <div class="coursecardsuems-main">
+                                        <span class="coursecardsuems-status {{statusclass}}">{{statuslabel}}</span>
+                                        <h4 class="coursecardsuems-title">
+                                            {{#hascode}}
+                                                <span class="coursecardsuems-title-code">{{code}}</span>
+                                            {{/hascode}}
+                                            <span class="coursecardsuems-title-name">{{title}}</span>
+                                        </h4>
+                                        <div class="coursecardsuems-footerline">
+                                            <div class="coursecardsuems-teacher">
+                                                <span class="coursecardsuems-avatar" aria-hidden="true">{{firstteacherinitials}}</span>
+                                                <span class="coursecardsuems-teacher-text">
+                                                    <span class="coursecardsuems-teacher-label">{{#str}}teacher, block_coursecardsuems{{/str}}</span>
+                                                    <span class="coursecardsuems-teacher-name">{{firstteachername}}</span>
+                                                    {{#hasteacherextra}}
+                                                        <span class="coursecardsuems-teacher-extra">{{teacherextra}}</span>
+                                                    {{/hasteacherextra}}
+                                                </span>
+                                            </div>
+                                            <div class="coursecardsuems-badges">
+                                                {{#hasseries}}
+                                                    <span class="coursecardsuems-pill">{{series}}</span>
+                                                {{/hasseries}}
+                                            </div>
+                                            {{#period.hasperiod}}
+                                                <div class="coursecardsuems-dates">
+                                                    <span class="coursecardsuems-date-icon" aria-hidden="true">▦</span>
+                                                    <span class="coursecardsuems-date-value">{{period.startlabel}}</span>
+                                                    <span class="coursecardsuems-date-separator">–</span>
+                                                    <span class="coursecardsuems-date-value">{{period.endlabel}}</span>
+                                                </div>
+                                            {{/period.hasperiod}}
+                                        </div>
+                                    </div>
+                                </article>
                             {{/courses}}
-                        </ul>
+                        </div>
                     {{/hascourses}}
                     {{^hascourses}}
-                        <p class="coursecardsuems-summary-section-empty">{{emptytext}}</p>
+                        <p class="coursecardsuems-empty">{{emptytext}}</p>
                     {{/hascourses}}
                 </details>
             {{/sections}}

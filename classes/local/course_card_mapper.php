@@ -27,6 +27,7 @@ namespace block_coursecardsuems\local;
 defined('MOODLE_INTERNAL') || die();
 
 use context_course;
+use core_text;
 use moodle_url;
 
 /**
@@ -81,26 +82,43 @@ class course_card_mapper {
     public function map(object $course): array {
         $period = $this->periodreader->get_period((int) $course->id);
         $status = $this->statusresolver->resolve($period, $course, $this->now);
+        $context = context_course::instance($course->id);
         [$code, $title] = $this->split_course_title(get_course_display_name_for_list($course));
+        $group = $this->shortnameparser->get_compact_group($course->shortname ?? '');
+        $series = $this->categoryparser->get_series_name($course->category ?? 0);
+        $teachers = $this->get_teachers($context);
+        $firstteacher = reset($teachers) ?: null;
+        $teachercount = count($teachers);
 
         return [
             'id' => (int) $course->id,
             'url' => (new moodle_url('/course/view.php', ['id' => $course->id]))->out(false),
             'code' => $code,
             'hascode' => $code !== '',
-            'title' => format_string($title, true, ['context' => context_course::instance($course->id)]),
-            'group' => $this->shortnameparser->get_compact_group($course->shortname ?? ''),
-            'series' => $this->categoryparser->get_series_name($course->category ?? 0),
+            'title' => format_string($title, true, ['context' => $context]),
+            'group' => $group,
+            'hasgroup' => $group !== '',
+            'series' => $series,
+            'hasseries' => $series !== '',
             'period' => [
                 'start' => $period->startdate,
                 'end' => $period->enddate,
                 'hasperiod' => $period->has_any_date(),
                 'label' => $this->format_period($period),
+                'startlabel' => $this->format_date($period->startdate),
+                'endlabel' => $this->format_date($period->enddate),
             ],
             'status' => $status,
             'statuslabel' => $this->statusresolver->get_label($status),
+            'statusclass' => 'coursecardsuems-status-' . $status,
+            'isclosed' => $status === course_status_resolver::CLOSED,
             'sortkey' => $this->statusresolver->get_sort_key($status, $period, $course),
-            'teachers' => $this->get_teachers(context_course::instance($course->id)),
+            'teachers' => $teachers,
+            'hasteachers' => $teachercount > 0,
+            'firstteachername' => $firstteacher['name'] ?? get_string('teacherunknown', 'block_coursecardsuems'),
+            'firstteacherinitials' => $firstteacher['initials'] ?? '?',
+            'teacherextra' => $teachercount > 1 ? get_string('others', 'block_coursecardsuems', $teachercount - 1) : '',
+            'hasteacherextra' => $teachercount > 1,
         ];
     }
 
@@ -125,12 +143,18 @@ class course_card_mapper {
      * @return string
      */
     private function format_period(informative_period $period): string {
-        $startdate = $period->startdate ? userdate($period->startdate, get_string('strftimedateshort')) :
-            get_string('dateunknown', 'block_coursecardsuems');
-        $enddate = $period->enddate ? userdate($period->enddate, get_string('strftimedateshort')) :
-            get_string('dateunknown', 'block_coursecardsuems');
+        return $this->format_date($period->startdate) . ' – ' . $this->format_date($period->enddate);
+    }
 
-        return $startdate . ' – ' . $enddate;
+    /**
+     * Formats a timestamp for display.
+     *
+     * @param int $timestamp Timestamp or zero.
+     * @return string
+     */
+    private function format_date(int $timestamp): string {
+        return $timestamp ? userdate($timestamp, get_string('strftimedateshort')) :
+            get_string('dateunknown', 'block_coursecardsuems');
     }
 
     /**
@@ -152,13 +176,33 @@ class course_card_mapper {
             $users = get_role_users($role->id, $context, false, 'u.id, u.firstname, u.lastname, u.firstnamephonetic, ' .
                 'u.lastnamephonetic, u.middlename, u.alternatename', 'u.lastname ASC, u.firstname ASC');
             foreach ($users as $user) {
+                $name = fullname($user);
                 $teachers[(int) $user->id] = [
                     'id' => (int) $user->id,
-                    'name' => fullname($user),
+                    'name' => $name,
+                    'initials' => $this->get_initials($name),
                 ];
             }
         }
 
         return array_values($teachers);
+    }
+
+    /**
+     * Returns up to two initials from a display name.
+     *
+     * @param string $name Full name.
+     * @return string Initials.
+     */
+    private function get_initials(string $name): string {
+        $parts = preg_split('/\s+/u', trim($name), -1, PREG_SPLIT_NO_EMPTY);
+        if (empty($parts)) {
+            return '?';
+        }
+
+        $first = core_text::substr($parts[0], 0, 1);
+        $last = count($parts) > 1 ? core_text::substr(end($parts), 0, 1) : '';
+
+        return core_text::strtoupper($first . $last);
     }
 }
