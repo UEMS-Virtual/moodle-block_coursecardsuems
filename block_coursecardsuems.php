@@ -84,28 +84,113 @@ class block_coursecardsuems extends block_base {
             return $this->content;
         }
 
-        $cards = [];
+        $groups = [
+            'open' => [],
+            'comingsoon' => [],
+            'closed' => [],
+        ];
+
         foreach ($courses as $course) {
-            $cards[] = $this->render_course_card($course);
+            $informativeperiod = $this->get_informative_period($course->id);
+            [$statusclass, $statuslabel] = $this->get_status($course, $informativeperiod);
+            $groups[$statusclass][] = [
+                'html' => $this->render_course_card($course, $informativeperiod, $statusclass, $statuslabel),
+                'sortkey' => $this->get_sort_key($course, $informativeperiod, $statusclass),
+            ];
         }
 
-        $this->content->text = html_writer::div(implode('', $cards), 'coursecardsuems-grid');
+        foreach ($groups as $statusclass => $items) {
+            usort($groups[$statusclass], function($a, $b) {
+                return $a['sortkey'] <=> $b['sortkey'];
+            });
+        }
+
+        $sections = [];
+        $sections[] = $this->render_course_section(get_string('openplural', 'block_coursecardsuems'), $groups['open']);
+        $sections[] = $this->render_course_section(get_string('comingsoonplural', 'block_coursecardsuems'), $groups['comingsoon']);
+        $sections[] = $this->render_course_section(get_string('closedplural', 'block_coursecardsuems'), $groups['closed'], true);
+
+        $this->content->text = html_writer::div(implode('', $sections), 'coursecardsuems-sections');
         return $this->content;
+    }
+
+    /**
+     * Renders a status section with its cards.
+     *
+     * @param string $title Section title.
+     * @param array $items Section card data.
+     * @param bool $collapsed Whether the section starts collapsed.
+     * @return string HTML.
+     */
+    private function render_course_section($title, array $items, $collapsed = false) {
+        $count = count($items);
+        $countbadge = html_writer::span($count, 'coursecardsuems-section-count');
+        $content = $count ? html_writer::div(implode('', array_column($items, 'html')), 'coursecardsuems-grid') :
+            html_writer::div(get_string('nocoursesinsection', 'block_coursecardsuems'), 'coursecardsuems-empty coursecardsuems-section-empty');
+
+        if ($collapsed) {
+            return html_writer::tag('details',
+                html_writer::tag('summary',
+                    html_writer::span($title, 'coursecardsuems-section-title-text') . $countbadge,
+                    ['class' => 'coursecardsuems-section-summary']
+                ) . $content,
+                ['class' => 'coursecardsuems-section coursecardsuems-section-collapsible']
+            );
+        }
+
+        return html_writer::tag('section',
+            html_writer::tag('h3', html_writer::span($title, 'coursecardsuems-section-title-text') . $countbadge,
+                ['class' => 'coursecardsuems-section-title']) . $content,
+            ['class' => 'coursecardsuems-section']
+        );
+    }
+
+    /**
+     * Returns the ordering key for a course inside its status group.
+     *
+     * @param stdClass $course Course record.
+     * @param array $informativeperiod Informative date range.
+     * @param string $statusclass Status class.
+     * @return int Sort key.
+     */
+    private function get_sort_key($course, array $informativeperiod, $statusclass) {
+        $startdate = $informativeperiod['start'] ?? 0;
+        $enddate = $informativeperiod['end'] ?? 0;
+
+        if (empty($startdate) && empty($enddate)) {
+            $startdate = $course->startdate ?? 0;
+            $enddate = $course->enddate ?? 0;
+        }
+
+        if ($statusclass === 'open') {
+            // Abertas: quem abriu mais recentemente primeiro.
+            return -($startdate ?: 0);
+        }
+
+        if ($statusclass === 'comingsoon') {
+            // Em breve: quem abrirá primeiro.
+            return $startdate ?: PHP_INT_MAX;
+        }
+
+        // Encerradas: encerramento mais recente primeiro.
+        return -($enddate ?: 0);
     }
 
     /**
      * Renders one course card.
      *
      * @param stdClass $course Course record.
+     * @param array $informativeperiod Informative date range.
+     * @param string $statusclass Status class.
+     * @param string $statuslabel Status label.
      * @return string HTML.
      */
-    private function render_course_card($course) {
+    private function render_course_card($course, array $informativeperiod, $statusclass, $statuslabel) {
         $context = context_course::instance($course->id);
         $courseurl = new moodle_url('/course/view.php', ['id' => $course->id]);
         $coursename = format_string(get_course_display_name_for_list($course), true, ['context' => $context]);
         $categoryname = $this->get_category_name($course);
         $period = $this->get_period_label($course);
-        [$statusclass, $statuslabel] = $this->get_status($course);
         $teachers = $this->get_teachers($context);
 
         $badges = html_writer::span(get_string('offer', 'block_coursecardsuems'), 'coursecardsuems-pill coursecardsuems-pill-offer');
@@ -117,7 +202,7 @@ class block_coursecardsuems extends block_base {
         $body .= $this->render_teachers($teachers);
         $body .= html_writer::div(
             html_writer::div($badges, 'coursecardsuems-badges') .
-            $this->render_course_dates($course),
+            $this->render_course_dates($informativeperiod),
             'coursecardsuems-footerline'
         );
 
@@ -177,14 +262,22 @@ class block_coursecardsuems extends block_base {
      * @param stdClass $course Course record.
      * @return array{0:string,1:string}
      */
-    private function get_status($course) {
+    private function get_status($course, array $informativeperiod = []) {
         $now = time();
+        $startdate = $informativeperiod['start'] ?? 0;
+        $enddate = $informativeperiod['end'] ?? 0;
 
-        if (!empty($course->startdate) && $course->startdate > $now) {
+        if (empty($startdate) && empty($enddate)) {
+            // Fallback provisório: a janela Moodle determina apenas o status, não a linha de datas do card.
+            $startdate = $course->startdate ?? 0;
+            $enddate = $course->enddate ?? 0;
+        }
+
+        if (!empty($startdate) && $startdate > $now) {
             return ['comingsoon', get_string('comingsoon', 'block_coursecardsuems')];
         }
 
-        if (!empty($course->enddate) && $course->enddate < $now) {
+        if (!empty($enddate) && $enddate < $now) {
             return ['closed', get_string('closed', 'block_coursecardsuems')];
         }
 
@@ -192,26 +285,63 @@ class block_coursecardsuems extends block_base {
     }
 
     /**
-     * Renders course date range compactly.
+     * Returns the custom informative discipline period from course custom fields.
      *
-     * @param stdClass $course Course record.
+     * The fields ead_inicio/ead_final represent the period shown to students. Moodle's native
+     * course start/end dates may still be used as a status fallback, but should not be shown as
+     * the discipline period.
+     *
+     * @param int $courseid Course id.
+     * @return array{start:int,end:int}
+     */
+    private function get_informative_period($courseid) {
+        $period = ['start' => 0, 'end' => 0];
+
+        try {
+            $handler = \core_course\customfield\course_handler::create();
+            $data = $handler->get_instance_data($courseid, true);
+        } catch (moodle_exception $exception) {
+            return $period;
+        }
+
+        foreach ($data as $fielddata) {
+            $shortname = $fielddata->get_field()->get('shortname');
+            if ($shortname === 'ead_inicio') {
+                $period['start'] = (int) $fielddata->get_value();
+            } else if ($shortname === 'ead_final') {
+                $period['end'] = (int) $fielddata->get_value();
+            }
+        }
+
+        return $period;
+    }
+
+    /**
+     * Renders the informative discipline date range compactly.
+     *
+     * @param array{start:int,end:int} $informativeperiod Informative date range.
      * @return string HTML.
      */
-    private function render_course_dates($course) {
+    private function render_course_dates(array $informativeperiod) {
+        $startdate = $informativeperiod['start'] ?? 0;
+        $enddate = $informativeperiod['end'] ?? 0;
+
+        if (empty($startdate) && empty($enddate)) {
+            return '';
+        }
+
         $datehtml = html_writer::tag('i', '', [
             'class' => 'fa fa-calendar-o coursecardsuems-date-icon',
             'aria-hidden' => 'true',
         ]);
-        if (!empty($course->startdate)) {
-            $datehtml .= html_writer::span($this->format_course_date($course->startdate), 'coursecardsuems-date-value');
+        if (!empty($startdate)) {
+            $datehtml .= html_writer::span($this->format_course_date($startdate), 'coursecardsuems-date-value');
         }
-        if (!empty($course->enddate)) {
+        if (!empty($startdate) && !empty($enddate)) {
             $datehtml .= html_writer::span('→', 'coursecardsuems-date-separator');
-            $datehtml .= html_writer::span($this->format_course_date($course->enddate), 'coursecardsuems-date-value');
         }
-
-        if (empty($course->startdate) && empty($course->enddate)) {
-            return '';
+        if (!empty($enddate)) {
+            $datehtml .= html_writer::span($this->format_course_date($enddate), 'coursecardsuems-date-value');
         }
 
         return html_writer::div($datehtml, 'coursecardsuems-dates');
