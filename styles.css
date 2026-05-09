@@ -715,3 +715,58 @@
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card-disabled:focus {
     box-shadow: none;
 }
+
+/* Keep teacher, series and status readable in the reconstructed template. */
+.block_coursecardsuems .coursecardsuems-teacher-label,
+.block_coursecardsuems .coursecardsuems-teacher-name,
+.block_coursecardsuems .coursecardsuems-teacher-extra {
+    display: block;
+}
+
+.block_coursecardsuems .coursecardsuems-teacher-label,
+.block_coursecardsuems .coursecardsuems-teacher-extra {
+    white-space: nowrap;
+}
+
+.block_coursecardsuems .coursecardsuems-grid .coursecardsuems-footerline {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+        "teacher"
+        "badges";
+    align-items: center;
+    row-gap: .45rem;
+}
+
+.block_coursecardsuems .coursecardsuems-grid .coursecardsuems-teacher {
+    grid-area: teacher;
+    min-width: 0;
+}
+
+.block_coursecardsuems .coursecardsuems-grid .coursecardsuems-badges {
+    grid-area: badges;
+    justify-content: flex-end;
+}
+
+.block_coursecardsuems .coursecardsuems-grid .coursecardsuems-dates {
+    display: none;
+}
+
+.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-main {
+    grid-template-columns: minmax(0, 1fr) minmax(13rem, 20rem) max-content;
+    grid-template-areas: "title footer status";
+}
+
+.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-title {
+    grid-area: title;
+}
+
+.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-footerline {
+    grid-area: footer;
+}
+
+.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-status {
+    grid-area: status;
+    justify-self: end;
+    width: max-content;
+}
