@@ -60,6 +60,7 @@ A página deve reduzir confusão causada pela mistura de disciplinas futuras, at
 - O período exibido no card/lista deve vir de `ead_inicio` e `ead_final`.
 - A janela de acesso Moodle não deve ser exibida como período da disciplina.
 - A janela de acesso Moodle pode ser fallback provisório para cálculo de status quando não houver período informativo.
+- A regra final de links e visibilidade está registrada em `docs/adr/0002-links-e-visibilidade-por-status.md`.
 
 ## Regras por status
 
@@ -67,7 +68,8 @@ A página deve reduzir confusão causada pela mistura de disciplinas futuras, at
 
 - Seção colapsável, aberta por padrão.
 - Exibição em cards com maior destaque.
-- Deve permitir acesso à sala Moodle quando o curso estiver acessível ao aluno.
+- Deve permitir acesso à sala Moodle quando o curso estiver visível/disponível ao aluno.
+- Se a disciplina estiver temporalmente aberta, mas oculta/indisponível no Moodle, deve ser apresentada em **Em breve** e permanecer não clicável.
 - Ordenação: disciplinas que abriram mais recentemente primeiro.
 
 ### Em breve
@@ -76,7 +78,8 @@ A página deve reduzir confusão causada pela mistura de disciplinas futuras, at
 - Exibição em modo lista/resumo.
 - Não deve ter visual apagado.
 - Deve priorizar disciplinas que abrirão primeiro.
-- Acesso à sala Moodle precisa ser definido pela disponibilidade real no Moodle; por padrão, tratar como informação textual quando ainda não acessível.
+- Não deve ser clicável.
+- Disciplinas temporalmente em breve que estiverem ocultas continuam aparecendo como informação de existência da disciplina, sem link.
 
 ### Encerradas
 
@@ -85,6 +88,8 @@ A página deve reduzir confusão causada pela mistura de disciplinas futuras, at
 - Visual apagado em tons de cinza.
 - Ordenação: encerradas mais recentemente primeiro.
 - Encerrada significa que o período informativo terminou; não significa necessariamente que a sala Moodle está indisponível.
+- Deve continuar clicável quando o Moodle ainda permitir acesso ao aluno.
+- Se estiver oculta/indisponível no Moodle, continua em **Encerradas**, mas sem link.
 
 ## Arquitetura desejada
 
@@ -100,7 +105,6 @@ A versão final deve separar responsabilidades:
 
 ## Questões ainda abertas
 
-- Qual regra final determina se uma disciplina **Em breve** ou **Encerrada** deve ter link?
 - Qual origem definitiva dos dados além dos campos `ead_inicio` e `ead_final`?
 - Como a integração com cronograma externo será feita, se ainda for necessária?
 - Como tratar cursos EaD que não seguem o padrão esperado de `shortname`?

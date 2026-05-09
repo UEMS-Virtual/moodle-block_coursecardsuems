@@ -27,8 +27,8 @@ Semestre 2026/1
 As disciplinas são separadas por status:
 
 - **Abertas** — seção colapsável aberta por padrão, exibida em cards.
-- **Em breve** — seção colapsável fechada por padrão, exibida em lista/resumo.
-- **Encerradas** — seção colapsável fechada por padrão, exibida em lista/resumo com visual apagado.
+- **Em breve** — seção colapsável fechada por padrão, exibida em lista/resumo e sem link.
+- **Encerradas** — seção colapsável fechada por padrão, exibida em lista/resumo com visual apagado e clicável quando o Moodle ainda permitir acesso.
 
 ## Dados principais
 
@@ -40,6 +40,18 @@ As disciplinas são separadas por status:
 - A faixa lateral usa agrupamento compacto derivado do `shortname`, como `PEDG-24`.
 - A tag secundária usa a **Série**, como `2ª Série`.
 - O código entre colchetes no nome do curso é exibido com menor destaque; o nome real da disciplina é o título principal.
+
+## Links e disponibilidade
+
+A regra final está documentada em `docs/adr/0002-links-e-visibilidade-por-status.md`.
+
+Resumo:
+
+- Disciplinas **Em breve** não são clicáveis.
+- Disciplinas **Abertas** são clicáveis somente quando o curso Moodle estiver visível/disponível.
+- Disciplinas temporalmente abertas, mas ocultas/indisponíveis porque a sala ainda não está pronta, aparecem em **Em breve** e sem link.
+- Disciplinas **Encerradas** continuam clicáveis quando o Moodle permitir acesso.
+- Disciplinas **Encerradas** ocultas/indisponíveis continuam em **Encerradas**, mas sem link.
 
 ## Arquitetura desejada
 
