@@ -76,13 +76,16 @@ class block_coursecardsuems extends block_base {
         $semesterlabel = \block_coursecardsuems\local\current_semester::from_timestamp();
         $repository = new \block_coursecardsuems\local\course_repository();
         $periodreader = new \block_coursecardsuems\local\informative_period_reader();
+        $statusresolver = new \block_coursecardsuems\local\course_status_resolver();
         $coursefilter = new \block_coursecardsuems\local\course_filter(null, null, $periodreader);
         $courses = $coursefilter->filter_current_semester_distance_courses(
             $repository->get_enrolled_courses_for_current_user(),
             $semesterlabel
         );
-        $courses = array_values(array_map(static function($course) use ($periodreader): array {
+        $courses = array_map(static function($course) use ($periodreader, $statusresolver): array {
             $period = $periodreader->get_period((int) $course->id);
+            $status = $statusresolver->resolve($period, $course);
+            $sortkey = $statusresolver->get_sort_key($status, $period, $course);
             $startdate = $period->startdate ? userdate($period->startdate, get_string('strftimedateshort')) :
                 get_string('dateunknown', 'block_coursecardsuems');
             $enddate = $period->enddate ? userdate($period->enddate, get_string('strftimedateshort')) :
@@ -92,8 +95,23 @@ class block_coursecardsuems extends block_base {
                 'name' => format_string(get_course_display_name_for_list($course)),
                 'hasperiod' => $period->has_any_date(),
                 'period' => $startdate . ' – ' . $enddate,
+                'status' => $status,
+                'statuslabel' => $statusresolver->get_label($status),
+                'sortkey' => $sortkey,
             ];
-        }, $courses));
+        }, $courses);
+        usort($courses, static function(array $a, array $b): int {
+            if ($a['status'] !== $b['status']) {
+                $order = [
+                    \block_coursecardsuems\local\course_status_resolver::OPEN => 0,
+                    \block_coursecardsuems\local\course_status_resolver::COMINGSOON => 1,
+                    \block_coursecardsuems\local\course_status_resolver::CLOSED => 2,
+                ];
+                return $order[$a['status']] <=> $order[$b['status']];
+            }
+
+            return $a['sortkey'] <=> $b['sortkey'];
+        });
 
         $renderer = $PAGE->get_renderer('block_coursecardsuems');
         $summary = new \block_coursecardsuems\output\summary(

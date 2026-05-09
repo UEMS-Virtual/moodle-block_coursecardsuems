@@ -31,7 +31,7 @@
         "message": "The block architecture is being rebuilt.",
         "hascourses": true,
         "courses": [
-            {"name": "Course name", "hasperiod": true, "period": "10/02/2026 – 20/05/2026"}
+            {"name": "Course name", "hasperiod": true, "period": "10/02/2026 – 20/05/2026", "statuslabel": "Open"}
         ]
     }
 }}
@@ -43,6 +43,7 @@
             {{#courses}}
                 <li class="coursecardsuems-summary-course">
                     <span class="coursecardsuems-summary-course-name">{{name}}</span>
+                    <span class="coursecardsuems-summary-course-status">{{statuslabel}}</span>
                     {{#hasperiod}}
                         <span class="coursecardsuems-summary-course-period">{{period}}</span>
                     {{/hasperiod}}
