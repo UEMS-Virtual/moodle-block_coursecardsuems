@@ -85,6 +85,7 @@ class course_card_mapper {
         $isvisible = !property_exists($course, 'visible') || (bool) $course->visible;
         $status = $this->get_display_status($temporalstatus, $isvisible);
         $isclickable = $this->is_clickable($status, $isvisible);
+        $ispreparing = !$isvisible && $temporalstatus === course_status_resolver::OPEN;
         $context = context_course::instance($course->id);
         [$code, $title] = $this->split_course_title(get_course_display_name_for_list($course));
         $group = $this->shortnameparser->get_compact_group($course->shortname ?? '');
@@ -99,6 +100,7 @@ class course_card_mapper {
             'hasurl' => $isclickable,
             'linklabel' => get_string('opencourse', 'block_coursecardsuems', format_string($title, true, ['context' => $context])),
             'isavailable' => $isvisible,
+            'ispreparing' => $ispreparing,
             'code' => $code,
             'hascode' => $code !== '',
             'title' => format_string($title, true, ['context' => $context]),
@@ -110,7 +112,8 @@ class course_card_mapper {
                 'start' => $period->startdate,
                 'end' => $period->enddate,
                 'hasperiod' => $period->has_any_date(),
-                'label' => $this->format_period($period),
+                'label' => $ispreparing ? get_string('availablecomingsoon', 'block_coursecardsuems') : $this->format_period($period),
+                'showdates' => $period->has_any_date() && !$ispreparing,
                 'startlabel' => $this->format_date($period->startdate),
                 'endlabel' => $this->format_date($period->enddate),
             ],

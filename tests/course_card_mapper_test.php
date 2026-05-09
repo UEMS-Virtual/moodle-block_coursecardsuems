@@ -60,6 +60,7 @@ final class course_card_mapper_test extends \advanced_testcase {
         self::assertFalse($viewmodel['isclosed']);
         self::assertSame($start, $viewmodel['period']['start']);
         self::assertSame($end, $viewmodel['period']['end']);
+        self::assertTrue($viewmodel['period']['showdates']);
         self::assertSame(userdate($start, get_string('strftimedateshort')), $viewmodel['period']['startlabel']);
         self::assertSame(userdate($end, get_string('strftimedateshort')), $viewmodel['period']['endlabel']);
         self::assertSame('Maria Docente', $viewmodel['teachers'][0]['name']);
@@ -96,6 +97,9 @@ final class course_card_mapper_test extends \advanced_testcase {
         self::assertSame(get_string('comingsoon', 'block_coursecardsuems'), $viewmodel['statuslabel']);
         self::assertFalse($viewmodel['hasurl']);
         self::assertFalse($viewmodel['isavailable']);
+        self::assertTrue($viewmodel['ispreparing']);
+        self::assertSame(get_string('availablecomingsoon', 'block_coursecardsuems'), $viewmodel['period']['label']);
+        self::assertFalse($viewmodel['period']['showdates']);
     }
 
     /**
@@ -119,6 +123,8 @@ final class course_card_mapper_test extends \advanced_testcase {
         self::assertSame(course_status_resolver::CLOSED, $viewmodel['status']);
         self::assertFalse($viewmodel['hasurl']);
         self::assertFalse($viewmodel['isavailable']);
+        self::assertFalse($viewmodel['ispreparing']);
+        self::assertTrue($viewmodel['period']['showdates']);
     }
 
     /**

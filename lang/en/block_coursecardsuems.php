@@ -29,6 +29,7 @@ $string['coursecardsuems:myaddinstance'] = 'Add a UEMS course cards block to Das
 $string['nocourses'] = 'No courses to display.';
 $string['reconstructiontitle'] = 'Reconstruction in progress';
 $string['reconstructionmessage'] = 'The UEMS course cards block is being rebuilt with Moodle output classes and templates.';
+$string['availablecomingsoon'] = 'Available soon';
 $string['opencourse'] = 'Open course {$a}';
 $string['open'] = 'Open';
 $string['comingsoon'] = 'Coming soon';
