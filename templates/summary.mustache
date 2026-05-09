@@ -23,7 +23,7 @@
     * title - short title shown inside the block
     * message - supporting message shown inside the block
     * hascourses - whether the current user has enrolled courses
-    * courses - enrolled course names
+    * courses - enrolled course summaries
 
     Example context (json):
     {
@@ -31,7 +31,7 @@
         "message": "The block architecture is being rebuilt.",
         "hascourses": true,
         "courses": [
-            {"name": "Course name"}
+            {"name": "Course name", "hasperiod": true, "period": "10/02/2026 – 20/05/2026"}
         ]
     }
 }}
@@ -41,7 +41,12 @@
     {{#hascourses}}
         <ul class="coursecardsuems-summary-courses">
             {{#courses}}
-                <li class="coursecardsuems-summary-course">{{name}}</li>
+                <li class="coursecardsuems-summary-course">
+                    <span class="coursecardsuems-summary-course-name">{{name}}</span>
+                    {{#hasperiod}}
+                        <span class="coursecardsuems-summary-course-period">{{period}}</span>
+                    {{/hasperiod}}
+                </li>
             {{/courses}}
         </ul>
     {{/hascourses}}

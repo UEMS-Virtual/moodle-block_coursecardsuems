@@ -37,23 +37,32 @@ class course_filter {
     /** @var course_shortname_parser Course shortname parser. */
     private $shortnameparser;
 
+    /** @var informative_period_reader Informative period reader. */
+    private $periodreader;
+
     /**
      * Constructor.
      *
      * @param category_parser|null $categoryparser Category parser.
      * @param course_shortname_parser|null $shortnameparser Course shortname parser.
+     * @param informative_period_reader|null $periodreader Informative period reader.
      */
-    public function __construct(?category_parser $categoryparser = null, ?course_shortname_parser $shortnameparser = null) {
+    public function __construct(
+        ?category_parser $categoryparser = null,
+        ?course_shortname_parser $shortnameparser = null,
+        ?informative_period_reader $periodreader = null
+    ) {
         $this->categoryparser = $categoryparser ?? new category_parser();
         $this->shortnameparser = $shortnameparser ?? new course_shortname_parser();
+        $this->periodreader = $periodreader ?? new informative_period_reader();
     }
 
     /**
      * Keeps only Disciplina EaD records overlapping the requested Semestre vigente.
      *
-     * This slice uses Moodle's native start/end dates to determine the semester window.
-     * The next Período informativo slice will make custom fields ead_inicio/ead_final
-     * authoritative for discipline dates.
+     * The Período informativo da disciplina, read from ead_inicio/ead_final, is authoritative.
+     * Moodle's native start/end dates are not used to decide whether the discipline belongs
+     * to the semester.
      *
      * @param array $courses Course records.
      * @param string $semesterlabel Semester label in YYYY/S format.
@@ -71,14 +80,13 @@ class course_filter {
                 return false;
             }
 
-            $coursestart = $course->startdate ?? 0;
-            $courseend = $course->enddate ?? 0;
-            if (empty($coursestart) && empty($courseend)) {
+            $period = $this->periodreader->get_period((int) $course->id);
+            if (!$period->has_any_date()) {
                 return false;
             }
 
-            $rangestart = $coursestart ?: $courseend;
-            $rangeend = $courseend ?: $coursestart;
+            $rangestart = $period->startdate ?: $period->enddate;
+            $rangeend = $period->enddate ?: $period->startdate;
 
             return $rangestart <= $semesterend && $rangeend >= $semesterstart;
         }));

@@ -42,7 +42,7 @@ class summary implements renderable, templatable {
     /** @var string Supporting message shown inside the block. */
     private $message;
 
-    /** @var array List of enrolled course names for the current user. */
+    /** @var array List of course summaries for the current user. */
     private $courses;
 
     /**
@@ -50,7 +50,7 @@ class summary implements renderable, templatable {
      *
      * @param string $title Main title.
      * @param string $message Supporting message.
-     * @param array $courses List of enrolled course names.
+     * @param array $courses List of course summaries.
      */
     public function __construct($title, $message, array $courses = []) {
         $this->title = $title;
@@ -69,9 +69,7 @@ class summary implements renderable, templatable {
         $data->title = $this->title;
         $data->message = $this->message;
         $data->hascourses = !empty($this->courses);
-        $data->courses = array_map(static function($coursename): array {
-            return ['name' => $coursename];
-        }, $this->courses);
+        $data->courses = $this->courses;
 
         return $data;
     }

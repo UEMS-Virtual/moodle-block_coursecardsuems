@@ -30,6 +30,7 @@ final class course_filter_test extends \advanced_testcase {
      */
     public function test_filter_keeps_only_distance_courses_from_current_semester(): void {
         $this->resetAfterTest(true);
+        $this->create_period_fields();
 
         $generator = self::getDataGenerator();
         $distancecategory = $generator->create_category(['name' => 'Distância']);
@@ -41,22 +42,28 @@ final class course_filter_test extends \advanced_testcase {
             'category' => $distanceseries->id,
             'fullname' => 'EaD atual',
             'shortname' => 'EAD_26_1S_CURRENT_abc12',
-            'startdate' => make_timestamp(2026, 3, 1),
-            'enddate' => make_timestamp(2026, 4, 1),
+            'startdate' => make_timestamp(2025, 3, 1),
+            'enddate' => make_timestamp(2025, 4, 1),
+            'customfield_ead_inicio' => make_timestamp(2026, 3, 1),
+            'customfield_ead_final' => make_timestamp(2026, 4, 1),
         ]);
         $onsitecurrent = $generator->create_course([
             'category' => $onsiteseries->id,
             'fullname' => 'Presencial atual',
             'shortname' => 'ONSITE_26_1S_CURRENT_abc12',
-            'startdate' => make_timestamp(2026, 3, 1),
-            'enddate' => make_timestamp(2026, 4, 1),
+            'startdate' => make_timestamp(2025, 3, 1),
+            'enddate' => make_timestamp(2025, 4, 1),
+            'customfield_ead_inicio' => make_timestamp(2026, 3, 1),
+            'customfield_ead_final' => make_timestamp(2026, 4, 1),
         ]);
         $distancenextsemester = $generator->create_course([
             'category' => $distanceseries->id,
             'fullname' => 'EaD próximo semestre',
             'shortname' => 'EAD_26_2S_NEXT_abc12',
-            'startdate' => make_timestamp(2026, 8, 1),
-            'enddate' => make_timestamp(2026, 9, 1),
+            'startdate' => make_timestamp(2026, 3, 1),
+            'enddate' => make_timestamp(2026, 4, 1),
+            'customfield_ead_inicio' => make_timestamp(2026, 8, 1),
+            'customfield_ead_final' => make_timestamp(2026, 9, 1),
         ]);
 
         $filtered = (new course_filter())->filter_current_semester_distance_courses(
@@ -68,10 +75,11 @@ final class course_filter_test extends \advanced_testcase {
     }
 
     /**
-     * A course overlapping the semester window is part of that semester.
+     * A course whose Período informativo overlaps the semester window is part of that semester.
      */
-    public function test_filter_keeps_distance_course_that_overlaps_semester_window(): void {
+    public function test_filter_keeps_distance_course_whose_informative_period_overlaps_semester_window(): void {
         $this->resetAfterTest(true);
+        $this->create_period_fields();
 
         $generator = self::getDataGenerator();
         $distancecategory = $generator->create_category(['name' => 'Distância']);
@@ -80,8 +88,10 @@ final class course_filter_test extends \advanced_testcase {
             'category' => $distanceseries->id,
             'fullname' => 'EaD sobreposta',
             'shortname' => 'EAD_26_1S_OVERLAP_abc12',
-            'startdate' => make_timestamp(2025, 12, 1),
-            'enddate' => make_timestamp(2026, 1, 15),
+            'startdate' => make_timestamp(2025, 1, 1),
+            'enddate' => make_timestamp(2025, 2, 1),
+            'customfield_ead_inicio' => make_timestamp(2025, 12, 1),
+            'customfield_ead_final' => make_timestamp(2026, 1, 15),
         ]);
 
         $filtered = (new course_filter())->filter_current_semester_distance_courses([$course], '2026/1');
@@ -94,6 +104,7 @@ final class course_filter_test extends \advanced_testcase {
      */
     public function test_filter_excludes_distance_course_with_unknown_shortname_shape(): void {
         $this->resetAfterTest(true);
+        $this->create_period_fields();
 
         $generator = self::getDataGenerator();
         $distancecategory = $generator->create_category(['name' => 'Distância']);
@@ -102,6 +113,29 @@ final class course_filter_test extends \advanced_testcase {
             'category' => $distanceseries->id,
             'fullname' => 'EaD shortname desconhecido',
             'shortname' => 'teste',
+            'customfield_ead_inicio' => make_timestamp(2026, 3, 1),
+            'customfield_ead_final' => make_timestamp(2026, 4, 1),
+        ]);
+
+        $filtered = (new course_filter())->filter_current_semester_distance_courses([$course], '2026/1');
+
+        self::assertSame([], $filtered);
+    }
+
+    /**
+     * Courses without Período informativo are excluded even when Moodle dates overlap the semester.
+     */
+    public function test_filter_excludes_course_without_informative_period(): void {
+        $this->resetAfterTest(true);
+        $this->create_period_fields();
+
+        $generator = self::getDataGenerator();
+        $distancecategory = $generator->create_category(['name' => 'Distância']);
+        $distanceseries = $generator->create_category(['name' => '3ª Série', 'parent' => $distancecategory->id]);
+        $course = $generator->create_course([
+            'category' => $distanceseries->id,
+            'fullname' => 'EaD sem datas',
+            'shortname' => 'EAD_26_1S_NODATES_abc12',
             'startdate' => make_timestamp(2026, 3, 1),
             'enddate' => make_timestamp(2026, 4, 1),
         ]);
@@ -112,25 +146,13 @@ final class course_filter_test extends \advanced_testcase {
     }
 
     /**
-     * Courses without a date range are excluded until the informative period slice exists.
+     * Creates the custom fields used by the plugin.
      */
-    public function test_filter_excludes_course_without_dates(): void {
-        $this->resetAfterTest(true);
-
+    private function create_period_fields(): void {
         $generator = self::getDataGenerator();
-        $distancecategory = $generator->create_category(['name' => 'Distância']);
-        $distanceseries = $generator->create_category(['name' => '3ª Série', 'parent' => $distancecategory->id]);
-        $course = $generator->create_course([
-            'category' => $distanceseries->id,
-            'fullname' => 'EaD sem datas',
-            'shortname' => 'EAD_26_1S_NODATES_abc12',
-            'startdate' => 0,
-            'enddate' => 0,
-        ]);
-
-        $filtered = (new course_filter())->filter_current_semester_distance_courses([$course], '2026/1');
-
-        self::assertSame([], $filtered);
+        $categoryid = $generator->create_custom_field_category(['name' => 'EaD'])->get('id');
+        $generator->create_custom_field(['categoryid' => $categoryid, 'type' => 'date', 'shortname' => 'ead_inicio']);
+        $generator->create_custom_field(['categoryid' => $categoryid, 'type' => 'date', 'shortname' => 'ead_final']);
     }
 
     /**

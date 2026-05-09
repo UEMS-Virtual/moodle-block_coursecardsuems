@@ -75,13 +75,24 @@ class block_coursecardsuems extends block_base {
 
         $semesterlabel = \block_coursecardsuems\local\current_semester::from_timestamp();
         $repository = new \block_coursecardsuems\local\course_repository();
-        $coursefilter = new \block_coursecardsuems\local\course_filter();
+        $periodreader = new \block_coursecardsuems\local\informative_period_reader();
+        $coursefilter = new \block_coursecardsuems\local\course_filter(null, null, $periodreader);
         $courses = $coursefilter->filter_current_semester_distance_courses(
             $repository->get_enrolled_courses_for_current_user(),
             $semesterlabel
         );
-        $courses = array_values(array_map(static function($course): string {
-            return format_string(get_course_display_name_for_list($course));
+        $courses = array_values(array_map(static function($course) use ($periodreader): array {
+            $period = $periodreader->get_period((int) $course->id);
+            $startdate = $period->startdate ? userdate($period->startdate, get_string('strftimedateshort')) :
+                get_string('dateunknown', 'block_coursecardsuems');
+            $enddate = $period->enddate ? userdate($period->enddate, get_string('strftimedateshort')) :
+                get_string('dateunknown', 'block_coursecardsuems');
+
+            return [
+                'name' => format_string(get_course_display_name_for_list($course)),
+                'hasperiod' => $period->has_any_date(),
+                'period' => $startdate . ' – ' . $enddate,
+            ];
         }, $courses));
 
         $renderer = $PAGE->get_renderer('block_coursecardsuems');
