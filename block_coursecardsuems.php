@@ -214,7 +214,7 @@ class block_coursecardsuems extends block_base {
         $card .= html_writer::span($statuslabel, 'coursecardsuems-status coursecardsuems-status-' . $statusclass);
 
         return html_writer::link($courseurl, $card, [
-            'class' => 'coursecardsuems-card',
+            'class' => 'coursecardsuems-card coursecardsuems-card-' . $statusclass,
             'aria-label' => $coursename,
         ]);
     }

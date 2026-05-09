@@ -199,16 +199,16 @@
     right: 0;
     display: inline-flex;
     align-items: center;
-    min-height: 2.1rem;
-    padding: 0 1rem 0 1.35rem;
+    min-height: 1.8rem;
+    padding: 0 .8rem 0 1.15rem;
     color: #fff;
-    font-size: .92rem;
+    font-size: .78rem;
     font-weight: 800;
     letter-spacing: .06em;
     line-height: 1;
     text-transform: uppercase;
     border-radius: 0 .75rem 0 0;
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, .75rem 50%);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, .6rem 50%);
 }
 
 .block_coursecardsuems .coursecardsuems-status-open {
@@ -223,10 +223,46 @@
     background: #6b7280;
 }
 
+.block_coursecardsuems .coursecardsuems-card-closed {
+    color: #667085;
+    background: #f8fafc;
+    border-color: #e5e7eb;
+    box-shadow: none;
+}
+
+.block_coursecardsuems .coursecardsuems-card-closed .coursecardsuems-side,
+.block_coursecardsuems .coursecardsuems-card-closed .coursecardsuems-avatar {
+    background: #9ca3af;
+}
+
+.block_coursecardsuems .coursecardsuems-card-closed .coursecardsuems-category-label,
+.block_coursecardsuems .coursecardsuems-card-closed .coursecardsuems-period,
+.block_coursecardsuems .coursecardsuems-card-closed .coursecardsuems-title,
+.block_coursecardsuems .coursecardsuems-card-closed .coursecardsuems-teacher-name,
+.block_coursecardsuems .coursecardsuems-card-closed .coursecardsuems-date-value,
+.block_coursecardsuems .coursecardsuems-card-closed .coursecardsuems-pill {
+    color: #6b7280;
+}
+
+.block_coursecardsuems .coursecardsuems-card-closed .coursecardsuems-period {
+    background: rgba(255, 255, 255, .22);
+}
+
+.block_coursecardsuems .coursecardsuems-card-closed .coursecardsuems-teacher-label,
+.block_coursecardsuems .coursecardsuems-card-closed .coursecardsuems-teacher-extra,
+.block_coursecardsuems .coursecardsuems-card-closed .coursecardsuems-date-icon,
+.block_coursecardsuems .coursecardsuems-card-closed .coursecardsuems-date-separator {
+    color: #9ca3af;
+}
+
+.block_coursecardsuems .coursecardsuems-card-closed .coursecardsuems-footerline {
+    border-top-color: #e5e7eb;
+}
+
 .block_coursecardsuems .coursecardsuems-title {
     display: -webkit-box;
     min-height: 3.1rem;
-    margin: 0 0 1.1rem;
+    margin: 0 6.2rem 1.1rem 0;
     overflow: hidden;
     color: #071735;
     font-size: 1.48rem;
