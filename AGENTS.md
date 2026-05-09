@@ -4,7 +4,7 @@
 
 ### Issue tracker
 
-Issues e PRDs são rastreados no GitHub Issues via `gh`. See `docs/agents/issue-tracker.md`.
+Issues e PRDs são rastreados no GitHub Issues. Neste WSL, preferir `curl` com `$(gh auth token)` para evitar falhas intermitentes de DNS do `gh`; ver detalhes em `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
