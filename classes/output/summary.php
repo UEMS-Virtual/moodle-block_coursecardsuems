@@ -26,6 +26,7 @@ namespace block_coursecardsuems\output;
 
 defined('MOODLE_INTERNAL') || die();
 
+use block_coursecardsuems\local\course_status_resolver;
 use renderable;
 use renderer_base;
 use stdClass;
@@ -70,7 +71,62 @@ class summary implements renderable, templatable {
         $data->message = $this->message;
         $data->hascourses = !empty($this->courses);
         $data->courses = $this->courses;
+        $data->sections = $this->get_sections();
+        $data->hassections = true;
 
         return $data;
+    }
+
+    /**
+     * Groups course view models into product sections.
+     *
+     * @return array Section data for Mustache.
+     */
+    private function get_sections(): array {
+        $definitions = [
+            course_status_resolver::OPEN => [
+                'title' => get_string('openplural', 'block_coursecardsuems'),
+                'isopen' => true,
+                'layout' => 'grid',
+            ],
+            course_status_resolver::COMINGSOON => [
+                'title' => get_string('comingsoonplural', 'block_coursecardsuems'),
+                'isopen' => false,
+                'layout' => 'list',
+            ],
+            course_status_resolver::CLOSED => [
+                'title' => get_string('closedplural', 'block_coursecardsuems'),
+                'isopen' => false,
+                'layout' => 'list',
+            ],
+        ];
+
+        $grouped = array_fill_keys(array_keys($definitions), []);
+        foreach ($this->courses as $course) {
+            $status = $course['status'] ?? course_status_resolver::OPEN;
+            if (!array_key_exists($status, $grouped)) {
+                $status = course_status_resolver::OPEN;
+            }
+            $grouped[$status][] = $course;
+        }
+
+        $sections = [];
+        foreach ($definitions as $status => $definition) {
+            $courses = $grouped[$status];
+            $sections[] = [
+                'key' => $status,
+                'title' => $definition['title'],
+                'isopen' => $definition['isopen'],
+                'layout' => $definition['layout'],
+                'isgrid' => $definition['layout'] === 'grid',
+                'islist' => $definition['layout'] === 'list',
+                'courses' => $courses,
+                'hascourses' => !empty($courses),
+                'count' => count($courses),
+                'emptytext' => get_string('nocoursesinsection', 'block_coursecardsuems'),
+            ];
+        }
+
+        return $sections;
     }
 }

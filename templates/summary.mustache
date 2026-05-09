@@ -23,36 +23,53 @@
     * title - short title shown inside the block
     * message - supporting message shown inside the block
     * hascourses - whether the current user has enrolled courses
-    * courses - enrolled course summaries
+    * hassections - whether sections are available
+    * sections - status sections with course summaries
 
     Example context (json):
     {
         "title": "Reconstruction in progress",
         "message": "The block architecture is being rebuilt.",
         "hascourses": true,
-        "courses": [
-            {"title": "Course name", "code": "CODE", "group": "CISOL-23", "series": "2ª Série", "period": {"hasperiod": true, "label": "10/02/2026 – 20/05/2026"}, "statuslabel": "Open"}
+        "hassections": true,
+        "sections": [
+            {"title": "Open", "count": 1, "isopen": true, "isgrid": true, "hascourses": true, "courses": [{"title": "Course name", "code": "CODE", "group": "CISOL-23", "series": "2ª Série", "period": {"hasperiod": true, "label": "10/02/2026 – 20/05/2026"}, "statuslabel": "Open"}]}
         ]
     }
 }}
 <div class="coursecardsuems-summary">
     <h3 class="coursecardsuems-summary-title">{{title}}</h3>
     <p class="coursecardsuems-summary-message">{{message}}</p>
-    {{#hascourses}}
-        <ul class="coursecardsuems-summary-courses">
-            {{#courses}}
-                <li class="coursecardsuems-summary-course">
-                    {{#hascode}}
-                        <span class="coursecardsuems-summary-course-code">{{code}}</span>
-                    {{/hascode}}
-                    <span class="coursecardsuems-summary-course-name">{{title}}</span>
-                    <span class="coursecardsuems-summary-course-meta">{{group}} · {{series}}</span>
-                    <span class="coursecardsuems-summary-course-status">{{statuslabel}}</span>
-                    {{#period.hasperiod}}
-                        <span class="coursecardsuems-summary-course-period">{{period.label}}</span>
-                    {{/period.hasperiod}}
-                </li>
-            {{/courses}}
-        </ul>
-    {{/hascourses}}
+    {{#hassections}}
+        <div class="coursecardsuems-summary-sections">
+            {{#sections}}
+                <details class="coursecardsuems-summary-section coursecardsuems-summary-section-{{key}}" {{#isopen}}open{{/isopen}}>
+                    <summary class="coursecardsuems-summary-section-heading">
+                        <span class="coursecardsuems-summary-section-title">{{title}}</span>
+                        <span class="coursecardsuems-summary-section-count">{{count}}</span>
+                    </summary>
+                    {{#hascourses}}
+                        <ul class="coursecardsuems-summary-courses {{#isgrid}}coursecardsuems-summary-courses-grid{{/isgrid}}{{#islist}}coursecardsuems-summary-courses-list{{/islist}}">
+                            {{#courses}}
+                                <li class="coursecardsuems-summary-course coursecardsuems-summary-course-{{status}}">
+                                    {{#hascode}}
+                                        <span class="coursecardsuems-summary-course-code">{{code}}</span>
+                                    {{/hascode}}
+                                    <span class="coursecardsuems-summary-course-name">{{title}}</span>
+                                    <span class="coursecardsuems-summary-course-meta">{{group}} · {{series}}</span>
+                                    <span class="coursecardsuems-summary-course-status">{{statuslabel}}</span>
+                                    {{#period.hasperiod}}
+                                        <span class="coursecardsuems-summary-course-period">{{period.label}}</span>
+                                    {{/period.hasperiod}}
+                                </li>
+                            {{/courses}}
+                        </ul>
+                    {{/hascourses}}
+                    {{^hascourses}}
+                        <p class="coursecardsuems-summary-section-empty">{{emptytext}}</p>
+                    {{/hascourses}}
+                </details>
+            {{/sections}}
+        </div>
+    {{/hassections}}
 </div>
