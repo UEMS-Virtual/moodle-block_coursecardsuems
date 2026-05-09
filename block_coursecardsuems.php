@@ -76,29 +76,14 @@ class block_coursecardsuems extends block_base {
         $semesterlabel = \block_coursecardsuems\local\current_semester::from_timestamp();
         $repository = new \block_coursecardsuems\local\course_repository();
         $periodreader = new \block_coursecardsuems\local\informative_period_reader();
-        $statusresolver = new \block_coursecardsuems\local\course_status_resolver();
+        $mapper = new \block_coursecardsuems\local\course_card_mapper($periodreader);
         $coursefilter = new \block_coursecardsuems\local\course_filter(null, null, $periodreader);
         $courses = $coursefilter->filter_current_semester_distance_courses(
             $repository->get_enrolled_courses_for_current_user(),
             $semesterlabel
         );
-        $courses = array_map(static function($course) use ($periodreader, $statusresolver): array {
-            $period = $periodreader->get_period((int) $course->id);
-            $status = $statusresolver->resolve($period, $course);
-            $sortkey = $statusresolver->get_sort_key($status, $period, $course);
-            $startdate = $period->startdate ? userdate($period->startdate, get_string('strftimedateshort')) :
-                get_string('dateunknown', 'block_coursecardsuems');
-            $enddate = $period->enddate ? userdate($period->enddate, get_string('strftimedateshort')) :
-                get_string('dateunknown', 'block_coursecardsuems');
-
-            return [
-                'name' => format_string(get_course_display_name_for_list($course)),
-                'hasperiod' => $period->has_any_date(),
-                'period' => $startdate . ' – ' . $enddate,
-                'status' => $status,
-                'statuslabel' => $statusresolver->get_label($status),
-                'sortkey' => $sortkey,
-            ];
+        $courses = array_map(static function($course) use ($mapper): array {
+            return $mapper->map($course);
         }, $courses);
         usort($courses, static function(array $a, array $b): int {
             if ($a['status'] !== $b['status']) {

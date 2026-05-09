@@ -31,7 +31,7 @@
         "message": "The block architecture is being rebuilt.",
         "hascourses": true,
         "courses": [
-            {"name": "Course name", "hasperiod": true, "period": "10/02/2026 – 20/05/2026", "statuslabel": "Open"}
+            {"title": "Course name", "code": "CODE", "group": "CISOL-23", "series": "2ª Série", "period": {"hasperiod": true, "label": "10/02/2026 – 20/05/2026"}, "statuslabel": "Open"}
         ]
     }
 }}
@@ -42,11 +42,15 @@
         <ul class="coursecardsuems-summary-courses">
             {{#courses}}
                 <li class="coursecardsuems-summary-course">
-                    <span class="coursecardsuems-summary-course-name">{{name}}</span>
+                    {{#hascode}}
+                        <span class="coursecardsuems-summary-course-code">{{code}}</span>
+                    {{/hascode}}
+                    <span class="coursecardsuems-summary-course-name">{{title}}</span>
+                    <span class="coursecardsuems-summary-course-meta">{{group}} · {{series}}</span>
                     <span class="coursecardsuems-summary-course-status">{{statuslabel}}</span>
-                    {{#hasperiod}}
-                        <span class="coursecardsuems-summary-course-period">{{period}}</span>
-                    {{/hasperiod}}
+                    {{#period.hasperiod}}
+                        <span class="coursecardsuems-summary-course-period">{{period.label}}</span>
+                    {{/period.hasperiod}}
                 </li>
             {{/courses}}
         </ul>

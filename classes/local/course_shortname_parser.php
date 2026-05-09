@@ -42,4 +42,20 @@ class course_shortname_parser {
     public function is_discipline_shortname(string $shortname): bool {
         return preg_match('/^[A-Z]+_\d{2}_\d+S_[A-Z0-9]+(?:_\(REO\d?\))?_/i', $shortname) === 1;
     }
+
+    /**
+     * Returns the compact course/year grouping used on cards.
+     *
+     * Example: `CISOL_23_2S_EP_df970` becomes `CISOL-23`.
+     *
+     * @param string $shortname Moodle course shortname.
+     * @return string Compact grouping or empty string when unavailable.
+     */
+    public function get_compact_group(string $shortname): string {
+        if (preg_match('/^([A-Z]+)_(\d{2})_/i', $shortname, $matches) !== 1) {
+            return '';
+        }
+
+        return strtoupper($matches[1]) . '-' . $matches[2];
+    }
 }

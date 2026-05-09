@@ -82,4 +82,25 @@ class category_parser {
         $this->distancecache[$categoryid] = $isdistance;
         return $isdistance;
     }
+
+    /**
+     * Returns the formatted Série name for a course category.
+     *
+     * In the current category layout, the course category itself is the Série.
+     *
+     * @param int $categoryid Course category id.
+     * @return string Series name or empty string when unavailable.
+     */
+    public function get_series_name($categoryid): string {
+        try {
+            $category = core_course_category::get((int) $categoryid, IGNORE_MISSING, true);
+            if (!$category) {
+                return '';
+            }
+
+            return trim(strip_tags($category->get_formatted_name()));
+        } catch (moodle_exception $exception) {
+            return '';
+        }
+    }
 }
