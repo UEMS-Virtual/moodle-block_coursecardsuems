@@ -73,10 +73,16 @@ class block_coursecardsuems extends block_base {
         $this->content = new stdClass();
         $this->content->footer = '';
 
+        $repository = new \block_coursecardsuems\local\course_repository();
+        $courses = array_values(array_map(static function($course): string {
+            return format_string(get_course_display_name_for_list($course));
+        }, $repository->get_enrolled_courses_for_current_user()));
+
         $renderer = $PAGE->get_renderer('block_coursecardsuems');
         $summary = new \block_coursecardsuems\output\summary(
             get_string('reconstructiontitle', 'block_coursecardsuems'),
-            get_string('reconstructionmessage', 'block_coursecardsuems')
+            get_string('reconstructionmessage', 'block_coursecardsuems'),
+            $courses
         );
 
         $this->content->text = $renderer->render($summary);
