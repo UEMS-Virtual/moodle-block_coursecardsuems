@@ -60,6 +60,12 @@
                             {{#courses}}
                                 {{#hasurl}}
                                     <a class="coursecardsuems-card {{#isclosed}}coursecardsuems-card-closed{{/isclosed}}" href="{{url}}" aria-label="{{linklabel}}">
+                                        <div class="coursecardsuems-corner">
+                                            {{#isreoferta}}
+                                                <span class="coursecardsuems-ribbon-reoferta">{{#str}}reoferta, block_coursecardsuems{{/str}}</span>
+                                            {{/isreoferta}}
+                                            <span class="coursecardsuems-ribbon {{statusclass}}">{{statuslabel}}</span>
+                                        </div>
                                         <div class="coursecardsuems-side">
                                             {{#hasgroup}}
                                                 <span class="coursecardsuems-category-label">{{group}}</span>
@@ -73,6 +79,9 @@
                                         </div>
                                         <div class="coursecardsuems-main">
                                             <span class="coursecardsuems-status {{statusclass}}">{{statuslabel}}</span>
+                                            {{#hassupertitle}}
+                                                <div class="coursecardsuems-supertitle">{{supertitle}}</div>
+                                            {{/hassupertitle}}
                                             <h4 class="coursecardsuems-title">
                                                 {{#hascode}}
                                                     <span class="coursecardsuems-title-code">{{code}}</span>
@@ -109,6 +118,12 @@
                                 {{/hasurl}}
                                 {{^hasurl}}
                                     <article class="coursecardsuems-card coursecardsuems-card-disabled {{#isclosed}}coursecardsuems-card-closed{{/isclosed}}" aria-disabled="true">
+                                        <div class="coursecardsuems-corner">
+                                            {{#isreoferta}}
+                                                <span class="coursecardsuems-ribbon-reoferta">{{#str}}reoferta, block_coursecardsuems{{/str}}</span>
+                                            {{/isreoferta}}
+                                            <span class="coursecardsuems-ribbon {{statusclass}}">{{statuslabel}}</span>
+                                        </div>
                                         <div class="coursecardsuems-side">
                                             {{#hasgroup}}
                                                 <span class="coursecardsuems-category-label">{{group}}</span>
@@ -122,6 +137,9 @@
                                         </div>
                                         <div class="coursecardsuems-main">
                                             <span class="coursecardsuems-status {{statusclass}}">{{statuslabel}}</span>
+                                            {{#hassupertitle}}
+                                                <div class="coursecardsuems-supertitle">{{supertitle}}</div>
+                                            {{/hassupertitle}}
                                             <h4 class="coursecardsuems-title">
                                                 {{#hascode}}
                                                     <span class="coursecardsuems-title-code">{{code}}</span>

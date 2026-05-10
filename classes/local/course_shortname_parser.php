@@ -44,6 +44,16 @@ class course_shortname_parser {
     }
 
     /**
+     * Returns whether a shortname identifies a reoferta discipline.
+     *
+     * @param string $shortname Moodle course shortname.
+     * @return bool
+     */
+    public function is_reoferta(string $shortname): bool {
+        return preg_match('/\(REO\d?\)/i', $shortname) === 1;
+    }
+
+    /**
      * Returns the compact course/year grouping used on cards.
      *
      * Example: `CISOL_23_2S_EP_df970` becomes `CISOL-23`.

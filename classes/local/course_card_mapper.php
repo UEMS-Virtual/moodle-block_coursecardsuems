@@ -90,6 +90,9 @@ class course_card_mapper {
         [$code, $title] = $this->split_course_title(get_course_display_name_for_list($course));
         $group = $this->shortnameparser->get_compact_group($course->shortname ?? '');
         $series = $this->categoryparser->get_series_name($course->category ?? 0);
+        $isreoferta = $this->shortnameparser->is_reoferta($course->shortname ?? '');
+        $supertitleparts = array_filter([$group, $series]);
+        $supertitle = implode(' · ', $supertitleparts);
         $teachers = $this->get_teachers($context);
         $firstteacher = reset($teachers) ?: null;
         $teachercount = count($teachers);
@@ -108,6 +111,9 @@ class course_card_mapper {
             'hasgroup' => $group !== '',
             'series' => $series,
             'hasseries' => $series !== '',
+            'isreoferta' => $isreoferta,
+            'supertitle' => $supertitle,
+            'hassupertitle' => $supertitle !== '',
             'period' => [
                 'start' => $period->startdate,
                 'end' => $period->enddate,

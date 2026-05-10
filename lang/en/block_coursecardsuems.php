@@ -48,3 +48,4 @@ $string['teachers'] = 'Teachers';
 $string['others'] = '+ {$a} others';
 $string['periodunknown'] = '—';
 $string['dateunknown'] = '—';
+$string['reoferta'] = 'Reoferta';
