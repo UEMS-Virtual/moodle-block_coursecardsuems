@@ -196,9 +196,32 @@
 }
 
 /* oculta na lista os elementos novos do grid */
-.block_coursecardsuems .coursecardsuems-list .coursecardsuems-corner,
-.block_coursecardsuems .coursecardsuems-list .coursecardsuems-supertitle {
+.block_coursecardsuems .coursecardsuems-list .coursecardsuems-corner {
     display: none;
+}
+
+/* oculta label de reoferta no grid (a ribbon já comunica isso) */
+.block_coursecardsuems .coursecardsuems-grid .coursecardsuems-reoferta-label {
+    display: none;
+}
+
+/* label de reoferta no supertítulo (lista) */
+.block_coursecardsuems .coursecardsuems-reoferta-label {
+    color: #8099b4;
+}
+.block_coursecardsuems .coursecardsuems-reoferta-label::before {
+    content: " · ";
+    color: #cbd5e1;
+}
+.block_coursecardsuems .coursecardsuems-reoferta-label::after {
+    content: "";
+    display: inline-block;
+    width: .35rem;
+    height: .35rem;
+    margin: 0 .25rem 0 .3rem;
+    background: currentColor;
+    border-radius: 999px;
+    vertical-align: middle;
 }
 
 .block_coursecardsuems .coursecardsuems-side {
@@ -482,15 +505,28 @@
     display: flex;
     flex-direction: column;
     gap: .75rem;
+    container-type: inline-size;
 }
 
+/* card: flex row + faixa ::before */
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card {
-    display: grid;
-    grid-template-columns: 13rem minmax(0, 1fr) auto;
-    min-height: 5.9rem;
+    position: relative;
+    display: flex;
+    min-height: 5.5rem;
     background: #fff;
     border-color: #e1e7f0;
     border-radius: .65rem;
+    overflow: hidden;
+}
+
+.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 20px;
+    background: var(--primary, #0f4c8a);
 }
 
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card:hover,
@@ -499,46 +535,37 @@
     transform: none;
 }
 
+/* oculta painel lateral (substituído pela faixa ::before) */
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-side {
-    align-items: flex-start;
-    justify-content: center;
-    min-width: 0;
-    padding: .85rem 1.2rem .85rem 1.35rem;
-    color: #0f4c8a;
-    background: #f8fbff;
-    border-left: .45rem solid var(--primary, #0f4c8a);
-    border-right: 1px solid #e5eaf2;
+    display: none;
 }
 
-.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-category-label {
-    max-width: 100%;
-    max-height: none;
-    color: #0f3f78;
-    font-size: .78rem;
-    letter-spacing: .11em;
-    line-height: 1.15;
-    text-align: left;
-    writing-mode: horizontal-tb;
-    transform: none;
-}
-
-.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-period {
-    margin-top: .28rem;
-    padding: 0;
-    color: #64748b;
-    background: transparent;
-    font-size: .78rem;
-    font-weight: 650;
-}
-
+/* main: flex row — title-group | footerline | status */
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-main {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 12rem 11rem;
-    align-items: center;
-    gap: 1rem;
-    padding: .85rem 1.1rem;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    align-self: stretch;
+    width: 100%;
+    padding: 0;
+    gap: 0;
 }
 
+/* wrapper supertítulo + título — flex-grow */
+.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-title-group {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: .75rem 1rem .75rem calc(20px + 1rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-supertitle {
+    margin: 0 0 .2rem;
+}
+
+/* título */
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-title {
     min-height: 0;
     margin: 0;
@@ -549,12 +576,66 @@
     -webkit-line-clamp: 3;
 }
 
+/* código da disciplina — oculto na lista */
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-title-code {
-    font-size: .62em;
+    display: none;
+}
+
+/* status — último item do flex via order */
+.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-status {
+    order: 99;
+    flex: 0 0 auto;
+    position: relative;
+    clip-path: none;
+    border-left: 1px solid #f0f4fa;
+    border-radius: .3rem;
+    padding: .7rem 1rem;
+    font-size: .62rem;
+    letter-spacing: .07em;
+    min-height: 0;
+    top: auto;
+    right: auto;
+    display: flex;
+    align-items: center;
+    align-self: center;
+    margin: 0;
+    width: max-content;
+}
+
+/* footerline — flex row fixo após title-group, antes do status */
+.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-footerline {
+    flex: 0 0 30rem;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    border-left: 1px solid #f0f4fa;
+    margin: 0;
+    padding: 0;
+    border-top: 0;
 }
 
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-teacher {
+    flex: 0 0 17rem;
     min-width: 0;
+    padding: .7rem 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-badges {
+    display: none;
+}
+
+.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-dates {
+    flex: 0 0 13rem;
+    padding: .7rem 1rem;
+    border-left: 1px solid #f0f4fa;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: .35rem;
+    color: #344054;
+    font-size: .78rem;
 }
 
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-avatar {
@@ -564,79 +645,62 @@
     font-size: .78rem;
 }
 
-.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-footerline {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: .35rem;
-    margin: 0;
-    padding: 0;
-    border-top: 0;
-}
-
-.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-badges {
-    gap: .45rem;
-}
-
-.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-pill {
-    padding: .12rem .45rem;
-    color: #0f4c8a;
-    background: #fff;
-    border: 1px solid currentColor;
-    border-radius: .25rem;
-    font-size: .68rem;
-    letter-spacing: .08em;
-}
-
-.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-pill::before {
-    display: none;
-}
-
-.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-dates {
-    justify-content: flex-start;
-    gap: .35rem;
-    color: #344054;
-    font-size: .78rem;
-    text-align: left;
-}
-
-.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-status {
-    position: static;
-    align-self: center;
-    margin-right: 1rem;
-    min-height: 1.45rem;
-    padding: 0 .55rem;
-    color: #fff;
-    border-radius: .25rem;
-    clip-path: none;
-    font-size: .68rem;
-    letter-spacing: .08em;
+/* encerrada */
+.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card-closed::before {
+    background: #9ca3af;
 }
 
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card-closed,
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card-closed .coursecardsuems-title,
+.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card-closed .coursecardsuems-supertitle,
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card-closed .coursecardsuems-date-value,
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card-closed .coursecardsuems-teacher-name {
     color: #667085;
-}
-
-.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card-closed .coursecardsuems-side {
-    color: #6b7280;
-    background: #f8fafc;
-    border-left-color: #9ca3af;
-}
-
-.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card-closed .coursecardsuems-category-label,
-.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card-closed .coursecardsuems-pill {
-    color: #6b7280;
 }
 
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card-closed .coursecardsuems-avatar {
     background: #9ca3af;
 }
 
-.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card-closed .coursecardsuems-pill {
-    background: #f1f5f9;
-    border-color: #d8dee8;
+/* mobile — colapsa para mini-card */
+@container (max-width: 560px) {
+    /* mobile: flex column — title-group+status em cima, footerline embaixo */
+    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-main {
+        flex-direction: column;
+    }
+
+    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-title-group {
+        flex: 0 0 auto;
+        position: relative;
+        padding-bottom: .6rem;
+    }
+
+    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-status {
+        position: absolute !important;
+        top: .7rem;
+        right: .75rem;
+        border-left: none;
+        order: 0;
+    }
+
+    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-footerline {
+        flex: 0 0 auto;
+        border-left: none;
+        border-top: 1px solid #e7edf5;
+        background: #fafcff;
+    }
+
+    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-teacher {
+        flex: 1;
+        padding: .65rem 1rem .65rem calc(20px + 1rem);
+    }
+
+    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-dates {
+        flex: 0 0 auto;
+        border-left: none;
+        justify-content: flex-end;
+        padding: .65rem 1rem;
+    }
 }
 
 .block_coursecardsuems .coursecardsuems-empty {
@@ -669,18 +733,6 @@
         font-size: 1.15rem;
     }
 
-    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card {
-        grid-template-columns: 1fr;
-    }
-
-    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-main {
-        grid-template-columns: 1fr;
-    }
-
-    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-status {
-        justify-self: flex-start;
-        margin: 0 1.1rem 1rem;
-    }
 }
 
 .block_coursecardsuems .coursecardsuems-summary-sections {
@@ -864,21 +916,3 @@
     }
 }
 
-.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-main {
-    grid-template-columns: minmax(0, 1fr) minmax(13rem, 20rem) max-content;
-    grid-template-areas: "title footer status";
-}
-
-.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-title {
-    grid-area: title;
-}
-
-.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-footerline {
-    grid-area: footer;
-}
-
-.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-status {
-    grid-area: status;
-    justify-self: end;
-    width: max-content;
-}
