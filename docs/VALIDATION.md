@@ -2,13 +2,26 @@
 
 Este checklist registra a validação final da reconstrução do `block_coursecardsuems`.
 
+## Variáveis por ambiente
+
+O nome do container, URL local e credenciais podem mudar. Configure antes de validar:
+
+```bash
+export MOODLE_DOCKER_CONTAINER="${MOODLE_DOCKER_CONTAINER:-moodle45-app}"
+export MOODLE_URL="${MOODLE_URL:-http://localhost:8080}"
+export MOODLE_TEST_USERNAME="${MOODLE_TEST_USERNAME:-admin}"
+export MOODLE_TEST_PASSWORD="${MOODLE_TEST_PASSWORD:-admin}"
+```
+
 ## PHPUnit
 
 Execute cada teste do plugin dentro do container Moodle:
 
 ```bash
+MOODLE_DOCKER_CONTAINER="${MOODLE_DOCKER_CONTAINER:-moodle45-app}"
+
 for f in tests/*_test.php; do
-  docker exec -u www-data moodle45-app php /var/www/html/vendor/bin/phpunit \
+  docker exec -u www-data "$MOODLE_DOCKER_CONTAINER" php /var/www/html/vendor/bin/phpunit \
     --configuration /var/www/html/phpunit.xml \
     "/var/www/html/blocks/coursecardsuems/$f"
 done
@@ -52,7 +65,9 @@ find . -path ./.git -prune -o -name '*.php' -print | sort | xargs -n1 php -l
 Após alterações de template/CSS:
 
 ```bash
-docker exec moodle45-app php /var/www/html/admin/cli/purge_caches.php
+MOODLE_DOCKER_CONTAINER="${MOODLE_DOCKER_CONTAINER:-moodle45-app}"
+
+docker exec "$MOODLE_DOCKER_CONTAINER" php /var/www/html/admin/cli/purge_caches.php
 ```
 
 Validar no dashboard local que:

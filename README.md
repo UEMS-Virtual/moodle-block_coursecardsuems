@@ -104,8 +104,10 @@ find . -path ./.git -prune -o -name '*.php' -print | sort | xargs -n1 php -l
 PHPUnit no ambiente Docker local:
 
 ```bash
+MOODLE_DOCKER_CONTAINER="${MOODLE_DOCKER_CONTAINER:-moodle45-app}"
+
 for f in tests/*_test.php; do
-  docker exec -u www-data moodle45-app php /var/www/html/vendor/bin/phpunit \
+  docker exec -u www-data "$MOODLE_DOCKER_CONTAINER" php /var/www/html/vendor/bin/phpunit \
     --configuration /var/www/html/phpunit.xml \
     "/var/www/html/blocks/coursecardsuems/$f"
 done
@@ -114,7 +116,9 @@ done
 Após alterações de template/CSS, limpe cache:
 
 ```bash
-docker exec moodle45-app php /var/www/html/admin/cli/purge_caches.php
+MOODLE_DOCKER_CONTAINER="${MOODLE_DOCKER_CONTAINER:-moodle45-app}"
+
+docker exec "$MOODLE_DOCKER_CONTAINER" php /var/www/html/admin/cli/purge_caches.php
 ```
 
 ## Fora do escopo atual
