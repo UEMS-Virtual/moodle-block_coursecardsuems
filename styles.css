@@ -100,7 +100,7 @@
 .block_coursecardsuems .coursecardsuems-card {
     position: relative;
     display: flex;
-    min-height: 15.5rem;
+    min-height: 12.5rem;
     overflow: hidden;
     color: inherit;
     text-decoration: none;
@@ -162,7 +162,7 @@
     flex: 1 1 auto;
     flex-direction: column;
     min-width: 0;
-    padding: 2.25rem 1.75rem 1rem;
+    padding: 1.45rem 1.75rem 1rem;
 }
 
 .block_coursecardsuems .coursecardsuems-footerline {
@@ -295,12 +295,15 @@
 
 .block_coursecardsuems .coursecardsuems-title-code {
     margin-bottom: .22rem;
+    overflow: hidden;
     color: #9aa4b5;
     font-size: .56em;
     font-weight: 650;
     letter-spacing: .045em;
     line-height: 1.12;
+    text-overflow: ellipsis;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
 .block_coursecardsuems .coursecardsuems-teacher {
@@ -551,7 +554,7 @@
     }
 
     .block_coursecardsuems .coursecardsuems-card {
-        min-height: 15rem;
+        min-height: 12rem;
     }
 
     .block_coursecardsuems .coursecardsuems-side {
@@ -729,22 +732,19 @@
 }
 
 .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-footerline {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas:
-        "teacher"
-        "badges";
+    display: flex;
+    flex-direction: row;
     align-items: center;
-    row-gap: .45rem;
+    gap: .75rem;
 }
 
 .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-teacher {
-    grid-area: teacher;
+    flex: 1 1 0;
     min-width: 0;
 }
 
 .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-badges {
-    grid-area: badges;
+    flex: 0 0 auto;
     justify-content: flex-end;
 }
 
