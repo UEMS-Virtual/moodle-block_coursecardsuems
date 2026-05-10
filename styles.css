@@ -213,12 +213,11 @@
     content: " · ";
     color: #cbd5e1;
 }
-.block_coursecardsuems .coursecardsuems-reoferta-label::after {
-    content: "";
+.block_coursecardsuems .coursecardsuems-reoferta-dot {
     display: inline-block;
     width: .35rem;
     height: .35rem;
-    margin: 0 .25rem 0 .3rem;
+    margin-right: .28rem;
     background: currentColor;
     border-radius: 999px;
     vertical-align: middle;
@@ -581,15 +580,15 @@
     display: none;
 }
 
-/* status — último item do flex via order */
+/* status — último item do flex, colado na borda direita */
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-status {
     order: 99;
     flex: 0 0 auto;
     position: relative;
     clip-path: none;
     border-left: 1px solid #f0f4fa;
-    border-radius: .3rem;
-    padding: .7rem 1rem;
+    border-radius: .3rem 0 0 .3rem;
+    padding: .7rem 1.1rem .7rem 1rem;
     font-size: .62rem;
     letter-spacing: .07em;
     min-height: 0;

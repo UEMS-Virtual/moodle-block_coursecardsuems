@@ -81,7 +81,7 @@
                                             <span class="coursecardsuems-status {{statusclass}}">{{statuslabel}}</span>
                                             <div class="coursecardsuems-title-group">
                                             {{#hassupertitle}}
-                                                <div class="coursecardsuems-supertitle">{{supertitle}}{{#isreoferta}}<span class="coursecardsuems-reoferta-label">{{#str}}reoferta, block_coursecardsuems{{/str}}</span>{{/isreoferta}}</div>
+                                                <div class="coursecardsuems-supertitle">{{supertitle}}{{#isreoferta}}<span class="coursecardsuems-reoferta-label"><span class="coursecardsuems-reoferta-dot" aria-hidden="true"></span>{{#str}}reoferta, block_coursecardsuems{{/str}}</span>{{/isreoferta}}</div>
                                             {{/hassupertitle}}
                                             <h4 class="coursecardsuems-title">
                                                 {{#hascode}}
@@ -114,6 +114,11 @@
                                                         <span class="coursecardsuems-date-value">{{period.endlabel}}</span>
                                                     </div>
                                                 {{/period.showdates}}
+                                                {{^period.showdates}}{{#ispreparing}}
+                                                    <div class="coursecardsuems-dates">
+                                                        <span class="coursecardsuems-date-value">{{period.label}}</span>
+                                                    </div>
+                                                {{/ispreparing}}{{/period.showdates}}
                                             </div>
                                         </div>
                                     </a>
@@ -141,7 +146,7 @@
                                             <span class="coursecardsuems-status {{statusclass}}">{{statuslabel}}</span>
                                             <div class="coursecardsuems-title-group">
                                             {{#hassupertitle}}
-                                                <div class="coursecardsuems-supertitle">{{supertitle}}{{#isreoferta}}<span class="coursecardsuems-reoferta-label">{{#str}}reoferta, block_coursecardsuems{{/str}}</span>{{/isreoferta}}</div>
+                                                <div class="coursecardsuems-supertitle">{{supertitle}}{{#isreoferta}}<span class="coursecardsuems-reoferta-label"><span class="coursecardsuems-reoferta-dot" aria-hidden="true"></span>{{#str}}reoferta, block_coursecardsuems{{/str}}</span>{{/isreoferta}}</div>
                                             {{/hassupertitle}}
                                             <h4 class="coursecardsuems-title">
                                                 {{#hascode}}
@@ -174,6 +179,11 @@
                                                         <span class="coursecardsuems-date-value">{{period.endlabel}}</span>
                                                     </div>
                                                 {{/period.showdates}}
+                                                {{^period.showdates}}{{#ispreparing}}
+                                                    <div class="coursecardsuems-dates">
+                                                        <span class="coursecardsuems-date-value">{{period.label}}</span>
+                                                    </div>
+                                                {{/ispreparing}}{{/period.showdates}}
                                             </div>
                                         </div>
                                     </article>
