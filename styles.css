@@ -135,6 +135,30 @@
     background: var(--primary, #0f4c8a);
 }
 
+.block_coursecardsuems .coursecardsuems-series-side {
+    color: rgba(255, 255, 255, .9);
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.block_coursecardsuems .coursecardsuems-series-side::before {
+    display: inline-block;
+    width: .42rem;
+    height: .42rem;
+    margin-right: .3rem;
+    content: "";
+    background: currentColor;
+    border-radius: 999px;
+    vertical-align: middle;
+}
+
+.block_coursecardsuems .coursecardsuems-list .coursecardsuems-series-side {
+    display: none;
+}
+
 .block_coursecardsuems .coursecardsuems-category-label {
     max-height: 9.6rem;
     overflow: hidden;
@@ -364,8 +388,7 @@
 
 .block_coursecardsuems .coursecardsuems-date-icon {
     color: #7d889c;
-    font-size: 1.05rem;
-    font-weight: 400;
+    font-size: .92rem;
 }
 
 .block_coursecardsuems .coursecardsuems-date-value {
@@ -748,7 +771,11 @@
     justify-content: flex-end;
 }
 
-.block_coursecardsuems .coursecardsuems-grid .coursecardsuems-dates {
+.block_coursecardsuems .coursecardsuems-grid .coursecardsuems-period {
+    display: none;
+}
+
+.block_coursecardsuems .coursecardsuems-grid .coursecardsuems-badges {
     display: none;
 }
 

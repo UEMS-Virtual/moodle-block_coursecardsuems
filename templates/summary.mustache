@@ -64,6 +64,9 @@
                                             {{#hasgroup}}
                                                 <span class="coursecardsuems-category-label">{{group}}</span>
                                             {{/hasgroup}}
+                                            {{#hasseries}}
+                                                <span class="coursecardsuems-series-side">{{series}}</span>
+                                            {{/hasseries}}
                                             {{#period.hasperiod}}
                                                 <span class="coursecardsuems-period">{{period.label}}</span>
                                             {{/period.hasperiod}}
@@ -94,7 +97,7 @@
                                                 </div>
                                                 {{#period.showdates}}
                                                     <div class="coursecardsuems-dates">
-                                                        <span class="coursecardsuems-date-icon" aria-hidden="true">▦</span>
+                                                        <i class="fa-regular fa-calendar coursecardsuems-date-icon" aria-hidden="true"></i>
                                                         <span class="coursecardsuems-date-value">{{period.startlabel}}</span>
                                                         <span class="coursecardsuems-date-separator">–</span>
                                                         <span class="coursecardsuems-date-value">{{period.endlabel}}</span>
@@ -110,6 +113,9 @@
                                             {{#hasgroup}}
                                                 <span class="coursecardsuems-category-label">{{group}}</span>
                                             {{/hasgroup}}
+                                            {{#hasseries}}
+                                                <span class="coursecardsuems-series-side">{{series}}</span>
+                                            {{/hasseries}}
                                             {{#period.hasperiod}}
                                                 <span class="coursecardsuems-period">{{period.label}}</span>
                                             {{/period.hasperiod}}
@@ -140,7 +146,7 @@
                                                 </div>
                                                 {{#period.showdates}}
                                                     <div class="coursecardsuems-dates">
-                                                        <span class="coursecardsuems-date-icon" aria-hidden="true">▦</span>
+                                                        <i class="fa-regular fa-calendar coursecardsuems-date-icon" aria-hidden="true"></i>
                                                         <span class="coursecardsuems-date-value">{{period.startlabel}}</span>
                                                         <span class="coursecardsuems-date-separator">–</span>
                                                         <span class="coursecardsuems-date-value">{{period.endlabel}}</span>
