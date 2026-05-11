@@ -261,8 +261,9 @@
     display: none;
 }
 
-/* lista: ribbon no canto superior (igual ao card); pill inline oculto */
-.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-status {
+/* lista: ribbon no canto superior (igual ao card); pill inline e ribbon reoferta ocultos */
+.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-status,
+.block_coursecardsuems .coursecardsuems-list .coursecardsuems-ribbon-reoferta {
     display: none;
 }
 
