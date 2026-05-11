@@ -6,6 +6,7 @@
 
 .block_coursecardsuems .card-body {
     padding: 1.35rem 1.45rem;
+    container-type: inline-size;
 }
 
 /* título Moodle mantido para screen readers; ocultado visualmente */
@@ -118,6 +119,36 @@
 /* painéis — JS controla o atributo hidden */
 .block_coursecardsuems .coursecardsuems-panel[hidden] {
     display: none;
+}
+
+/* grid colapsa para 1 coluna quando o bloco é estreito */
+@container (max-width: 600px) {
+    .block_coursecardsuems .coursecardsuems-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* tabs compactas em viewports estreitos */
+@container (max-width: 480px) {
+    .block_coursecardsuems .coursecardsuems-tab {
+        font-size: .78rem;
+        padding: .55rem .45rem;
+        gap: .3rem;
+    }
+}
+
+@container (max-width: 360px) {
+    .block_coursecardsuems .coursecardsuems-tab {
+        font-size: .68rem;
+        padding: .5rem .3rem;
+        gap: .2rem;
+    }
+    .block_coursecardsuems .coursecardsuems-tab-count {
+        min-width: 1.2rem;
+        height: 1.2rem;
+        font-size: .62rem;
+        padding: 0 .25rem;
+    }
 }
 
 .block_coursecardsuems .coursecardsuems-grid {
@@ -698,27 +729,37 @@
 
 /* mobile — colapsa para mini-card */
 @container (max-width: 560px) {
-    /* mobile: flex column — title-group+status em cima, footerline embaixo */
+    /* mobile: flex-wrap — título+status na mesma linha, footerline abaixo */
     .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-main {
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-start;
     }
 
+    /* title-group ocupa o espaço restante à esquerda do badge */
     .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-title-group {
+        flex: 1 0 0;
+        min-width: 0;
+        order: -1;
+        padding-bottom: .5rem;
+    }
+
+    /* badge: sem position:absolute, empurrado para a direita na mesma linha */
+    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-status {
+        order: 0;
         flex: 0 0 auto;
         position: relative;
-        padding-bottom: .6rem;
-    }
-
-    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-status {
-        position: absolute !important;
-        top: .7rem;
-        right: .75rem;
+        top: auto;
+        right: auto;
         border-left: none;
-        order: 0;
+        align-self: flex-start;
+        padding: .7rem .75rem .7rem .5rem;
     }
 
+    /* footerline ocupa linha própria abaixo */
     .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-footerline {
-        flex: 0 0 auto;
+        order: 99;
+        flex: 0 0 100%;
         border-left: none;
         border-top: 1px solid #e7edf5;
         background: #fafcff;
@@ -827,6 +868,49 @@
 
     .block_coursecardsuems .coursecardsuems-dates {
         justify-content: flex-end;
+    }
+}
+
+/* cards grid extremamente estreitos (< 300px) — oculta ribbons, maximiza texto */
+@container (max-width: 300px) {
+    /* status já comunicado pela aba ativa — ribbon dispensável */
+    .block_coursecardsuems .coursecardsuems-corner {
+        display: none;
+    }
+    .block_coursecardsuems .coursecardsuems-supertitle {
+        margin-right: 1rem;
+    }
+    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-card .coursecardsuems-title {
+        margin-right: 1rem;
+    }
+    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-card .coursecardsuems-main {
+        padding: .85rem 1rem .75rem calc(20px + .75rem);
+    }
+    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-card {
+        min-height: 9rem;
+    }
+}
+
+/* cards grid em telas muito estreitas (< 420px de largura do card) */
+@container (max-width: 420px) {
+    /* oculta ribbon de reoferta — info preservada no supertítulo */
+    .block_coursecardsuems .coursecardsuems-ribbon-reoferta {
+        display: none;
+    }
+    /* mostra indicador de reoferta no supertítulo do grid */
+    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-reoferta-label {
+        display: inline;
+    }
+    /* reduz margem direita reservada para ribbon único */
+    .block_coursecardsuems .coursecardsuems-supertitle {
+        margin-right: 5.5rem;
+    }
+    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-card .coursecardsuems-title {
+        margin-right: 5.5rem;
+    }
+    /* reduz padding interno do card */
+    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-card .coursecardsuems-main {
+        padding: 1rem 1rem .85rem calc(20px + .9rem);
     }
 }
 
