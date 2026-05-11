@@ -24,6 +24,7 @@
 
 $string['pluginname'] = 'UEMS course cards';
 $string['currentsemester'] = 'Semester {$a}';
+$string['semesterprefix'] = 'Semester';
 $string['coursecardsuems:addinstance'] = 'Add a UEMS course cards block';
 $string['coursecardsuems:myaddinstance'] = 'Add a UEMS course cards block to Dashboard';
 $string['availablecomingsoon'] = 'Available soon';

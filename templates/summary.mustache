@@ -44,9 +44,12 @@
      data-section-tabs
      data-active-key="open">
 
-    {{#hastitle}}
-        <h3 class="coursecardsuems-summary-title">{{title}}</h3>
-    {{/hastitle}}
+    {{#hassemesterlabel}}
+        <div class="coursecardsuems-sem-header" aria-hidden="true">
+            <span class="coursecardsuems-sem-prefix">{{#str}}semesterprefix, block_coursecardsuems{{/str}}</span>
+            <span class="coursecardsuems-sem-value">{{semesterlabel}}</span>
+        </div>
+    {{/hassemesterlabel}}
     {{#hasmessage}}
         <p class="coursecardsuems-summary-message">{{message}}</p>
     {{/hasmessage}}

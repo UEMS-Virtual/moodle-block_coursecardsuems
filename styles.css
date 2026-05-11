@@ -8,12 +8,40 @@
     padding: 1.35rem 1.45rem;
 }
 
+/* título Moodle mantido para screen readers; ocultado visualmente */
 .block_coursecardsuems .card-title {
-    margin-bottom: 1.4rem;
-    color: #0b1736;
-    font-size: 1.35rem;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* ─── Cabeçalho do semestre (substituição visual do card-title) ──────────── */
+.block_coursecardsuems .coursecardsuems-sem-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: .25rem 0 1.5rem;
+    gap: .15rem;
+}
+
+.block_coursecardsuems .coursecardsuems-sem-prefix {
+    font-size: .62rem;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: #94a3b8;
+    line-height: 1;
+}
+
+.block_coursecardsuems .coursecardsuems-sem-value {
+    font-size: 2rem;
     font-weight: 800;
-    text-align: center;
+    color: var(--uems-primary);
+    letter-spacing: -.02em;
+    line-height: 1;
 }
 
 /* ─── Variáveis do componente ────────────────────────────────────────────────
@@ -40,16 +68,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: .5rem;
-    padding: .6rem 1rem;
+    gap: .45rem;
+    padding: .65rem 1rem;
     background: #f1f5f9;
-    border: 2px solid transparent;
-    border-radius: .6rem;
+    border: none;
+    border-radius: .55rem;
     cursor: pointer;
-    font-size: .92rem;
+    font-size: .9rem;
     font-weight: 700;
-    color: #475569;
-    transition: background .15s ease, border-color .15s ease, color .15s ease;
+    color: #64748b;
+    transition: background .15s ease, color .15s ease;
 }
 
 .block_coursecardsuems .coursecardsuems-tab:hover {
@@ -58,10 +86,8 @@
 }
 
 .block_coursecardsuems .coursecardsuems-tab.is-active {
-    background: #fff;
-    border-color: var(--uems-primary);
-    color: var(--uems-primary);
-    box-shadow: 0 2px 6px rgba(15, 23, 42, .08);
+    background: var(--uems-primary);
+    color: #fff;
 }
 
 .block_coursecardsuems .coursecardsuems-tab:focus-visible {
@@ -76,7 +102,7 @@
     min-width: 1.45rem;
     height: 1.45rem;
     padding: 0 .35rem;
-    background: #94a3b8;
+    background: #cbd5e1;
     color: #fff;
     border-radius: 999px;
     font-size: .72rem;
@@ -85,7 +111,8 @@
 }
 
 .block_coursecardsuems .coursecardsuems-tab.is-active .coursecardsuems-tab-count {
-    background: var(--uems-primary);
+    background: rgba(255, 255, 255, .25);
+    color: #fff;
 }
 
 /* painéis — JS controla o atributo hidden */

@@ -99,7 +99,7 @@ class block_coursecardsuems extends block_base {
         });
 
         $renderer = $PAGE->get_renderer('block_coursecardsuems');
-        $summary = new \block_coursecardsuems\output\summary('', '', $courses);
+        $summary = new \block_coursecardsuems\output\summary('', '', $courses, $semesterlabel);
 
         $this->content->text = $renderer->render($summary);
 

@@ -46,17 +46,22 @@ class summary implements renderable, templatable {
     /** @var array List of course summaries for the current user. */
     private $courses;
 
+    /** @var string Semester identifier, e.g. "2026/1". */
+    private $semesterlabel;
+
     /**
      * Constructor.
      *
      * @param string $title Main title.
      * @param string $message Supporting message.
      * @param array $courses List of course summaries.
+     * @param string $semesterlabel Semester identifier shown in the styled header.
      */
-    public function __construct($title, $message, array $courses = []) {
+    public function __construct($title, $message, array $courses = [], string $semesterlabel = '') {
         $this->title = $title;
         $this->message = $message;
         $this->courses = $courses;
+        $this->semesterlabel = $semesterlabel;
     }
 
     /**
@@ -75,6 +80,8 @@ class summary implements renderable, templatable {
         $data->courses = $this->courses;
         $data->sections = $this->get_sections();
         $data->hassections = true;
+        $data->semesterlabel = $this->semesterlabel;
+        $data->hassemesterlabel = trim($this->semesterlabel) !== '';
 
         return $data;
     }
