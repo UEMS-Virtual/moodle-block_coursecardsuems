@@ -844,13 +844,13 @@
     }
 }
 
-/* cards grid extremamente estreitos (< 300px) — oculta ribbons, maximiza texto */
+/* cards grid extremamente estreitos (< 300px) — escopo explícito no grid */
 @container (max-width: 300px) {
-    /* status já comunicado pela aba ativa — ribbon dispensável */
-    .block_coursecardsuems .coursecardsuems-corner {
+    /* status comunicado pela aba ativa — corner dispensável no grid */
+    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-corner {
         display: none;
     }
-    .block_coursecardsuems .coursecardsuems-supertitle {
+    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-supertitle {
         margin-right: 1rem;
     }
     .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-card .coursecardsuems-title {
@@ -864,10 +864,10 @@
     }
 }
 
-/* cards grid em telas muito estreitas (< 420px de largura do card) */
+/* cards grid estreitos (< 420px) — escopo explícito no grid */
 @container (max-width: 420px) {
-    /* oculta ribbon de reoferta — info preservada no supertítulo */
-    .block_coursecardsuems .coursecardsuems-ribbon-reoferta {
+    /* oculta ribbon reoferta no grid — info preservada no supertítulo */
+    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-ribbon-reoferta {
         display: none;
     }
     /* mostra indicador de reoferta no supertítulo do grid */
@@ -875,7 +875,7 @@
         display: inline;
     }
     /* reduz margem direita reservada para ribbon único */
-    .block_coursecardsuems .coursecardsuems-supertitle {
+    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-supertitle {
         margin-right: 5.5rem;
     }
     .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-card .coursecardsuems-title {
