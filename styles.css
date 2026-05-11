@@ -261,8 +261,8 @@
     display: none;
 }
 
-/* oculta na lista os elementos novos do grid */
-.block_coursecardsuems .coursecardsuems-list .coursecardsuems-corner {
+/* lista: ribbon no canto superior (igual ao card); pill inline oculto */
+.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-status {
     display: none;
 }
 
@@ -620,7 +620,7 @@
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-title-group {
     flex: 1 1 0;
     min-width: 0;
-    padding: .75rem 1rem .75rem calc(20px + 1rem);
+    padding: .75rem 5.5rem .75rem calc(20px + 1rem);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -646,25 +646,9 @@
     display: none;
 }
 
-/* status — último item do flex, colado na borda direita */
+/* status — oculto na lista; ribbon no corner substitui */
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-status {
-    order: 99;
-    flex: 0 0 auto;
-    position: relative;
-    clip-path: none;
-    border-left: 1px solid #f0f4fa;
-    border-radius: .3rem 0 0 .3rem;
-    padding: .7rem 1.1rem .7rem 1rem;
-    font-size: .62rem;
-    letter-spacing: .07em;
-    min-height: 0;
-    top: auto;
-    right: auto;
-    display: flex;
-    align-items: center;
-    align-self: center;
-    margin: 0;
-    width: max-content;
+    display: none;
 }
 
 /* footerline — flex row fixo após title-group, antes do status */
@@ -736,45 +720,34 @@
         align-items: flex-start;
     }
 
-    /* title-group ocupa o espaço restante à esquerda do badge */
+    /* title-group ocupa largura total — ribbon no canto superior garante clearance */
     .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-title-group {
-        flex: 1 0 0;
+        flex: 0 0 100%;
         min-width: 0;
-        order: -1;
-        padding-bottom: .5rem;
+        padding-bottom: .4rem;
     }
 
-    /* badge: sem position:absolute, empurrado para a direita na mesma linha */
-    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-status {
-        order: 0;
-        flex: 0 0 auto;
-        position: relative;
-        top: auto;
-        right: auto;
-        border-left: none;
-        align-self: flex-start;
-        padding: .7rem .75rem .7rem .5rem;
-    }
-
-    /* footerline ocupa linha própria abaixo */
+    /* footerline ocupa linha própria abaixo, empilha docente → data */
     .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-footerline {
         order: 99;
         flex: 0 0 100%;
+        flex-direction: column;
         border-left: none;
         border-top: 1px solid #e7edf5;
         background: #fafcff;
+        align-items: flex-start;
     }
 
     .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-teacher {
-        flex: 1;
-        padding: .65rem 1rem .65rem calc(20px + 1rem);
+        flex: 0 0 auto;
+        padding: .65rem 1rem .3rem calc(20px + 1rem);
     }
 
     .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-dates {
         flex: 0 0 auto;
         border-left: none;
-        justify-content: flex-end;
-        padding: .65rem 1rem;
+        justify-content: flex-start;
+        padding: .2rem 1rem .65rem calc(20px + 1rem);
     }
 }
 
@@ -861,13 +834,13 @@
     min-width: 0;
 }
 
-@container (max-width: 320px) {
-    .block_coursecardsuems .coursecardsuems-footerline {
+@container (max-width: 420px) {
+    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-footerline {
         grid-template-columns: 1fr;
     }
 
-    .block_coursecardsuems .coursecardsuems-dates {
-        justify-content: flex-end;
+    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-dates {
+        justify-content: flex-start;
     }
 }
 
