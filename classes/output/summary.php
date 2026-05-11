@@ -37,12 +37,6 @@ use templatable;
  */
 class summary implements renderable, templatable {
 
-    /** @var string Main title shown inside the block. */
-    private $title;
-
-    /** @var string Supporting message shown inside the block. */
-    private $message;
-
     /** @var array List of course summaries for the current user. */
     private $courses;
 
@@ -52,14 +46,10 @@ class summary implements renderable, templatable {
     /**
      * Constructor.
      *
-     * @param string $title Main title.
-     * @param string $message Supporting message.
      * @param array $courses List of course summaries.
      * @param string $semesterlabel Semester identifier shown in the styled header.
      */
-    public function __construct($title, $message, array $courses = [], string $semesterlabel = '') {
-        $this->title = $title;
-        $this->message = $message;
+    public function __construct(array $courses = [], string $semesterlabel = '') {
         $this->courses = $courses;
         $this->semesterlabel = $semesterlabel;
     }
@@ -72,12 +62,6 @@ class summary implements renderable, templatable {
      */
     public function export_for_template(renderer_base $output) {
         $data = new stdClass();
-        $data->title = $this->title;
-        $data->hastitle = trim($this->title) !== '';
-        $data->message = $this->message;
-        $data->hasmessage = trim($this->message) !== '';
-        $data->hascourses = !empty($this->courses);
-        $data->courses = $this->courses;
         $data->sections = $this->get_sections();
         $data->hassections = true;
         $data->semesterlabel = $this->semesterlabel;

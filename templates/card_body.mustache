@@ -10,27 +10,12 @@
     {{/isreoferta}}
     <span class="coursecardsuems-ribbon {{statusclass}}">{{statuslabel}}</span>
 </div>
-<div class="coursecardsuems-side">
-    {{#hasgroup}}
-        <span class="coursecardsuems-category-label">{{group}}</span>
-    {{/hasgroup}}
-    {{#hasseries}}
-        <span class="coursecardsuems-series-side">{{series}}</span>
-    {{/hasseries}}
-    {{#period.hasperiod}}
-        <span class="coursecardsuems-period">{{period.label}}</span>
-    {{/period.hasperiod}}
-</div>
 <div class="coursecardsuems-main">
-    <span class="coursecardsuems-status {{statusclass}}">{{statuslabel}}</span>
     <div class="coursecardsuems-title-group">
         {{#hassupertitle}}
             <div class="coursecardsuems-supertitle">{{supertitle}}{{#isreoferta}}<span class="coursecardsuems-reoferta-label"><span class="coursecardsuems-reoferta-dot" aria-hidden="true"></span>{{#str}}reoferta, block_coursecardsuems{{/str}}</span>{{/isreoferta}}</div>
         {{/hassupertitle}}
         <h4 class="coursecardsuems-title">
-            {{#hascode}}
-                <span class="coursecardsuems-title-code">{{code}}</span>
-            {{/hascode}}
             <span class="coursecardsuems-title-name">{{title}}</span>
         </h4>
     </div>
@@ -44,11 +29,6 @@
                     <span class="coursecardsuems-teacher-extra">{{teacherextra}}</span>
                 {{/hasteacherextra}}
             </span>
-        </div>
-        <div class="coursecardsuems-badges">
-            {{#hasseries}}
-                <span class="coursecardsuems-pill">{{series}}</span>
-            {{/hasseries}}
         </div>
         {{#period.showdates}}
             <div class="coursecardsuems-dates">

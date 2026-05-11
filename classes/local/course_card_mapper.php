@@ -87,7 +87,7 @@ class course_card_mapper {
         $isclickable = $this->is_clickable($status, $isvisible);
         $ispreparing = !$isvisible && $temporalstatus === course_status_resolver::OPEN;
         $context = context_course::instance($course->id);
-        [$code, $title] = $this->split_course_title(get_course_display_name_for_list($course));
+        [, $title] = $this->split_course_title(get_course_display_name_for_list($course));
         $group = $this->shortnameparser->get_compact_group($course->shortname ?? '');
         $series = $this->categoryparser->get_series_name($course->category ?? 0);
         $isreoferta = $this->shortnameparser->is_reoferta($course->shortname ?? '');
@@ -98,39 +98,26 @@ class course_card_mapper {
         $teachercount = count($teachers);
 
         return [
-            'id' => (int) $course->id,
             'url' => (new moodle_url('/course/view.php', ['id' => $course->id]))->out(false),
             'hasurl' => $isclickable,
             'linklabel' => get_string('opencourse', 'block_coursecardsuems', format_string($title, true, ['context' => $context])),
-            'isavailable' => $isvisible,
             'ispreparing' => $ispreparing,
-            'code' => $code,
-            'hascode' => $code !== '',
             'title' => format_string($title, true, ['context' => $context]),
-            'group' => $group,
-            'hasgroup' => $group !== '',
-            'series' => $series,
-            'hasseries' => $series !== '',
             'isreoferta' => $isreoferta,
             'supertitle' => $supertitle,
             'hassupertitle' => $supertitle !== '',
             'period' => [
-                'start' => $period->startdate,
-                'end' => $period->enddate,
                 'hasperiod' => $period->has_any_date(),
                 'label' => $ispreparing ? get_string('availablecomingsoon', 'block_coursecardsuems') : $this->format_period($period),
                 'showdates' => $period->has_any_date() && !$ispreparing,
                 'startlabel' => $this->format_date($period->startdate),
                 'endlabel' => $this->format_date($period->enddate),
             ],
-            'temporalstatus' => $temporalstatus,
             'status' => $status,
             'statuslabel' => $this->statusresolver->get_label($status),
             'statusclass' => 'coursecardsuems-status-' . $status,
             'isclosed' => $status === course_status_resolver::CLOSED,
             'sortkey' => $this->statusresolver->get_sort_key($status, $period, $course),
-            'teachers' => $teachers,
-            'hasteachers' => $teachercount > 0,
             'firstteachername' => $firstteacher['name'] ?? get_string('teacherunknown', 'block_coursecardsuems'),
             'firstteacherinitials' => $firstteacher['initials'] ?? '?',
             'teacherextra' => $teachercount > 1 ? get_string('others', 'block_coursecardsuems', $teachercount - 1) : '',
