@@ -845,46 +845,43 @@
     }
 }
 
-/* cards grid extremamente estreitos (< 300px) — escopo explícito no grid */
-@container (max-width: 300px) {
-    /* status comunicado pela aba ativa — corner dispensável no grid */
-    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-corner {
-        display: none;
-    }
-    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-supertitle {
-        margin-right: 1rem;
-    }
-    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-card .coursecardsuems-title {
-        margin-right: 1rem;
-    }
-    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-card .coursecardsuems-main {
-        padding: .85rem 1rem .75rem calc(20px + .75rem);
-    }
-    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-card {
-        min-height: 9rem;
-    }
-}
-
-/* cards grid estreitos (< 420px) — escopo explícito no grid */
+/* cards grid estreitos (< 420px) */
 @container (max-width: 420px) {
-    /* oculta ribbon reoferta no grid — info preservada no supertítulo */
+    /* oculta ribbon reoferta — info preservada no supertítulo */
     .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-ribbon-reoferta {
         display: none;
     }
-    /* mostra indicador de reoferta no supertítulo do grid */
     .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-reoferta-label {
         display: inline;
     }
-    /* reduz margem direita reservada para ribbon único */
+    /* margem direita para o ribbon de status único */
     .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-supertitle {
         margin-right: 5.5rem;
     }
     .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-card .coursecardsuems-title {
         margin-right: 5.5rem;
+        font-size: 1rem;
     }
-    /* reduz padding interno do card */
+    /* top padding sobe para título não colidir com ribbon (ribbon ≈ 1.3rem) */
     .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-card .coursecardsuems-main {
-        padding: 1rem 1rem .85rem calc(20px + .9rem);
+        padding: 1.75rem 1rem .85rem calc(20px + .9rem);
+    }
+}
+
+/* cards grid muito estreitos (< 300px) */
+@container (max-width: 300px) {
+    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-supertitle {
+        margin-right: 5rem;
+    }
+    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-card .coursecardsuems-title {
+        margin-right: 5rem;
+        font-size: .88rem;
+    }
+    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-card .coursecardsuems-main {
+        padding: 1.75rem .85rem .75rem calc(20px + .75rem);
+    }
+    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-card {
+        min-height: 9rem;
     }
 }
 
