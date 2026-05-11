@@ -23,12 +23,8 @@
  */
 
 $string['pluginname'] = 'Resumo dos cursos';
-$string['currentsemester'] = 'Semestre {$a}';
 $string['coursecardsuems:addinstance'] = 'Adicionar bloco Cards de cursos UEMS';
 $string['coursecardsuems:myaddinstance'] = 'Adicionar bloco Cards de cursos UEMS ao Painel';
-$string['nocourses'] = 'Nenhum curso para exibir.';
-$string['reconstructiontitle'] = 'Reconstrução em andamento';
-$string['reconstructionmessage'] = 'O bloco UEMS de cursos está sendo reconstruído com classes de saída e templates Moodle.';
 $string['availablecomingsoon'] = 'Disponível em breve';
 $string['opencourse'] = 'Abrir disciplina {$a}';
 $string['open'] = 'Aberta';
@@ -38,14 +34,8 @@ $string['openplural'] = 'Abertas';
 $string['comingsoonplural'] = 'Em breve';
 $string['closedplural'] = 'Encerradas';
 $string['nocoursesinsection'] = 'Nenhum curso nesta seção.';
-$string['offer'] = 'Oferta';
-$string['hidden'] = 'Oculto';
-$string['startdate'] = 'Início';
-$string['enddate'] = 'Término';
 $string['teacher'] = 'Docente';
 $string['teacherunknown'] = 'Docente a definir';
-$string['teachers'] = 'Docentes';
 $string['others'] = '+ {$a} outros';
-$string['periodunknown'] = '—';
 $string['dateunknown'] = '—';
 $string['reoferta'] = 'Reoferta';
