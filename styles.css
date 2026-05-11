@@ -714,6 +714,28 @@
 
 /* mobile — colapsa para mini-card */
 @container (max-width: 560px) {
+    /* título e supertítulo menores */
+    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-title {
+        font-size: .9rem;
+    }
+    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-supertitle {
+        font-size: .52rem;
+    }
+    /* avatar mini */
+    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-avatar {
+        flex: 0 0 1.6rem;
+        width: 1.6rem;
+        height: 1.6rem;
+        font-size: .62rem;
+    }
+    /* docente compacto */
+    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-teacher-label {
+        font-size: .5rem;
+    }
+    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-teacher-name {
+        font-size: .72rem;
+    }
+
     /* mobile: flex-wrap — título+status na mesma linha, footerline abaixo */
     .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-main {
         flex-direction: row;
@@ -854,6 +876,20 @@
     .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-reoferta-label {
         display: inline;
     }
+    /* avatar mini */
+    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-avatar {
+        flex: 0 0 1.5rem;
+        width: 1.5rem;
+        height: 1.5rem;
+        font-size: .62rem;
+    }
+    /* docente compacto */
+    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-teacher-label {
+        font-size: .5rem;
+    }
+    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-teacher-name {
+        font-size: .72rem;
+    }
     /* margem direita para o ribbon de status único */
     .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-supertitle {
         margin-right: 5.5rem;
@@ -870,6 +906,15 @@
 
 /* cards grid muito estreitos (< 300px) */
 @container (max-width: 300px) {
+    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-avatar {
+        flex: 0 0 1.25rem;
+        width: 1.25rem;
+        height: 1.25rem;
+        font-size: .55rem;
+    }
+    .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-teacher-name {
+        font-size: .65rem;
+    }
     .block_coursecardsuems .coursecardsuems-grid .coursecardsuems-supertitle {
         margin-right: 5rem;
     }
