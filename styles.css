@@ -28,74 +28,69 @@
     --uems-stripe-closed: #9ca3af;
 }
 
-/* ─── Seções colapsáveis ──────────────────────────────────────────────────── */
-.block_coursecardsuems .coursecardsuems-sections {
+/* ─── Abas de navegação (tabs) ────────────────────────────────────────────── */
+.block_coursecardsuems .coursecardsuems-tabs {
     display: flex;
-    flex-direction: column;
-    gap: 1.4rem;
+    gap: .5rem;
+    margin-bottom: 1.25rem;
 }
 
-.block_coursecardsuems .coursecardsuems-section {
-    padding: 1.1rem;
-    background: #f8fafc;
-    border: 1px solid #dbe4ef;
-    border-radius: .8rem;
-}
-
-.block_coursecardsuems .coursecardsuems-section-title,
-.block_coursecardsuems .coursecardsuems-section-summary {
+.block_coursecardsuems .coursecardsuems-tab {
+    flex: 1;
     display: flex;
     align-items: center;
-    gap: .75rem;
-    margin: 0 0 1rem;
-    padding-bottom: .75rem;
-    color: #0b1736;
-    font-size: 1.18rem;
-    font-weight: 850;
-    line-height: 1.2;
-    border-bottom: 2px solid #dbe4ef;
-}
-
-.block_coursecardsuems .coursecardsuems-section-summary {
-    margin-bottom: 0;
+    justify-content: center;
+    gap: .5rem;
+    padding: .6rem 1rem;
+    background: #f1f5f9;
+    border: 2px solid transparent;
+    border-radius: .6rem;
     cursor: pointer;
-    list-style: none;
+    font-size: .92rem;
+    font-weight: 700;
+    color: #475569;
+    transition: background .15s ease, border-color .15s ease, color .15s ease;
 }
 
-.block_coursecardsuems details[open] > .coursecardsuems-section-summary {
-    margin-bottom: 1rem;
+.block_coursecardsuems .coursecardsuems-tab:hover {
+    background: #e2e8f0;
+    color: #1e293b;
 }
 
-.block_coursecardsuems .coursecardsuems-section-summary::-webkit-details-marker {
-    display: none;
+.block_coursecardsuems .coursecardsuems-tab.is-active {
+    background: #fff;
+    border-color: var(--uems-primary);
+    color: var(--uems-primary);
+    box-shadow: 0 2px 6px rgba(15, 23, 42, .08);
 }
 
-.block_coursecardsuems .coursecardsuems-section-summary::before {
-    width: .55rem;
-    height: .55rem;
-    content: "";
-    border-right: 2px solid currentColor;
-    border-bottom: 2px solid currentColor;
-    transform: rotate(-45deg);
-    transition: transform .15s ease;
+.block_coursecardsuems .coursecardsuems-tab:focus-visible {
+    outline: 3px solid var(--uems-primary);
+    outline-offset: 2px;
 }
 
-.block_coursecardsuems details[open] > .coursecardsuems-section-summary::before {
-    transform: rotate(45deg);
-}
-
-.block_coursecardsuems .coursecardsuems-section-count {
+.block_coursecardsuems .coursecardsuems-tab-count {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 1.65rem;
-    height: 1.65rem;
-    padding: 0 .45rem;
-    color: #526173;
-    background: #edf2f7;
+    min-width: 1.45rem;
+    height: 1.45rem;
+    padding: 0 .35rem;
+    background: #94a3b8;
+    color: #fff;
     border-radius: 999px;
-    font-size: .82rem;
-    font-weight: 750;
+    font-size: .72rem;
+    font-weight: 700;
+    transition: background .15s ease;
+}
+
+.block_coursecardsuems .coursecardsuems-tab.is-active .coursecardsuems-tab-count {
+    background: var(--uems-primary);
+}
+
+/* painéis — JS controla o atributo hidden */
+.block_coursecardsuems .coursecardsuems-panel[hidden] {
+    display: none;
 }
 
 .block_coursecardsuems .coursecardsuems-grid {

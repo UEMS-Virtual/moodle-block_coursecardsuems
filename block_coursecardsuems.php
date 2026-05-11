@@ -103,6 +103,8 @@ class block_coursecardsuems extends block_base {
 
         $this->content->text = $renderer->render($summary);
 
+        $PAGE->requires->js_call_amd('block_coursecardsuems/section_tabs', 'init');
+
         return $this->content;
     }
 }

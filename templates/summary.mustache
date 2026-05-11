@@ -17,7 +17,8 @@
 {{!
     @template block_coursecardsuems/summary
 
-    Course sections for the UEMS EaD discipline block.
+    Course sections rendered as tab panels for the UEMS EaD discipline block.
+    JavaScript (block_coursecardsuems/section_tabs) handles tab switching.
 
     Context variables required for this template:
     * hastitle    - whether title should be rendered
@@ -25,7 +26,7 @@
     * hasmessage  - whether supporting message should be rendered
     * message     - optional supporting message
     * hassections - whether sections are available
-    * sections    - status sections with course summaries
+    * sections    - array of status sections (key, title, count, isopen, isgrid, islist, hascourses, courses, emptytext)
 
     Example context (json):
     {
@@ -35,37 +36,53 @@
         "message": "",
         "hassections": true,
         "sections": [
-            {"title": "Abertas", "count": 1, "isopen": true, "isgrid": true, "hascourses": true, "courses": [{"title": "Course name", "code": "CODE", "hascode": true, "group": "CISOL-23", "series": "2ª Série", "hasseries": true, "period": {"hasperiod": true, "label": "10/02/2026 – 20/05/2026", "startlabel": "10/02/2026", "endlabel": "20/05/2026"}, "statuslabel": "Aberta", "statusclass": "coursecardsuems-status-open", "firstteachername": "Maria Docente", "firstteacherinitials": "MD"}]}
+            {"key": "open", "title": "Abertas", "count": 1, "isopen": true, "isgrid": true, "hascourses": true, "emptytext": "Nenhum curso.", "courses": []}
         ]
     }
 }}
-<div class="coursecardsuems-summary">
+<div class="coursecardsuems-summary"
+     data-section-tabs
+     data-active-key="open">
+
     {{#hastitle}}
         <h3 class="coursecardsuems-summary-title">{{title}}</h3>
     {{/hastitle}}
     {{#hasmessage}}
         <p class="coursecardsuems-summary-message">{{message}}</p>
     {{/hasmessage}}
+
     {{#hassections}}
-        <div class="coursecardsuems-sections">
+        <div class="coursecardsuems-tabs" role="tablist" aria-label="{{#str}}pluginname, block_coursecardsuems{{/str}}">
             {{#sections}}
-                <details class="coursecardsuems-section coursecardsuems-section-{{key}}" {{#isopen}}open{{/isopen}}>
-                    <summary class="coursecardsuems-section-summary">
-                        <span class="coursecardsuems-section-title-text">{{title}}</span>
-                        <span class="coursecardsuems-section-count">{{count}}</span>
-                    </summary>
-                    {{#hascourses}}
-                        <div class="{{#isgrid}}coursecardsuems-grid{{/isgrid}}{{#islist}}coursecardsuems-list{{/islist}}">
-                            {{#courses}}
-                                {{> block_coursecardsuems/card}}
-                            {{/courses}}
-                        </div>
-                    {{/hascourses}}
-                    {{^hascourses}}
-                        <p class="coursecardsuems-empty">{{emptytext}}</p>
-                    {{/hascourses}}
-                </details>
+                <button class="coursecardsuems-tab{{#isopen}} is-active{{/isopen}}"
+                        role="tab"
+                        data-key="{{key}}"
+                        aria-selected="{{#isopen}}true{{/isopen}}{{^isopen}}false{{/isopen}}"
+                        aria-controls="coursecardsuems-panel-{{key}}"
+                        tabindex="{{#isopen}}0{{/isopen}}{{^isopen}}-1{{/isopen}}">
+                    {{title}}
+                    <span class="coursecardsuems-tab-count" aria-hidden="true">{{count}}</span>
+                </button>
             {{/sections}}
         </div>
+
+        {{#sections}}
+            <div class="coursecardsuems-panel"
+                 id="coursecardsuems-panel-{{key}}"
+                 role="tabpanel"
+                 data-key="{{key}}"
+                 {{^isopen}}hidden{{/isopen}}>
+                {{#hascourses}}
+                    <div class="{{#isgrid}}coursecardsuems-grid{{/isgrid}}{{#islist}}coursecardsuems-list{{/islist}}">
+                        {{#courses}}
+                            {{> block_coursecardsuems/card}}
+                        {{/courses}}
+                    </div>
+                {{/hascourses}}
+                {{^hascourses}}
+                    <p class="coursecardsuems-empty">{{emptytext}}</p>
+                {{/hascourses}}
+            </div>
+        {{/sections}}
     {{/hassections}}
 </div>
