@@ -458,7 +458,7 @@
 /* main: grid reserva espaço explícito para título, docente, data e ribbon */
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-main {
     display: grid;
-    grid-template-columns: minmax(12rem, 1.2fr) minmax(12rem, 18rem) minmax(8rem, 12rem) 5.5rem;
+    grid-template-columns: minmax(12rem, 1.1fr) minmax(13rem, 19rem) minmax(8rem, 12rem) 5.5rem;
     align-items: stretch;
     align-self: stretch;
     width: 100%;
