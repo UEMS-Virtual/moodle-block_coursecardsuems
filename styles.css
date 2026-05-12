@@ -518,7 +518,7 @@
 
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-dates {
     flex: 0 0 13rem;
-    padding: .7rem 1rem;
+    padding: .7rem 5.5rem .7rem 1rem;
     border-left: 1px solid #f0f4fa;
     display: flex;
     align-items: center;
