@@ -455,10 +455,10 @@
 
 /* oculta painel lateral (substituído pela faixa ::before) */
 
-/* main: flex row — title-group | footerline | status */
+/* main: grid reserva espaço explícito para título, docente, data e ribbon */
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-main {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: minmax(12rem, 1fr) minmax(9rem, 15rem) minmax(8rem, 12rem) 5.5rem;
     align-items: stretch;
     align-self: stretch;
     width: 100%;
@@ -466,11 +466,11 @@
     gap: 0;
 }
 
-/* wrapper supertítulo + título — flex-grow */
+/* wrapper supertítulo + título — limitado para não esmagar metadados */
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-title-group {
-    flex: 1 1 0;
+    grid-column: 1;
     min-width: 0;
-    padding: .75rem 5.5rem .75rem calc(20px + 1rem);
+    padding: .75rem 1rem .75rem calc(20px + 1rem);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -496,29 +496,27 @@
     display: none;
 }
 
-/* footerline — flex row fixo após title-group, antes do status */
+/* footerline só agrupa semanticamente; no desktop os filhos participam do grid principal */
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-footerline {
-    flex: 0 0 30rem;
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
-    border-left: 1px solid #f0f4fa;
+    display: contents;
     margin: 0;
     padding: 0;
     border-top: 0;
 }
 
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-teacher {
-    flex: 0 0 17rem;
+    grid-column: 2;
     min-width: 0;
     padding: .7rem 1rem;
+    border-left: 1px solid #f0f4fa;
     display: flex;
     align-items: center;
 }
 
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-dates {
-    flex: 0 0 13rem;
-    padding: .7rem 5.5rem .7rem 1rem;
+    grid-column: 3;
+    min-width: 0;
+    padding: .7rem 1rem;
     border-left: 1px solid #f0f4fa;
     display: flex;
     align-items: center;
@@ -578,6 +576,7 @@
 
     /* mobile: flex-wrap — título+status na mesma linha, footerline abaixo */
     .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-main {
+        display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         align-items: flex-start;
@@ -593,6 +592,7 @@
     /* footerline ocupa linha própria abaixo, empilha docente → data */
     .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-footerline {
         order: 99;
+        display: flex;
         flex: 0 0 100%;
         flex-direction: column;
         border-left: none;
