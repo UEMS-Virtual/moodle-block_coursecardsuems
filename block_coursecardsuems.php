@@ -41,7 +41,7 @@ class block_coursecardsuems extends block_base {
     }
 
     /**
-     * The block may be used on the dashboard and other pages during reconstruction.
+     * The block is available on all page types.
      *
      * @return array
      */
@@ -50,7 +50,7 @@ class block_coursecardsuems extends block_base {
     }
 
     /**
-     * Allow more than one instance while the reconstruction is being validated.
+     * Multiple instances are allowed per page.
      *
      * @return bool
      */

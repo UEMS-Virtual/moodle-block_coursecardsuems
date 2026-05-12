@@ -1,81 +1,45 @@
-# Ubiquitous Language
+# Ubiquitous Language — block_coursecardsuems
 
-Este glossário define a linguagem comum do projeto `block_coursecardsuems`. Use estes termos em documentação, PRDs, issues, código de interface e conversas de produto.
+Use estes termos em documentação, issues e código de interface.
 
 ## Experiência do usuário
 
-| Term                     | Definition                                                                                          | Aliases to avoid                                      |
-| ------------------------ | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| **Meus cursos**          | Página Moodle onde o usuário acessa os cursos em que está inscrito.                                 | Painel, Dashboard, página inicial                     |
-| **Resumo dos cursos**    | Título funcional da área/bloco que apresenta os cursos do usuário em formato de cards.              | Cards de cursos UEMS, visão geral, course overview    |
-| **Bloco UEMS de cursos** | Plugin Moodle `block_coursecardsuems` que exibe cursos em cards personalizados para a UEMS Virtual. | My overview, bloco nativo, lista de cursos            |
-| **Card de curso**        | Componente visual clicável que representa um curso matriculado do usuário.                          | Cartão, tile, item, box                               |
-| **Curso matriculado**    | Curso em que o usuário logado possui matrícula ativa ou visível para listagem.                      | Curso disponível, curso ofertado, disciplina do aluno |
-| **Estado vazio**         | Mensagem exibida quando não há cursos para mostrar ao usuário.                                      | Tela vazia, sem dados, nenhum resultado               |
+| Termo | Definição | Evitar |
+|---|---|---|
+| **Bloco UEMS de cursos** | Plugin `block_coursecardsuems` exibido como bloco no Moodle. | bloco nativo, my overview |
+| **Disciplina EaD** | Curso Moodle de modalidade Distância que representa um componente curricular. | disciplina do aluno, sala |
+| **Semestre vigente** | Período acadêmico corrente, exibido no cabeçalho do bloco como `Semestre YYYY/S`. | período letivo, ano letivo |
+| **Aba de status** | Cada aba (Abertas / Em breve / Encerradas) que agrupa disciplinas. | seção colapsável, accordion |
+| **Estado vazio** | Mensagem exibida quando não há disciplinas em uma aba. | tela vazia, sem dados |
 
-## Dados acadêmicos exibidos no card
+## Dados da disciplina
 
-| Term                | Definition                                                                                                    | Aliases to avoid                                 |
-| ------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| **Nome do curso**   | Nome exibido como informação principal do card, atualmente derivado do curso Moodle.                          | Nome da disciplina, título, fullname             |
-| **Docente**         | Pessoa vinculada ao curso com papel/capacidade docente exibida no card.                                       | Professor, tutor, instrutor                      |
-| **Período letivo**  | Identificador curto do período acadêmico, como `2025/1`, exibido na faixa lateral.                            | Semestre, período, ano/semestre                  |
-| **Data de início**  | Data em que o curso começa segundo o cadastro do curso Moodle.                                                | Início, começo, abertura                         |
-| **Data de término** | Data em que o curso termina segundo o cadastro do curso Moodle.                                               | Fim, encerramento, fechamento                    |
-| **Tipo de oferta**  | Classificação acadêmica da oferta do curso, inicialmente representada por `Oferta` ou futuramente `Reoferta`. | Badge oferta, situação, status                   |
-| **Status do curso** | Estado temporal/operacional exibido no card, como `Aberta`, `Em breve` ou `Encerrada`.                        | Tipo de oferta, situação acadêmica, visibilidade |
-| **Código curto**    | Código institucional ou acadêmico opcional a ser exibido junto ao docente ou metadados do curso.              | Shortname, sigla, código da disciplina           |
+| Termo | Definição | Evitar |
+|---|---|---|
+| **Componente curricular** | Nome real da disciplina, título principal do card ou item de lista. | nome do curso, fullname |
+| **Código da disciplina** | Prefixo entre colchetes no `fullname`; removido do display final. | shortname, sigla |
+| **Agrupamento compacto** | Sigla derivada do `shortname`, ex: `PEDG-24`. Aparece no supertítulo. | categoria, período letivo |
+| **Série** | Nível curricular acima da disciplina na árvore de categorias, ex: `2ª Série`. | rótulo vertical, categoria |
+| **Supertítulo** | Linha acima do nome da disciplina; composta por `agrupamento · série`. | cabeçalho, tag lateral |
+| **Período informativo** | Datas `ead_inicio` e `ead_final` dos campos customizados; comunicam quando a disciplina acontece. | data de início/término, datas Moodle |
+| **Janela de acesso Moodle** | `course.startdate`/`course.enddate`; usados só como fallback de status. Nunca exibidos ao aluno. | período da disciplina |
+| **Status da disciplina** | Estado temporal: **Em breve**, **Aberta** ou **Encerrada**. | situação, visibilidade |
+| **Tipo de oferta** | **Oferta** ou **Reoferta**; classificação da oferta acadêmica. | badge, status |
+| **Reoferta** | Oferta identificada pelo `shortname` (presença de `REO`). Exibida como ribbon no card. | segunda oferta, repetição |
+| **Docente** | Usuário com papel `editingteacher` ou `teacher` exibido no card. | professor, tutor |
 
 ## Design do card
 
-| Term                   | Definition                                                                                                      | Aliases to avoid                            |
-| ---------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
-| **Faixa lateral**      | Área vertical colorida à esquerda do card usada para exibir agrupamento e período letivo.                       | Barra lateral, tarja, lateral azul          |
-| **Rótulo vertical**    | Texto rotacionado exibido dentro da faixa lateral para representar série, área, categoria ou outro agrupamento. | Categoria, série, label lateral             |
-| **Badge**              | Pequeno marcador textual usado para destacar tipo de oferta ou outro metadado curto.                            | Tag, etiqueta, pílula                       |
-| **Ribbon de status**   | Marcador visual no canto superior direito do card usado para exibir o status do curso.                          | Badge aberta, faixa status, etiqueta status |
-| **Avatar de docente**  | Círculo com iniciais usado para representar visualmente o docente.                                              | Foto, bolinha, iniciais                     |
-| **Linha de metadados** | Área inferior do card onde aparecem tipo de oferta, datas e outros metadados secundários.                       | Rodapé do card, footer, base                |
-| **Padrão 02**          | Direção visual escolhida para cards sem capa/banner e com faixa lateral por categoria/agrupamento.              | Design 02, layout sem capa, mockup 02       |
-
-## Fontes de dados e integração
-
-| Term                             | Definition                                                                                           | Aliases to avoid                         |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| **Curso Moodle**                 | Registro nativo de curso no Moodle usado como fonte atual para nome, datas, categoria e matrícula.   | Disciplina Moodle, sala, turma           |
-| **Categoria Moodle**             | Categoria nativa do Moodle usada provisoriamente para o rótulo vertical no MVP.                      | UU, série, agrupamento acadêmico         |
-| **Campo personalizado de curso** | Campo configurável no Moodle que pode armazenar metadados acadêmicos específicos da UEMS.            | Custom field, campo extra, metadado      |
-| **Argos**                        | Sistema/fonte externa de dados acadêmicos usado para importar categorias, cursos, docentes e alunos. | JSON, integração, sistema acadêmico      |
-| **Dados acadêmicos externos**    | Informações vindas do Argos ou outro sistema institucional, não digitadas manualmente no Moodle.     | Dados da integração, payload, importação |
+| Termo | Definição | Evitar |
+|---|---|---|
+| **Card de disciplina** | Componente visual (grid) que representa uma disciplina Aberta. | tile, box, cartão |
+| **Item de lista** | Linha compacta que representa disciplina Em breve ou Encerrada. | card de lista, resumo |
+| **Ribbon** | Marcador colorido no canto do card que exibe Reoferta ou status. | badge, faixa status, etiqueta |
+| **Avatar de docente** | Círculo com iniciais do docente exibido no card. | foto, bolinha |
 
 ## Relacionamentos
 
-- Um **Bloco UEMS de cursos** exibe zero ou mais **Cards de curso**.
-- Um **Card de curso** representa exatamente um **Curso matriculado** para o usuário logado.
-- Um **Curso matriculado** deriva de um **Curso Moodle**, mas pode futuramente receber **Dados acadêmicos externos**.
-- Um **Card de curso** pode exibir um ou mais **Docentes**.
-- A **Faixa lateral** contém um **Rótulo vertical** e um **Período letivo**.
-- O **Tipo de oferta** e o **Status do curso** são conceitos diferentes: `Oferta/Reoferta` classifica a oferta acadêmica; `Aberta/Em breve/Encerrada` indica o estado temporal/operacional.
-- A **Categoria Moodle** é apenas a origem provisória do **Rótulo vertical** no MVP; a origem final ainda está em aberto.
-
-## Example dialogue
-
-> **Dev:** Quando o usuário entra em **Meus cursos**, ele deve ver o **Resumo dos cursos**?
->
-> **Domain expert:** Sim. O **Bloco UEMS de cursos** deve substituir a visão padrão nessa página.
->
-> **Dev:** Cada **Card de curso** representa um **Curso Moodle** em que o usuário está matriculado?
->
-> **Domain expert:** Sim, mas alguns metadados como **Tipo de oferta**, **Período letivo** e talvez **Rótulo vertical** podem vir de **Dados acadêmicos externos** no futuro.
->
-> **Dev:** Então `Oferta` não é o mesmo que `Aberta`?
->
-> **Domain expert:** Exato. **Tipo de oferta** diz se é **Oferta** ou **Reoferta**. **Status do curso** diz se está **Aberta**, **Em breve** ou **Encerrada**.
-
-## Flagged ambiguities
-
-- "Curso" e "disciplina" aparecem próximos. Recomendação atual: usar **Curso Moodle** para o registro técnico do Moodle e **Nome do curso** para o texto principal exibido no card. Se a UEMS quiser distinguir curso, disciplina e turma academicamente, isso precisa ser resolvido no grill.
-- "Oferta" estava sendo usado como badge visual e como possível situação. Recomendação: usar **Tipo de oferta** para `Oferta/Reoferta` e **Status do curso** para `Aberta/Em breve/Encerrada`.
-- "Faixa lateral" já exibiu série/categoria. Recomendação: usar **Rótulo vertical** enquanto a origem final não for decidida.
-- "Meus cursos", "Dashboard" e "Página inicial" podem ser confundidos no Moodle. Recomendação: **Meus cursos** significa `/my/courses.php`; **Dashboard/Painel** significa `/my/index.php`; **Página inicial** significa frontpage do site.
-- "Docente" e "professor" são sinônimos no uso cotidiano. Recomendação: usar **Docente** na interface e nos requisitos do plugin.
+- Um **Bloco UEMS de cursos** contém três **Abas de status**.
+- Cada aba exibe zero ou mais **Disciplinas EaD** como **Cards de disciplina** (Abertas) ou **Itens de lista** (Em breve / Encerradas).
+- O **Tipo de oferta** (`Oferta`/`Reoferta`) e o **Status da disciplina** (`Aberta`/`Em breve`/`Encerrada`) são conceitos independentes.
+- O **Supertítulo** combina **Agrupamento compacto** e **Série**.

@@ -21,19 +21,15 @@
     JavaScript (block_coursecardsuems/section_tabs) handles tab switching.
 
     Context variables required for this template:
-    * hastitle    - whether title should be rendered
-    * title       - optional title shown inside the block
-    * hasmessage  - whether supporting message should be rendered
-    * message     - optional supporting message
-    * hassections - whether sections are available
-    * sections    - array of status sections (key, title, count, isopen, isgrid, islist, hascourses, courses, emptytext)
+    * hassemesterlabel - whether semester header should be rendered
+    * semesterlabel    - semester identifier, e.g. "2026/1"
+    * hassections      - whether sections array is non-empty
+    * sections         - array of status sections (key, title, count, isopen, isgrid, islist, hascourses, courses, emptytext)
 
     Example context (json):
     {
-        "hastitle": false,
-        "title": "",
-        "hasmessage": false,
-        "message": "",
+        "hassemesterlabel": true,
+        "semesterlabel": "2026/1",
         "hassections": true,
         "sections": [
             {"key": "open", "title": "Abertas", "count": 1, "isopen": true, "isgrid": true, "hascourses": true, "emptytext": "Nenhum curso.", "courses": []}

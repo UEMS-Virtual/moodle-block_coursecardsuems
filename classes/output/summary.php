@@ -33,7 +33,7 @@ use stdClass;
 use templatable;
 
 /**
- * Minimal renderable used by the reconstruction tracer bullet.
+ * Renderable that groups discipline view models into status sections for the summary template.
  */
 class summary implements renderable, templatable {
 

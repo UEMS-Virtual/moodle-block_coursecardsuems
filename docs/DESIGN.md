@@ -1,3 +1,5 @@
+> **Documento histórico** — estudos de design anteriores às issues #17/#18. O design aprovado usa ribbon fina via `::before`, supertítulo e sem código em destaque.
+
 # Decisão de design dos cards
 
 ## Referência visual

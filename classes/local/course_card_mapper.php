@@ -87,7 +87,7 @@ class course_card_mapper {
         $isclickable = $this->is_clickable($status, $isvisible);
         $ispreparing = !$isvisible && $temporalstatus === course_status_resolver::OPEN;
         $context = context_course::instance($course->id);
-        [, $title] = $this->split_course_title(get_course_display_name_for_list($course));
+        [, $title] = $this->extract_display_title(get_course_display_name_for_list($course));
         $group = $this->shortnameparser->get_compact_group($course->shortname ?? '');
         $series = $this->categoryparser->get_series_name($course->category ?? 0);
         $isreoferta = $this->shortnameparser->is_reoferta($course->shortname ?? '');
@@ -156,12 +156,14 @@ class course_card_mapper {
     }
 
     /**
-     * Splits `[CODE] Name` into code and title.
+     * Strips the bracketed code prefix from a course display name.
+     *
+     * Returns [code, title]; code is discarded at the call site.
      *
      * @param string $fullname Course display name.
      * @return array{0:string,1:string}
      */
-    private function split_course_title(string $fullname): array {
+    private function extract_display_title(string $fullname): array {
         if (preg_match('/^\s*\[([^\]]+)\]\s*(.+)$/u', $fullname, $matches) !== 1) {
             return ['', trim($fullname)];
         }

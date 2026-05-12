@@ -1,3 +1,5 @@
+> **Documento histórico** — planejamento do MVP inicial. O plugin foi reconstruído e está em produção; consulte `README.md` e `CONTEXT.md` para o estado atual.
+
 # MVP do plugin
 
 ## Objetivo

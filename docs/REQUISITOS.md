@@ -1,3 +1,5 @@
+> **Documento histórico** — levantamento inicial de requisitos. Requisitos vigentes estão em `CONTEXT.md` e nos ADRs.
+
 # Requisitos — block_coursecardsuems
 
 ## Contexto

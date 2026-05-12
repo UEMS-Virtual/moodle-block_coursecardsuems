@@ -1,3 +1,5 @@
+> **Documento histórico** — descreve a fase de prototipagem, encerrada antes da reconstrução (ADR #0001). Não reflete o estado atual do código.
+
 # Protótipo visual/funcional
 
 Este documento registra o papel da implementação atual de `block_coursecardsuems`.

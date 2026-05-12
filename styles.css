@@ -491,8 +491,6 @@
     -webkit-line-clamp: 3;
 }
 
-/* código da disciplina — oculto na lista */
-
 /* status — oculto na lista; ribbon no corner substitui */
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-status {
     display: none;
@@ -641,7 +639,6 @@
     box-shadow: none;
 }
 
-/* Keep teacher, series and status readable in the reconstructed template. */
 .block_coursecardsuems .coursecardsuems-teacher-label,
 .block_coursecardsuems .coursecardsuems-teacher-name,
 .block_coursecardsuems .coursecardsuems-teacher-extra {

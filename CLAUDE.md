@@ -26,9 +26,9 @@ Objetivo atual:
 - organizar em `Abertas`, `Em breve`, `Encerradas`;
 - respeitar arquitetura Moodle: `classes/local`, `classes/output`, templates Mustache, strings em `lang/`, PHPUnit.
 
-A reconstrução de dados/regras foi concluída. Existe débito visual aberto em issue:
+Issue aberta de funcionalidade:
 
-- `#15 Refinar layout visual dos cards e listas após reconstrução`
+- `#20 Adicionar contagem de Agendas nos cards`
 
 ## GitHub Issues
 
