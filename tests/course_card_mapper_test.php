@@ -50,6 +50,7 @@ final class course_card_mapper_test extends \advanced_testcase {
         $viewmodel = (new course_card_mapper(null, null, null, make_timestamp(2026, 3, 15)))->map($course);
 
         self::assertSame((int) $course->id, $viewmodel['id']);
+        self::assertSame('CISOL_23_2S_EP_(REO)_df970', $viewmodel['shortname']);
         self::assertSame('CISOL-23-2S-EP-(REO)', $viewmodel['code']);
         self::assertSame('Economia Política', $viewmodel['title']);
         self::assertSame('CISOL-23', $viewmodel['group']);

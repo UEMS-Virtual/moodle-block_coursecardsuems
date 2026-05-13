@@ -106,6 +106,7 @@ class course_card_mapper {
 
         return [
             'id' => (int) $course->id,
+            'shortname' => $course->shortname ?? '',
             'url' => (new moodle_url('/course/view.php', ['id' => $course->id]))->out(false),
             'hasurl' => $isclickable,
             'linklabel' => get_string('opencourse', 'block_coursecardsuems', format_string($title, true, ['context' => $context])),

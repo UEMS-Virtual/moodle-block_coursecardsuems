@@ -113,7 +113,12 @@ class block_coursecardsuems extends block_base {
                 return $order[$a['status']] <=> $order[$b['status']];
             }
 
-            return $a['sortkey'] <=> $b['sortkey'];
+            $datecomparison = $a['sortkey'] <=> $b['sortkey'];
+            if ($datecomparison !== 0) {
+                return $datecomparison;
+            }
+
+            return strnatcasecmp($a['shortname'] ?? '', $b['shortname'] ?? '');
         });
 
         $renderer = $PAGE->get_renderer('block_coursecardsuems');
