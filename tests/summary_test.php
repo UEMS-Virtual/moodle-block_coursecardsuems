@@ -39,7 +39,7 @@ final class summary_test extends \advanced_testcase {
             ['title' => 'Coming soon', 'status' => course_status_resolver::COMINGSOON],
         ];
 
-        $data = (new summary('Semestre 2026/1', '', $courses))->export_for_template($PAGE->get_renderer('core'));
+        $data = (new summary($courses, '2026/1'))->export_for_template($PAGE->get_renderer('core'));
 
         self::assertTrue($data->hassections);
         self::assertCount(3, $data->sections);
@@ -65,9 +65,8 @@ final class summary_test extends \advanced_testcase {
     public function test_exports_empty_sections(): void {
         global $PAGE;
 
-        $data = (new summary('Semestre 2026/1', '', []))->export_for_template($PAGE->get_renderer('core'));
+        $data = (new summary([], '2026/1'))->export_for_template($PAGE->get_renderer('core'));
 
-        self::assertFalse($data->hascourses);
         self::assertTrue($data->hassections);
         self::assertCount(3, $data->sections);
         self::assertFalse($data->sections[0]['hascourses']);

@@ -24,6 +24,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2026050800;
+$plugin->version   = 2026051200;
 $plugin->requires  = 2024100700;
 $plugin->component = 'block_coursecardsuems';

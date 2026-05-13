@@ -51,4 +51,23 @@ class course_repository {
             'fullname ASC'
         );
     }
+
+    /**
+     * Returns all Moodle course records that can be evaluated by product filters.
+     *
+     * Site admins use this broader source so they can inspect every EaD discipline
+     * in the current semester, even without enrolment.
+     *
+     * @return array Course records indexed by course id.
+     */
+    public function get_all_courses(): array {
+        global $DB;
+
+        return $DB->get_records(
+            'course',
+            null,
+            'fullname ASC',
+            'id, category, shortname, fullname, startdate, enddate, visible'
+        );
+    }
 }

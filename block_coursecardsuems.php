@@ -78,12 +78,19 @@ class block_coursecardsuems extends block_base {
         $periodreader = new \block_coursecardsuems\local\informative_period_reader();
         $mapper = new \block_coursecardsuems\local\course_card_mapper($periodreader);
         $coursefilter = new \block_coursecardsuems\local\course_filter(null, null, $periodreader);
-        $courses = $coursefilter->filter_current_semester_distance_courses(
-            $repository->get_enrolled_courses_for_current_user(),
-            $semesterlabel
-        );
-        $courses = array_map(static function($course) use ($mapper): array {
-            return $mapper->map($course);
+        $accessfilter = new \block_coursecardsuems\local\course_access_filter();
+        $issiteadmin = is_siteadmin();
+        $sourcecourses = $issiteadmin ? $repository->get_all_courses() : $repository->get_enrolled_courses_for_current_user();
+        $courses = $coursefilter->filter_current_semester_distance_courses($sourcecourses, $semesterlabel);
+        $courses = $accessfilter->filter_courses_for_current_user($courses, $issiteadmin);
+
+        if (empty($courses) && !$issiteadmin) {
+            $this->content->text = '';
+            return $this->content;
+        }
+
+        $courses = array_map(static function($course) use ($mapper, $issiteadmin): array {
+            return $mapper->map($course, $issiteadmin);
         }, $courses);
         usort($courses, static function(array $a, array $b): int {
             if ($a['status'] !== $b['status']) {

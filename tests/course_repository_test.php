@@ -54,6 +54,25 @@ final class course_repository_test extends \advanced_testcase {
     }
 
     /**
+     * The repository can return all courses for site-admin inspection flows.
+     */
+    public function test_get_all_courses_returns_courses_without_enrolment_filter(): void {
+        $this->resetAfterTest(true);
+
+        $generator = self::getDataGenerator();
+        $firstcourse = $generator->create_course(['fullname' => 'First course']);
+        $secondcourse = $generator->create_course(['fullname' => 'Second course']);
+
+        $courses = (new course_repository())->get_all_courses();
+        $courseids = array_map(static function($course): int {
+            return (int) $course->id;
+        }, $courses);
+
+        self::assertContains((int) $firstcourse->id, $courseids);
+        self::assertContains((int) $secondcourse->id, $courseids);
+    }
+
+    /**
      * Guests do not receive enrolled courses from the repository.
      */
     public function test_get_enrolled_courses_for_current_user_returns_empty_for_guest(): void {

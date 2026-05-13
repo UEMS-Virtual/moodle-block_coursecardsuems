@@ -41,4 +41,11 @@ $capabilities = [
         ],
         'clonepermissionsfrom' => 'moodle/my:manageblocks',
     ],
+    'block/coursecardsuems:viewcontent' => [
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_COURSE,
+        'archetypes' => [
+            'student' => CAP_ALLOW,
+        ],
+    ],
 ];

@@ -6,6 +6,12 @@ O bloco exibe, para o aluno, as disciplinas EaD do **semestre vigente** organiza
 
 Fora do escopo: cursos presenciais, visão de tutor/docente, histórico de semestres, filtros avançados.
 
+## Público e permissões
+
+O bloco é uma visão de aluno. Usuários comuns só veem cursos em que tenham a capability `block/coursecardsuems:viewcontent` no contexto do curso, concedida por padrão ao papel `student`; managers não passam por permissões amplas (`doanything`) para este filtro.
+
+Administradores do site são exceção operacional: veem todas as disciplinas EaD do semestre vigente para inspeção e suporte, inclusive cursos ocultos e sem matrícula. A classificação visual permanece igual à do aluno; a diferença é que links são permitidos para o admin.
+
 ## Conceitos do domínio
 
 | Termo | Definição |

@@ -27,6 +27,7 @@ $string['currentsemester'] = 'Semestre {$a}';
 $string['semesterprefix'] = 'Semestre';
 $string['coursecardsuems:addinstance'] = 'Adicionar bloco Cards de cursos UEMS';
 $string['coursecardsuems:myaddinstance'] = 'Adicionar bloco Cards de cursos UEMS ao Painel';
+$string['coursecardsuems:viewcontent'] = 'Ver conteúdo do bloco Cards de cursos UEMS como estudante';
 $string['availablecomingsoon'] = 'Disponível em breve';
 $string['opencourse'] = 'Abrir disciplina {$a}';
 $string['open'] = 'Aberta';

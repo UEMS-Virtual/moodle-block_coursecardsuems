@@ -12,6 +12,14 @@ O bloco mostra, para o aluno, apenas disciplinas **EaD** do **semestre vigente**
 
 Disciplina temporalmente aberta mas oculta/indisponível no Moodle aparece em **Em breve**, sem link.
 
+## Público e permissões
+
+O bloco é uma visão voltada ao **aluno**. Para usuários comuns, a listagem considera apenas cursos em que o usuário tenha a capability `block/coursecardsuems:viewcontent` no contexto do curso, concedida por padrão ao papel `student`. Permissões amplas de manager não transformam o bloco em visão administrativa.
+
+Administradores do site são exceção operacional: veem todas as disciplinas EaD do semestre vigente, mesmo sem matrícula, para inspeção e suporte. A classificação visual continua seguindo as regras do aluno, mas os links são liberados para acesso administrativo inclusive em cursos ocultos.
+
+Se um usuário comum não tiver nenhuma disciplina elegível como estudante, o bloco renderiza vazio.
+
 ## Dados exibidos
 
 - **Período informativo**: campos customizados `ead_inicio` e `ead_final`.

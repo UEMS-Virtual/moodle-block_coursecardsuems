@@ -103,6 +103,28 @@ final class course_card_mapper_test extends \advanced_testcase {
     }
 
     /**
+     * Admin inspection keeps the student-facing status but allows hidden courses to be linked.
+     */
+    public function test_hidden_open_course_can_be_linked_for_admin_inspection(): void {
+        $this->resetAfterTest(true);
+        $this->create_period_fields();
+
+        $course = self::getDataGenerator()->create_course([
+            'fullname' => '[CISOL-23-2S-EP] Economia Política',
+            'shortname' => 'CISOL_23_2S_EP_df970',
+            'visible' => 0,
+            'customfield_ead_inicio' => make_timestamp(2026, 3, 1),
+            'customfield_ead_final' => make_timestamp(2026, 4, 1),
+        ]);
+
+        $viewmodel = (new course_card_mapper(null, null, null, make_timestamp(2026, 3, 15)))->map($course, true);
+
+        self::assertSame(course_status_resolver::COMINGSOON, $viewmodel['status']);
+        self::assertTrue($viewmodel['hasurl']);
+        self::assertTrue($viewmodel['ispreparing']);
+    }
+
+    /**
      * A hidden closed discipline remains Encerrada but has no link.
      */
     public function test_hidden_closed_course_remains_closed_without_link(): void {
