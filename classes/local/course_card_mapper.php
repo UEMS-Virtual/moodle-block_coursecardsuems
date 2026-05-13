@@ -135,6 +135,8 @@ class course_card_mapper {
             'displayteachers' => $displayteachers,
             'hasdisplayteachers' => !empty($displayteachers),
             'teacherdisplayname' => $this->get_teacher_display_name($teachers),
+            'teacherextrasuffix' => $this->get_teacher_extra_suffix($teachers),
+            'hasteacherextrasuffix' => count($teachers) > 2,
         ];
     }
 
@@ -275,11 +277,22 @@ class course_card_mapper {
         }, array_slice($teachers, 0, 2));
         $label = implode(', ', $names);
 
-        if ($teachercount > 2) {
-            $label .= ' ' . get_string('others', 'block_coursecardsuems', $teachercount - 2);
+        return $label;
+    }
+
+    /**
+     * Returns the suffix shown after the first two teacher names.
+     *
+     * @param array $teachers Teacher view models.
+     * @return string Extra teachers suffix.
+     */
+    private function get_teacher_extra_suffix(array $teachers): string {
+        $teachercount = count($teachers);
+        if ($teachercount <= 2) {
+            return '';
         }
 
-        return $label;
+        return get_string('others', 'block_coursecardsuems', $teachercount - 2);
     }
 
     /**

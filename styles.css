@@ -448,6 +448,12 @@
     white-space: nowrap;
 }
 
+.block_coursecardsuems .coursecardsuems-teacher-extra {
+    margin-left: .35rem;
+    color: #7d889c;
+    font-weight: 500;
+}
+
 .block_coursecardsuems .coursecardsuems-dates {
     display: flex;
     flex: 0 0 auto;
@@ -694,6 +700,10 @@
 .block_coursecardsuems .coursecardsuems-teacher-label,
 .block_coursecardsuems .coursecardsuems-teacher-name {
     display: block;
+}
+
+.block_coursecardsuems .coursecardsuems-teacher-extra {
+    display: inline;
 }
 
 .block_coursecardsuems .coursecardsuems-teacher-label {
