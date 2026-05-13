@@ -219,7 +219,7 @@ class course_card_mapper {
     private function get_teachers(context_course $context): array {
         global $DB, $PAGE;
 
-        $roles = $DB->get_records_list('role', 'shortname', ['editingteacher', 'teacher']);
+        $roles = $DB->get_records_list('role', 'shortname', ['editingteacher', 'teacher', 'mod_prof']);
         if (empty($roles)) {
             return [];
         }
