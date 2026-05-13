@@ -40,7 +40,8 @@ class course_shortname_parser {
      * @return bool
      */
     public function is_discipline_shortname(string $shortname): bool {
-        return preg_match('/^[A-Z]+_\d{2}_\d+S_[A-Z0-9]+(?:_\(REO\d?\))?_/i', $shortname) === 1;
+        return preg_match('/^[A-Z]+_\d{2}_\d+S_[A-Z0-9]+(?:_\(REO\d?\))?_/i', $shortname) === 1 ||
+            preg_match('/^[A-Z]+_T\d{2}_[A-Z0-9]+(?:_\(REO\d?\))?(?:_|$)/i', $shortname) === 1;
     }
 
     /**
@@ -62,10 +63,14 @@ class course_shortname_parser {
      * @return string Compact grouping or empty string when unavailable.
      */
     public function get_compact_group(string $shortname): string {
-        if (preg_match('/^([A-Z]+)_(\d{2})_/i', $shortname, $matches) !== 1) {
-            return '';
+        if (preg_match('/^([A-Z]+)_(\d{2})_/i', $shortname, $matches) === 1) {
+            return strtoupper($matches[1]) . '-' . $matches[2];
         }
 
-        return strtoupper($matches[1]) . '-' . $matches[2];
+        if (preg_match('/^([A-Z]+)_T(\d{2})_/i', $shortname, $matches) === 1) {
+            return strtoupper($matches[1]) . '-' . $matches[2];
+        }
+
+        return '';
     }
 }

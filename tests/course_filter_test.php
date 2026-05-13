@@ -100,6 +100,34 @@ final class course_filter_test extends \advanced_testcase {
     }
 
     /**
+     * Postgraduate EaD courses using the SIGLA_TYY_COMPONENTE shortname shape are included.
+     */
+    public function test_filter_keeps_postgraduate_distance_course_from_current_semester(): void {
+        $this->resetAfterTest(true);
+        $this->create_period_fields();
+
+        $generator = self::getDataGenerator();
+        $postgraduate = $generator->create_category(['name' => 'Pós-Graduação']);
+        $distancecategory = $generator->create_category(['name' => 'Distância', 'parent' => $postgraduate->id]);
+        $coursecategory = $generator->create_category([
+            'name' => 'Pós-Graduação Lato Sensu em Gestão Universitária',
+            'parent' => $distancecategory->id,
+        ]);
+        $yearcategory = $generator->create_category(['name' => '2025', 'parent' => $coursecategory->id]);
+        $course = $generator->create_course([
+            'category' => $yearcategory->id,
+            'fullname' => 'Apresentações e Disciplina',
+            'shortname' => 'PGGU_T24_GARC',
+            'customfield_ead_inicio' => make_timestamp(2026, 3, 1),
+            'customfield_ead_final' => make_timestamp(2026, 4, 1),
+        ]);
+
+        $filtered = (new course_filter())->filter_current_semester_distance_courses([$course], '2026/1');
+
+        self::assertSame([(int) $course->id], $this->course_ids($filtered));
+    }
+
+    /**
      * Distance courses with unknown shortname shape are excluded as incomplete discipline data.
      */
     public function test_filter_excludes_distance_course_with_unknown_shortname_shape(): void {

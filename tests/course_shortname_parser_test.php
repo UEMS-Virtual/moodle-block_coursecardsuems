@@ -36,6 +36,17 @@ final class course_shortname_parser_test extends \advanced_testcase {
     }
 
     /**
+     * Compact grouping is extracted from both undergraduate and postgraduate formats.
+     */
+    public function test_extracts_compact_group_from_known_shortname_shapes(): void {
+        $parser = new course_shortname_parser();
+
+        self::assertSame('PEDG-24', $parser->get_compact_group('PEDG_24_2S_D_df970'));
+        self::assertSame('PGGU-24', $parser->get_compact_group('PGGU_T24_GARC'));
+        self::assertSame('PGSP-25', $parser->get_compact_group('PGSP_T25_DEJDF_(REO2)_abc12'));
+    }
+
+    /**
      * Unknown shortname shapes are not treated as Disciplina EaD.
      */
     public function test_rejects_unknown_shortname_shape(): void {
@@ -52,6 +63,10 @@ final class course_shortname_parser_test extends \advanced_testcase {
             ['CISOL_23_2S_EP_df970'],
             ['PEDG_24_2S_D_(REO)_d74cd'],
             ['CISOL_20_4S_TEA_(REO2)_f1c8e'],
+            ['PGGU_T24_GARC'],
+            ['PGDAL_T26_TTA'],
+            ['PGDC_T25_DAC_(REO)'],
+            ['PGSP_T25_DEJDF_(REO2)_abc12'],
         ];
     }
 }
