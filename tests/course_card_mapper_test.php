@@ -270,6 +270,24 @@ final class course_card_mapper_test extends \advanced_testcase {
     }
 
     /**
+     * Courses without an informative period are marked for admin audit display.
+     */
+    public function test_maps_missing_informative_period_warning(): void {
+        $this->resetAfterTest(true);
+
+        $course = self::getDataGenerator()->create_course([
+            'fullname' => 'Sem período',
+            'shortname' => 'CISOL_23_2S_EP_df970',
+        ]);
+
+        $viewmodel = (new course_card_mapper())->map($course);
+
+        self::assertTrue($viewmodel['hasmissingperiodwarning']);
+        self::assertTrue($viewmodel['period']['missingperiod']);
+        self::assertSame(get_string('missingperiod', 'block_coursecardsuems'), $viewmodel['period']['label']);
+    }
+
+    /**
      * Courses without a bracketed code keep the full name as title.
      */
     public function test_maps_title_without_bracketed_code(): void {

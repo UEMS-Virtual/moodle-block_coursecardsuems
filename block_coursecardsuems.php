@@ -92,7 +92,7 @@ class block_coursecardsuems extends block_base {
         $accessfilter = new \block_coursecardsuems\local\course_access_filter();
         $issiteadmin = is_siteadmin();
         $sourcecourses = $issiteadmin ? $repository->get_all_courses() : $repository->get_enrolled_courses_for_current_user();
-        $courses = $coursefilter->filter_current_semester_distance_courses($sourcecourses, $semesterlabel);
+        $courses = $coursefilter->filter_current_semester_distance_courses($sourcecourses, $semesterlabel, $issiteadmin);
         $courses = $accessfilter->filter_courses_for_current_user($courses, $issiteadmin);
 
         if (empty($courses) && !$issiteadmin) {

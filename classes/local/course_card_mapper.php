@@ -93,6 +93,7 @@ class course_card_mapper {
         $status = $this->get_display_status($temporalstatus, $isvisible);
         $isclickable = $this->is_clickable($status, $isvisible, $canaccesshidden);
         $ispreparing = !$isvisible && $temporalstatus === course_status_resolver::OPEN;
+        $missingperiod = !$period->has_any_date();
         $context = context_course::instance($course->id);
         [$code, $title] = $this->extract_display_title(get_course_display_name_for_list($course));
         $group = $this->shortnameparser->get_compact_group($course->shortname ?? '');
@@ -129,14 +130,15 @@ class course_card_mapper {
                 'hasperiod' => $period->has_any_date(),
                 'start' => $period->startdate,
                 'end' => $period->enddate,
-                'label' => $ispreparing ? get_string('availablecomingsoon', 'block_coursecardsuems') :
-                    $this->format_period($period),
+                'label' => $this->get_period_label($period, $ispreparing, $missingperiod),
                 'showdates' => $period->has_any_date() && !$ispreparing,
+                'missingperiod' => $missingperiod,
                 'startlabel' => $this->format_date($period->startdate),
                 'endlabel' => $this->format_date($period->enddate),
             ],
             'status' => $status,
             'statuslabel' => $this->statusresolver->get_label($status),
+            'hasmissingperiodwarning' => $missingperiod,
             'statusclass' => 'coursecardsuems-status-' . $status,
             'isclosed' => $status === course_status_resolver::CLOSED,
             'sortkey' => $this->statusresolver->get_sort_key($status, $period, $course),
@@ -199,6 +201,26 @@ class course_card_mapper {
         }
 
         return [trim($matches[1]), trim($matches[2])];
+    }
+
+    /**
+     * Returns the period label shown by the card.
+     *
+     * @param informative_period $period Informative period.
+     * @param bool $ispreparing Whether the course is hidden while temporally open.
+     * @param bool $missingperiod Whether the informative period is absent.
+     * @return string Period label.
+     */
+    private function get_period_label(informative_period $period, bool $ispreparing, bool $missingperiod): string {
+        if ($missingperiod) {
+            return get_string('missingperiod', 'block_coursecardsuems');
+        }
+
+        if ($ispreparing) {
+            return get_string('availablecomingsoon', 'block_coursecardsuems');
+        }
+
+        return $this->format_period($period);
     }
 
     /**

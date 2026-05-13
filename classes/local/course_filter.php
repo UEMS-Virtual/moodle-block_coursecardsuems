@@ -66,12 +66,17 @@ class course_filter {
      *
      * @param array $courses Course records.
      * @param string $semesterlabel Semester label in YYYY/S format.
+     * @param bool $includeundated Whether to keep matching courses without informative period for admin audit.
      * @return array Filtered course records, preserving original order.
      */
-    public function filter_current_semester_distance_courses(array $courses, string $semesterlabel): array {
+    public function filter_current_semester_distance_courses(
+        array $courses,
+        string $semesterlabel,
+        bool $includeundated = false
+    ): array {
         [$semesterstart, $semesterend] = current_semester::bounds_from_label($semesterlabel);
 
-        return array_values(array_filter($courses, function($course) use ($semesterstart, $semesterend): bool {
+        return array_values(array_filter($courses, function($course) use ($semesterstart, $semesterend, $includeundated): bool {
             if (empty($course->category) || !$this->categoryparser->is_distance_category((int) $course->category)) {
                 return false;
             }
@@ -82,7 +87,7 @@ class course_filter {
 
             $period = $this->periodreader->get_period((int) $course->id);
             if (!$period->has_any_date()) {
-                return false;
+                return $includeundated;
             }
 
             $rangestart = $period->startdate ?: $period->enddate;

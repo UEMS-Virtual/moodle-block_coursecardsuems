@@ -128,6 +128,27 @@ final class course_filter_test extends \advanced_testcase {
     }
 
     /**
+     * Admin audit mode keeps EaD disciplines without informative period.
+     */
+    public function test_filter_keeps_course_without_informative_period_for_admin_audit(): void {
+        $this->resetAfterTest(true);
+        $this->create_period_fields();
+
+        $generator = self::getDataGenerator();
+        $distancecategory = $generator->create_category(['name' => 'Distância']);
+        $distanceseries = $generator->create_category(['name' => '3ª Série', 'parent' => $distancecategory->id]);
+        $course = $generator->create_course([
+            'category' => $distanceseries->id,
+            'fullname' => 'EaD sem datas para auditoria',
+            'shortname' => 'EAD_26_1S_NODATES_abc12',
+        ]);
+
+        $filtered = (new course_filter())->filter_current_semester_distance_courses([$course], '2026/1', true);
+
+        self::assertSame([(int) $course->id], $this->course_ids($filtered));
+    }
+
+    /**
      * Distance courses with unknown shortname shape are excluded as incomplete discipline data.
      */
     public function test_filter_excludes_distance_course_with_unknown_shortname_shape(): void {

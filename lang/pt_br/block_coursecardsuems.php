@@ -31,6 +31,7 @@ $string['coursecardsuems:viewcontent'] = 'Ver conteúdo do bloco Disciplinas EaD
 $string['coursecolormap'] = 'Mapa de cores por curso/turma';
 $string['coursecolormap_desc'] = 'JSON com cores hexadecimais por sigla de curso/turma. Exemplo: {"PEDG24":"#ec407a","PEDG24-REO":"#f8bbd0"}. Chaves como PEDG24, PEDG-24 e PEDG_24 são normalizadas. Para REO e REO2, use o sufixo -REO. Quando uma cor não for encontrada ou for inválida, a faixa mantém o azul padrão.';
 $string['availablecomingsoon'] = 'Disponível em breve';
+$string['missingperiod'] = 'Sem período informativo';
 $string['opencourse'] = 'Abrir disciplina {$a}';
 $string['open'] = 'Aberta';
 $string['comingsoon'] = 'Em breve';

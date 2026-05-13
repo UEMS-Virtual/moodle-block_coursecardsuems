@@ -46,10 +46,10 @@
                 <span class="coursecardsuems-date-value">{{period.endlabel}}</span>
             </div>
         {{/period.showdates}}
-        {{^period.showdates}}{{#ispreparing}}
-            <div class="coursecardsuems-dates">
+        {{^period.showdates}}{{#period.label}}
+            <div class="coursecardsuems-dates {{#hasmissingperiodwarning}}coursecardsuems-dates-warning{{/hasmissingperiodwarning}}">
                 <span class="coursecardsuems-date-value">{{period.label}}</span>
             </div>
-        {{/ispreparing}}{{/period.showdates}}
+        {{/period.label}}{{/period.showdates}}
     </div>
 </div>

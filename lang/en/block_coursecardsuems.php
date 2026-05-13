@@ -31,6 +31,7 @@ $string['coursecardsuems:viewcontent'] = 'View UEMS EaD disciplines block conten
 $string['coursecolormap'] = 'Course/group color map';
 $string['coursecolormap_desc'] = 'JSON with hexadecimal colors by course/group key. Example: {"PEDG24":"#ec407a","PEDG24-REO":"#f8bbd0"}. Keys such as PEDG24, PEDG-24 and PEDG_24 are normalized. For REO and REO2, use the -REO suffix. When no valid color is found, the stripe keeps the default blue.';
 $string['availablecomingsoon'] = 'Available soon';
+$string['missingperiod'] = 'Missing informative period';
 $string['opencourse'] = 'Open course {$a}';
 $string['open'] = 'Open';
 $string['comingsoon'] = 'Coming soon';

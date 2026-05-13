@@ -20,6 +20,8 @@ Administradores do site são exceção operacional: veem todas as disciplinas Ea
 
 Se um usuário comum não tiver nenhuma disciplina elegível como estudante, o bloco renderiza vazio.
 
+Para administradores, o bloco também funciona como auditoria de cadastro: disciplinas EaD reconhecidas pelo shortname/categoria podem aparecer mesmo sem `ead_inicio`/`ead_final`, com aviso de período informativo ausente.
+
 ## Dados exibidos
 
 - **Período informativo**: campos customizados `ead_inicio` e `ead_final`.

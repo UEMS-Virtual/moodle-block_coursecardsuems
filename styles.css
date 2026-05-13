@@ -481,6 +481,10 @@
     font-weight: 400;
 }
 
+.block_coursecardsuems .coursecardsuems-dates-warning .coursecardsuems-date-value {
+    color: #b45309;
+}
+
 .block_coursecardsuems .coursecardsuems-list {
     display: flex;
     flex-direction: column;
