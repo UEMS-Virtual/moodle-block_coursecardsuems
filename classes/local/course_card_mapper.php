@@ -226,7 +226,7 @@ class course_card_mapper {
 
         $teachers = [];
         foreach ($roles as $role) {
-            $users = get_role_users($role->id, $context, true, 'u.id, u.firstname, u.lastname, u.firstnamephonetic, ' .
+            $users = get_role_users($role->id, $context, false, 'u.id, u.firstname, u.lastname, u.firstnamephonetic, ' .
                 'u.lastnamephonetic, u.middlename, u.alternatename, u.picture, u.imagealt, u.email',
                 'u.lastname ASC, u.firstname ASC');
             foreach ($users as $user) {

@@ -172,25 +172,6 @@ final class course_card_mapper_test extends \advanced_testcase {
     }
 
     /**
-     * Custom UEMS professor roles assigned in parent contexts are accepted as card teachers.
-     */
-    public function test_maps_mod_prof_role_from_parent_context_as_teacher(): void {
-        $this->resetAfterTest(true);
-
-        $generator = self::getDataGenerator();
-        $category = $generator->create_category();
-        $course = $generator->create_course(['category' => $category->id]);
-        $teacher = $generator->create_user(['firstname' => 'Categoria', 'lastname' => 'Professor']);
-        $roleid = create_role('Professor mediador', 'mod_prof', 'Professor mediador');
-        role_assign($roleid, $teacher->id, \context_coursecat::instance($category->id)->id);
-
-        $viewmodel = (new course_card_mapper())->map($course);
-
-        self::assertSame('Categoria Professor', $viewmodel['teacherdisplayname']);
-        self::assertSame('CP', $viewmodel['displayteachers'][0]['initials']);
-    }
-
-    /**
      * Two teachers are shown with two display avatars and abbreviated names.
      */
     public function test_maps_two_teachers_to_avatar_stack_and_abbreviated_names(): void {
