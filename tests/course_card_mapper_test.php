@@ -154,6 +154,42 @@ final class course_card_mapper_test extends \advanced_testcase {
     }
 
     /**
+     * Configured course colors are exported as a safe CSS variable style.
+     */
+    public function test_exports_configured_stripe_color(): void {
+        $this->resetAfterTest(true);
+
+        $course = self::getDataGenerator()->create_course([
+            'fullname' => '[PEDG-24] Pedagogia',
+            'shortname' => 'PEDG_24_2S_D_df970',
+        ]);
+        $colormap = new course_color_map('{"PEDG24":"#ec407a"}');
+
+        $viewmodel = (new course_card_mapper(null, null, null, null, null, $colormap))->map($course);
+
+        self::assertTrue($viewmodel['hasstripecolor']);
+        self::assertSame('--coursecardsuems-stripe-color: #ec407a', $viewmodel['stripecolorstyle']);
+    }
+
+    /**
+     * Reoferta courses use the configured REO stripe color.
+     */
+    public function test_exports_configured_reoferta_stripe_color(): void {
+        $this->resetAfterTest(true);
+
+        $course = self::getDataGenerator()->create_course([
+            'fullname' => '[PEDG-24] Pedagogia',
+            'shortname' => 'PEDG_24_2S_D_(REO2)_df970',
+        ]);
+        $colormap = new course_color_map('{"PEDG24":"#ec407a","PEDG24-REO":"#f8bbd0"}');
+
+        $viewmodel = (new course_card_mapper(null, null, null, null, null, $colormap))->map($course);
+
+        self::assertTrue($viewmodel['hasstripecolor']);
+        self::assertSame('--coursecardsuems-stripe-color: #f8bbd0', $viewmodel['stripecolorstyle']);
+    }
+
+    /**
      * Custom UEMS professor roles are accepted as card teachers.
      */
     public function test_maps_mod_prof_role_as_teacher(): void {

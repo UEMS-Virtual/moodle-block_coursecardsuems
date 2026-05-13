@@ -50,6 +50,9 @@ class course_card_mapper {
     /** @var int|null Timestamp used to resolve status. */
     private $now;
 
+    /** @var course_color_map Configured stripe color map. */
+    private $colormap;
+
     /**
      * Constructor.
      *
@@ -58,18 +61,21 @@ class course_card_mapper {
      * @param category_parser|null $categoryparser Category parser.
      * @param int|null $now Timestamp used to resolve status.
      * @param course_shortname_parser|null $shortnameparser Shortname parser.
+     * @param course_color_map|null $colormap Configured stripe color map.
      */
     public function __construct(
         ?informative_period_reader $periodreader = null,
         ?course_status_resolver $statusresolver = null,
         ?category_parser $categoryparser = null,
         ?int $now = null,
-        ?course_shortname_parser $shortnameparser = null
+        ?course_shortname_parser $shortnameparser = null,
+        ?course_color_map $colormap = null
     ) {
         $this->periodreader = $periodreader ?? new informative_period_reader();
         $this->statusresolver = $statusresolver ?? new course_status_resolver();
         $this->categoryparser = $categoryparser ?? new category_parser();
         $this->shortnameparser = $shortnameparser ?? new course_shortname_parser();
+        $this->colormap = $colormap ?? course_color_map::from_config();
         $this->now = $now;
     }
 
@@ -94,6 +100,7 @@ class course_card_mapper {
         $isreoferta = $this->shortnameparser->is_reoferta($course->shortname ?? '');
         $supertitleparts = array_filter([$group, $series]);
         $supertitle = implode(' · ', $supertitleparts);
+        $stripecolor = $this->colormap->get_color($group, $isreoferta);
         $teachers = $this->get_teachers($context);
         $displayteachers = array_slice($teachers, 0, 2);
 
@@ -113,6 +120,8 @@ class course_card_mapper {
             'series' => $series,
             'hasseries' => $series !== '',
             'isreoferta' => $isreoferta,
+            'hasstripecolor' => $stripecolor !== null,
+            'stripecolorstyle' => $stripecolor !== null ? '--coursecardsuems-stripe-color: ' . $stripecolor : '',
             'supertitle' => $supertitle,
             'hassupertitle' => $supertitle !== '',
             'period' => [

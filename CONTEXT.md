@@ -24,7 +24,8 @@ Administradores do site são exceção operacional: veem todas as disciplinas Ea
 | **Período informativo** | Datas `ead_inicio` e `ead_final` dos campos customizados; comunicam quando a disciplina acontece. |
 | **Janela de acesso Moodle** | `course.startdate`/`course.enddate`; usados apenas como fallback de status quando o período informativo estiver ausente. Nunca exibidos como período da disciplina. |
 | **Status da disciplina** | Estado temporal: **Em breve**, **Aberta** ou **Encerrada**. |
-| **Reoferta** | Oferta identificada pelo `shortname` (presença de `REO`). Exibida como ribbon no card. |
+| **Reoferta** | Oferta identificada pelo `shortname` (presença de `REO`, incluindo `REO2`). Exibida como ribbon no card. |
+| **Mapa de cores por curso/turma** | Configuração JSON do plugin que associa siglas normalizadas (`PEDG24`, `PEDG24-REO`) a cores hexadecimais para a faixa do card. Sem correspondência válida, usa fallback azul. |
 | **Aba de status** | Cada aba (Abertas / Em breve / Encerradas) agrupa as disciplinas por status e controla o layout. |
 
 ## Regras por status

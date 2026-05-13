@@ -33,6 +33,8 @@
     * hascode      - whether a discipline code is available
     * code         - discipline shortname code
     * title        - discipline name
+    * hasstripecolor - whether the configured stripe color should be applied
+    * stripecolorstyle - CSS variable declaration for the configured stripe color
     * displayteachers     - up to two teachers shown in the avatar stack
     * teacherdisplayname  - teacher label; full name for one teacher, abbreviated names for two or more
     * hasseries    - whether a series label is available
@@ -41,12 +43,17 @@
     * ispreparing  - course is hidden while temporally open
 }}
 {{#hasurl}}
-<a class="coursecardsuems-card {{#isclosed}}coursecardsuems-card-closed{{/isclosed}}" href="{{url}}" aria-label="{{linklabel}}">
+<a class="coursecardsuems-card {{#isclosed}}coursecardsuems-card-closed{{/isclosed}}"
+   href="{{url}}"
+   aria-label="{{linklabel}}"
+   {{#hasstripecolor}}style="{{stripecolorstyle}}"{{/hasstripecolor}}>
     {{> block_coursecardsuems/card_body}}
 </a>
 {{/hasurl}}
 {{^hasurl}}
-<article class="coursecardsuems-card coursecardsuems-card-disabled {{#isclosed}}coursecardsuems-card-closed{{/isclosed}}" aria-disabled="true">
+<article class="coursecardsuems-card coursecardsuems-card-disabled {{#isclosed}}coursecardsuems-card-closed{{/isclosed}}"
+         aria-disabled="true"
+         {{#hasstripecolor}}style="{{stripecolorstyle}}"{{/hasstripecolor}}>
     {{> block_coursecardsuems/card_body}}
 </article>
 {{/hasurl}}

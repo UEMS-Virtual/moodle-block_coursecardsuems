@@ -197,7 +197,7 @@
     left: 0;
     bottom: 0;
     width: 20px;
-    background: var(--uems-primary);
+    background: var(--coursecardsuems-stripe-color, var(--uems-primary));
 }
 
 /* corner: ribbons encaixados no canto superior direito */
@@ -506,7 +506,7 @@
     left: 0;
     bottom: 0;
     width: 20px;
-    background: var(--uems-primary);
+    background: var(--coursecardsuems-stripe-color, var(--uems-primary));
 }
 
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card:hover,
@@ -596,10 +596,6 @@
 }
 
 /* encerrada */
-.block_coursecardsuems .coursecardsuems-list .coursecardsuems-card-closed::before {
-    background: var(--uems-stripe-closed);
-}
-
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card-closed,
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card-closed .coursecardsuems-title,
 .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card-closed .coursecardsuems-supertitle,

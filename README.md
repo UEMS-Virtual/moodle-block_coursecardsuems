@@ -26,7 +26,8 @@ Se um usuário comum não tiver nenhuma disciplina elegível como estudante, o b
 - `course.startdate`/`course.enddate` são usados só como fallback de status quando o período informativo estiver ausente.
 - **Supertítulo**: agrupamento compacto do `shortname` (ex: `PEDG-24`) + série da categoria Moodle.
 - **Reoferta**: identificada pelo `shortname` (presença de `REO`).
-- **Docente**: primeiro usuário com papel `editingteacher` ou `teacher`.
+- **Docente**: usuários com papel `editingteacher`, `teacher` ou `mod_prof`.
+- **Cor da faixa**: pode ser configurada nas configurações do plugin por JSON de siglas para cores hexadecimais. Exemplo: `{"PEDG24":"#ec407a","PEDG24-REO":"#f8bbd0"}`. Chaves como `PEDG24`, `PEDG-24` e `PEDG_24` são normalizadas; para `REO` e `REO2`, use `-REO`. Sem cor válida, a faixa usa o azul padrão.
 
 Regra completa de links e visibilidade: `docs/adr/0002-links-e-visibilidade-por-status.md`.
 
