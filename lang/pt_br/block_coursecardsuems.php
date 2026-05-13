@@ -39,6 +39,7 @@ $string['closedplural'] = 'Encerradas';
 $string['nocoursesinsection'] = 'Nenhum curso nesta seção.';
 $string['teacher'] = 'Docente';
 $string['teacherunknown'] = 'Docente a definir';
+$string['other'] = '+ 1 outro';
 $string['others'] = '+ {$a} outros';
 $string['dateunknown'] = '—';
 $string['reoferta'] = 'Reoferta';

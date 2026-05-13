@@ -212,7 +212,7 @@ final class course_card_mapper_test extends \advanced_testcase {
         self::assertCount(2, $viewmodel['displayteachers']);
         self::assertSame('Ana L., João R.', $viewmodel['teacherdisplayname']);
         self::assertTrue($viewmodel['hasteacherextrasuffix']);
-        self::assertSame(get_string('others', 'block_coursecardsuems', 1), $viewmodel['teacherextrasuffix']);
+        self::assertSame(get_string('other', 'block_coursecardsuems'), $viewmodel['teacherextrasuffix']);
     }
 
     /**

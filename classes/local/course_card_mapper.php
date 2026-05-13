@@ -292,6 +292,10 @@ class course_card_mapper {
             return '';
         }
 
+        if ($teachercount === 3) {
+            return get_string('other', 'block_coursecardsuems');
+        }
+
         return get_string('others', 'block_coursecardsuems', $teachercount - 2);
     }
 
