@@ -22,12 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'Resumo dos cursos';
+$string['pluginname'] = 'Disciplinas EaD UEMS';
 $string['currentsemester'] = 'Semestre {$a}';
 $string['semesterprefix'] = 'Semestre';
-$string['coursecardsuems:addinstance'] = 'Adicionar bloco Cards de cursos UEMS';
-$string['coursecardsuems:myaddinstance'] = 'Adicionar bloco Cards de cursos UEMS ao Painel';
-$string['coursecardsuems:viewcontent'] = 'Ver conteúdo do bloco Cards de cursos UEMS como estudante';
+$string['coursecardsuems:addinstance'] = 'Adicionar bloco Disciplinas EaD UEMS';
+$string['coursecardsuems:myaddinstance'] = 'Adicionar bloco Disciplinas EaD UEMS ao Painel';
+$string['coursecardsuems:viewcontent'] = 'Ver conteúdo do bloco Disciplinas EaD UEMS como estudante';
 $string['coursecolormap'] = 'Mapa de cores por curso/turma';
 $string['coursecolormap_desc'] = 'JSON com cores hexadecimais por sigla de curso/turma. Exemplo: {"PEDG24":"#ec407a","PEDG24-REO":"#f8bbd0"}. Chaves como PEDG24, PEDG-24 e PEDG_24 são normalizadas. Para REO e REO2, use o sufixo -REO. Quando uma cor não for encontrada ou for inválida, a faixa mantém o azul padrão.';
 $string['availablecomingsoon'] = 'Disponível em breve';

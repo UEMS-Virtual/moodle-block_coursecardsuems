@@ -22,12 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'UEMS course cards';
+$string['pluginname'] = 'UEMS EaD disciplines';
 $string['currentsemester'] = 'Semester {$a}';
 $string['semesterprefix'] = 'Semester';
-$string['coursecardsuems:addinstance'] = 'Add a UEMS course cards block';
-$string['coursecardsuems:myaddinstance'] = 'Add a UEMS course cards block to Dashboard';
-$string['coursecardsuems:viewcontent'] = 'View UEMS course cards block content as a student';
+$string['coursecardsuems:addinstance'] = 'Add a UEMS EaD disciplines block';
+$string['coursecardsuems:myaddinstance'] = 'Add a UEMS EaD disciplines block to Dashboard';
+$string['coursecardsuems:viewcontent'] = 'View UEMS EaD disciplines block content as a student';
 $string['coursecolormap'] = 'Course/group color map';
 $string['coursecolormap_desc'] = 'JSON with hexadecimal colors by course/group key. Example: {"PEDG24":"#ec407a","PEDG24-REO":"#f8bbd0"}. Keys such as PEDG24, PEDG-24 and PEDG_24 are normalized. For REO and REO2, use the -REO suffix. When no valid color is found, the stripe keeps the default blue.';
 $string['availablecomingsoon'] = 'Available soon';
