@@ -95,8 +95,7 @@ class course_card_mapper {
         $supertitleparts = array_filter([$group, $series]);
         $supertitle = implode(' · ', $supertitleparts);
         $teachers = $this->get_teachers($context);
-        $firstteacher = reset($teachers) ?: null;
-        $teachercount = count($teachers);
+        $displayteachers = array_slice($teachers, 0, 2);
 
         return [
             'id' => (int) $course->id,
@@ -133,10 +132,9 @@ class course_card_mapper {
             'sortkey' => $this->statusresolver->get_sort_key($status, $period, $course),
             'teachers' => $teachers,
             'hasteachers' => !empty($teachers),
-            'firstteachername' => $firstteacher['name'] ?? get_string('teacherunknown', 'block_coursecardsuems'),
-            'firstteacherinitials' => $firstteacher['initials'] ?? '?',
-            'teacherextra' => $teachercount > 1 ? get_string('others', 'block_coursecardsuems', $teachercount - 1) : '',
-            'hasteacherextra' => $teachercount > 1,
+            'displayteachers' => $displayteachers,
+            'hasdisplayteachers' => !empty($displayteachers),
+            'teacherdisplayname' => $this->get_teacher_display_name($teachers),
         ];
     }
 
@@ -219,7 +217,7 @@ class course_card_mapper {
      * @return array
      */
     private function get_teachers(context_course $context): array {
-        global $DB;
+        global $DB, $PAGE;
 
         $roles = $DB->get_records_list('role', 'shortname', ['editingteacher', 'teacher']);
         if (empty($roles)) {
@@ -229,18 +227,90 @@ class course_card_mapper {
         $teachers = [];
         foreach ($roles as $role) {
             $users = get_role_users($role->id, $context, false, 'u.id, u.firstname, u.lastname, u.firstnamephonetic, ' .
-                'u.lastnamephonetic, u.middlename, u.alternatename', 'u.lastname ASC, u.firstname ASC');
+                'u.lastnamephonetic, u.middlename, u.alternatename, u.picture, u.imagealt, u.email',
+                'u.lastname ASC, u.firstname ASC');
             foreach ($users as $user) {
                 $name = fullname($user);
+                $hasavatarurl = !empty($user->picture);
+                $avatarurl = '';
+                if ($hasavatarurl) {
+                    $userpicture = new \user_picture($user);
+                    $userpicture->size = 50;
+                    $avatarurl = $userpicture->get_url($PAGE)->out(false);
+                }
+
                 $teachers[(int) $user->id] = [
                     'id' => (int) $user->id,
                     'name' => $name,
+                    'shortname' => $this->get_short_name($user, $name),
                     'initials' => $this->get_initials($name),
+                    'hasavatarurl' => $hasavatarurl,
+                    'avatarurl' => $avatarurl,
+                    'avatarcolorclass' => $this->get_avatar_color_class((int) $user->id),
                 ];
             }
         }
 
         return array_values($teachers);
+    }
+
+    /**
+     * Returns the teacher text shown next to the avatar stack.
+     *
+     * @param array $teachers Teacher view models.
+     * @return string Display label.
+     */
+    private function get_teacher_display_name(array $teachers): string {
+        $teachercount = count($teachers);
+        if ($teachercount === 0) {
+            return get_string('teacherunknown', 'block_coursecardsuems');
+        }
+
+        if ($teachercount === 1) {
+            return $teachers[0]['name'];
+        }
+
+        $names = array_map(static function(array $teacher): string {
+            return $teacher['shortname'];
+        }, array_slice($teachers, 0, 2));
+        $label = implode(', ', $names);
+
+        if ($teachercount > 2) {
+            $label .= ' ' . get_string('others', 'block_coursecardsuems', $teachercount - 2);
+        }
+
+        return $label;
+    }
+
+    /**
+     * Returns a compact teacher name: firstname plus lastname initial.
+     *
+     * @param object $user Moodle user record.
+     * @param string $fallback Full name fallback.
+     * @return string Compact name.
+     */
+    private function get_short_name(object $user, string $fallback): string {
+        $firstname = trim($user->firstname ?? '');
+        $lastname = trim($user->lastname ?? '');
+        if ($firstname === '') {
+            return $fallback;
+        }
+
+        if ($lastname === '') {
+            return $firstname;
+        }
+
+        return $firstname . ' ' . core_text::strtoupper(core_text::substr($lastname, 0, 1)) . '.';
+    }
+
+    /**
+     * Returns the deterministic avatar color class for a user id.
+     *
+     * @param int $userid Moodle user id.
+     * @return string CSS class.
+     */
+    private function get_avatar_color_class(int $userid): string {
+        return 'coursecardsuems-avatar-color-' . ($userid % 10);
     }
 
     /**

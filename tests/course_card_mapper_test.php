@@ -64,10 +64,14 @@ final class course_card_mapper_test extends \advanced_testcase {
         self::assertSame(userdate($start, get_string('strftimedateshort')), $viewmodel['period']['startlabel']);
         self::assertSame(userdate($end, get_string('strftimedateshort')), $viewmodel['period']['endlabel']);
         self::assertSame('Maria Docente', $viewmodel['teachers'][0]['name']);
+        self::assertSame('Maria D.', $viewmodel['teachers'][0]['shortname']);
         self::assertSame('MD', $viewmodel['teachers'][0]['initials']);
+        self::assertFalse($viewmodel['teachers'][0]['hasavatarurl']);
+        self::assertSame('coursecardsuems-avatar-color-' . ($teacher->id % 10), $viewmodel['teachers'][0]['avatarcolorclass']);
         self::assertTrue($viewmodel['hasteachers']);
-        self::assertSame('Maria Docente', $viewmodel['firstteachername']);
-        self::assertSame('MD', $viewmodel['firstteacherinitials']);
+        self::assertTrue($viewmodel['hasdisplayteachers']);
+        self::assertCount(1, $viewmodel['displayteachers']);
+        self::assertSame('Maria Docente', $viewmodel['teacherdisplayname']);
         self::assertStringContainsString('/course/view.php', $viewmodel['url']);
         self::assertTrue($viewmodel['hasurl']);
         self::assertTrue($viewmodel['isavailable']);
@@ -147,6 +151,68 @@ final class course_card_mapper_test extends \advanced_testcase {
         self::assertFalse($viewmodel['isavailable']);
         self::assertFalse($viewmodel['ispreparing']);
         self::assertTrue($viewmodel['period']['showdates']);
+    }
+
+    /**
+     * Two teachers are shown with two display avatars and abbreviated names.
+     */
+    public function test_maps_two_teachers_to_avatar_stack_and_abbreviated_names(): void {
+        $this->resetAfterTest(true);
+
+        $generator = self::getDataGenerator();
+        $course = $generator->create_course();
+        $firstteacher = $generator->create_user(['firstname' => 'Ana', 'lastname' => 'Lima']);
+        $secondteacher = $generator->create_user(['firstname' => 'Maria', 'lastname' => 'Santos']);
+        $generator->enrol_user($firstteacher->id, $course->id, 'editingteacher');
+        $generator->enrol_user($secondteacher->id, $course->id, 'editingteacher');
+
+        $viewmodel = (new course_card_mapper())->map($course);
+
+        self::assertCount(2, $viewmodel['displayteachers']);
+        self::assertSame('Ana L.', $viewmodel['displayteachers'][0]['shortname']);
+        self::assertSame('Maria S.', $viewmodel['displayteachers'][1]['shortname']);
+        self::assertSame('Ana L., Maria S.', $viewmodel['teacherdisplayname']);
+    }
+
+    /**
+     * Three or more teachers show the first two and keep the existing others suffix.
+     */
+    public function test_maps_three_teachers_to_first_two_plus_others(): void {
+        $this->resetAfterTest(true);
+
+        $generator = self::getDataGenerator();
+        $course = $generator->create_course();
+        $firstteacher = $generator->create_user(['firstname' => 'Ana', 'lastname' => 'Lima']);
+        $secondteacher = $generator->create_user(['firstname' => 'João', 'lastname' => 'Rocha']);
+        $thirdteacher = $generator->create_user(['firstname' => 'Maria', 'lastname' => 'Santos']);
+        $generator->enrol_user($firstteacher->id, $course->id, 'editingteacher');
+        $generator->enrol_user($secondteacher->id, $course->id, 'editingteacher');
+        $generator->enrol_user($thirdteacher->id, $course->id, 'editingteacher');
+
+        $viewmodel = (new course_card_mapper())->map($course);
+
+        self::assertCount(2, $viewmodel['displayteachers']);
+        self::assertSame(
+            'Ana L., João R. ' . get_string('others', 'block_coursecardsuems', 1),
+            $viewmodel['teacherdisplayname']
+        );
+    }
+
+    /**
+     * Moodle profile pictures are used only when the user has a custom profile picture.
+     */
+    public function test_uses_profile_picture_only_when_user_has_custom_picture(): void {
+        $this->resetAfterTest(true);
+
+        $generator = self::getDataGenerator();
+        $course = $generator->create_course();
+        $teacher = $generator->create_user(['firstname' => 'Foto', 'lastname' => 'Perfil', 'picture' => 1]);
+        $generator->enrol_user($teacher->id, $course->id, 'editingteacher');
+
+        $viewmodel = (new course_card_mapper())->map($course);
+
+        self::assertTrue($viewmodel['displayteachers'][0]['hasavatarurl']);
+        self::assertNotSame('', $viewmodel['displayteachers'][0]['avatarurl']);
     }
 
     /**

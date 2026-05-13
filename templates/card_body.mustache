@@ -21,13 +21,21 @@
     </div>
     <div class="coursecardsuems-footerline">
         <div class="coursecardsuems-teacher">
-            <span class="coursecardsuems-avatar" aria-hidden="true">{{firstteacherinitials}}</span>
+            <span class="coursecardsuems-avatar-stack" aria-hidden="true">
+                {{#displayteachers}}
+                    <span class="coursecardsuems-avatar {{avatarcolorclass}}">
+                        {{#hasavatarurl}}
+                            <img class="coursecardsuems-avatar-img" src="{{avatarurl}}" alt="" aria-hidden="true">
+                        {{/hasavatarurl}}
+                        {{^hasavatarurl}}
+                            {{initials}}
+                        {{/hasavatarurl}}
+                    </span>
+                {{/displayteachers}}
+            </span>
             <span class="coursecardsuems-teacher-text">
                 <span class="coursecardsuems-teacher-label">{{#str}}teacher, block_coursecardsuems{{/str}}</span>
-                <span class="coursecardsuems-teacher-name">{{firstteachername}}</span>
-                {{#hasteacherextra}}
-                    <span class="coursecardsuems-teacher-extra">{{teacherextra}}</span>
-                {{/hasteacherextra}}
+                <span class="coursecardsuems-teacher-name">{{teacherdisplayname}}</span>
             </span>
         </div>
         {{#period.showdates}}
