@@ -59,6 +59,17 @@ class block_coursecardsuems extends block_base {
     }
 
     /**
+     * Declares that this block has site-level settings.
+     *
+     * Moodle only loads blocks/{plugin}/settings.php when has_config() returns true.
+     *
+     * @return bool
+     */
+    public function has_config() {
+        return true;
+    }
+
+    /**
      * Builds the block content.
      *
      * @return stdClass
