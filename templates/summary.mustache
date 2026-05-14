@@ -25,6 +25,8 @@
     * semesterlabel    - semester identifier, e.g. "2026/1"
     * hassections      - whether sections array is non-empty
     * sections         - array of status sections (key, title, count, isopen, isgrid, islist, hascourses, courses, emptytext)
+    * hasperspectives  - whether the perspective switcher should be rendered
+    * perspectives     - array of perspective options (key, label, count, isdefault)
 
     Example context (json):
     {
@@ -46,6 +48,22 @@
             <span class="coursecardsuems-sem-value">{{semesterlabel}}</span>
         </div>
     {{/hassemesterlabel}}
+
+    {{#hasperspectives}}
+        <div class="coursecardsuems-perspectives" aria-label="{{#str}}perspectives, block_coursecardsuems{{/str}}">
+            <span class="coursecardsuems-perspectives-label">{{#str}}viewas, block_coursecardsuems{{/str}}</span>
+            <div class="coursecardsuems-perspective-options" role="list">
+                {{#perspectives}}
+                    <span class="coursecardsuems-perspective{{#isdefault}} is-active{{/isdefault}}"
+                          role="listitem"
+                          data-perspective-key="{{key}}">
+                        {{label}}
+                        <span class="coursecardsuems-perspective-count" aria-hidden="true">{{count}}</span>
+                    </span>
+                {{/perspectives}}
+            </div>
+        </div>
+    {{/hasperspectives}}
 
     {{#hassections}}
         <div class="coursecardsuems-tabs" role="tablist" aria-label="{{#str}}pluginname, block_coursecardsuems{{/str}}">

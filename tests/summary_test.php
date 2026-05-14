@@ -79,6 +79,38 @@ final class summary_test extends \advanced_testcase {
     }
 
     /**
+     * Multiple perspectives are exported for the visual switcher.
+     */
+    public function test_exports_perspective_switcher_data(): void {
+        global $PAGE;
+
+        $perspectives = [
+            ['key' => 'student', 'label' => 'Aluno', 'count' => 1, 'isdefault' => false],
+            ['key' => 'teacher', 'label' => 'Docente', 'count' => 2, 'isdefault' => true],
+        ];
+
+        $data = (new summary([], '2026/1', $perspectives))->export_for_template($PAGE->get_renderer('core'));
+
+        self::assertTrue($data->hasperspectives);
+        self::assertSame($perspectives, $data->perspectives);
+    }
+
+    /**
+     * A single perspective does not render the visual switcher.
+     */
+    public function test_does_not_export_switcher_for_single_perspective(): void {
+        global $PAGE;
+
+        $perspectives = [
+            ['key' => 'student', 'label' => 'Aluno', 'count' => 1, 'isdefault' => true],
+        ];
+
+        $data = (new summary([], '2026/1', $perspectives))->export_for_template($PAGE->get_renderer('core'));
+
+        self::assertFalse($data->hasperspectives);
+    }
+
+    /**
      * Empty sections are still exported so the UI structure stays stable.
      */
     public function test_exports_empty_sections(): void {

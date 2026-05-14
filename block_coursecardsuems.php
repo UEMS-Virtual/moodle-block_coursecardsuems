@@ -93,6 +93,7 @@ class block_coursecardsuems extends block_base {
         $issiteadmin = is_siteadmin();
         $sourcecourses = $issiteadmin ? $repository->get_all_courses() : $repository->get_enrolled_courses_for_current_user();
         $courses = $coursefilter->filter_current_semester_distance_courses($sourcecourses, $semesterlabel, $issiteadmin);
+        $perspectives = (new \block_coursecardsuems\local\user_perspective_resolver())->resolve($courses, null, $issiteadmin);
         $courses = $accessfilter->filter_courses_for_current_user($courses, $issiteadmin);
 
         if (empty($courses) && !$issiteadmin) {
@@ -123,7 +124,7 @@ class block_coursecardsuems extends block_base {
         });
 
         $renderer = $PAGE->get_renderer('block_coursecardsuems');
-        $summary = new \block_coursecardsuems\output\summary($courses, $semesterlabel);
+        $summary = new \block_coursecardsuems\output\summary($courses, $semesterlabel, $perspectives);
 
         $this->content->text = '';
         if ($issiteadmin && \block_coursecardsuems\local\current_semester::has_invalid_custom_window()) {

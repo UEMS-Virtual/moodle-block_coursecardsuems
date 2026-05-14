@@ -60,6 +60,70 @@
     --uems-stripe-closed: #9ca3af;
 }
 
+/* ─── Alternador discreto de perspectiva ─────────────────────────────────── */
+.block_coursecardsuems .coursecardsuems-perspectives {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem .75rem;
+    margin: -.35rem 0 1rem;
+}
+
+.block_coursecardsuems .coursecardsuems-perspectives-label {
+    font-size: .7rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+.block_coursecardsuems .coursecardsuems-perspective-options {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: .35rem;
+}
+
+.block_coursecardsuems .coursecardsuems-perspective {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .35rem .65rem;
+    border: 1px solid #dbe3ef;
+    border-radius: 999px;
+    background: #fff;
+    color: #64748b;
+    font-size: .78rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.block_coursecardsuems .coursecardsuems-perspective.is-active {
+    border-color: rgba(15, 76, 138, .22);
+    background: rgba(15, 76, 138, .08);
+    color: var(--uems-primary);
+}
+
+.block_coursecardsuems .coursecardsuems-perspective-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.15rem;
+    height: 1.15rem;
+    padding: 0 .28rem;
+    border-radius: 999px;
+    background: #e2e8f0;
+    color: #64748b;
+    font-size: .65rem;
+    font-weight: 800;
+}
+
+.block_coursecardsuems .coursecardsuems-perspective.is-active .coursecardsuems-perspective-count {
+    background: var(--uems-primary);
+    color: #fff;
+}
+
 /* ─── Abas de navegação (tabs) ────────────────────────────────────────────── */
 .block_coursecardsuems .coursecardsuems-tabs {
     display: flex;
