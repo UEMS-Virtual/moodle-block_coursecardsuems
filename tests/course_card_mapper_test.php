@@ -61,6 +61,7 @@ final class course_card_mapper_test extends \advanced_testcase {
         self::assertSame('Graduação', $viewmodel['filterlevel']);
         self::assertSame('Licenciatura em Ciências Sociais', $viewmodel['filtercourse']);
         self::assertSame('Turma 2024', $viewmodel['filtergroup']);
+        self::assertSame(get_string('offerreoferta', 'block_coursecardsuems'), $viewmodel['filteroffer']);
         self::assertSame(course_status_resolver::OPEN, $viewmodel['status']);
         self::assertSame(get_string('open', 'block_coursecardsuems'), $viewmodel['statuslabel']);
         self::assertSame('coursecardsuems-status-open', $viewmodel['statusclass']);

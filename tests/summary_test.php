@@ -117,8 +117,8 @@ final class summary_test extends \advanced_testcase {
         global $PAGE;
 
         $courses = [
-            ['title' => 'A', 'status' => course_status_resolver::OPEN, 'filterlevel' => 'Graduação', 'filtercourse' => 'Ciências Sociais', 'filtergroup' => 'Turma 2024'],
-            ['title' => 'B', 'status' => course_status_resolver::OPEN, 'filterlevel' => 'Graduação', 'filtercourse' => 'Pedagogia', 'filtergroup' => 'Turma 2025'],
+            ['title' => 'A', 'status' => course_status_resolver::OPEN, 'filterlevel' => 'Graduação', 'filtercourse' => 'Ciências Sociais', 'filtergroup' => 'Turma 2024', 'filteroffer' => 'Oferta regular'],
+            ['title' => 'B', 'status' => course_status_resolver::OPEN, 'filterlevel' => 'Graduação', 'filtercourse' => 'Pedagogia', 'filtergroup' => 'Turma 2025', 'filteroffer' => 'Reoferta'],
         ];
         $perspectives = [
             ['key' => 'teacher', 'label' => 'Docente', 'count' => 2, 'isactive' => true],
@@ -127,9 +127,10 @@ final class summary_test extends \advanced_testcase {
         $data = (new summary($courses, '2026/1', $perspectives))->export_for_template($PAGE->get_renderer('core'));
 
         self::assertTrue($data->hasfilters);
-        self::assertCount(2, $data->filters);
+        self::assertCount(3, $data->filters);
         self::assertSame('course', $data->filters[0]['key']);
         self::assertSame('group', $data->filters[1]['key']);
+        self::assertSame('offer', $data->filters[2]['key']);
     }
 
     /**
@@ -139,8 +140,8 @@ final class summary_test extends \advanced_testcase {
         global $PAGE;
 
         $courses = [
-            ['title' => 'A', 'status' => course_status_resolver::OPEN, 'filterlevel' => 'Graduação', 'filtercourse' => 'Ciências Sociais', 'filtergroup' => 'Turma 2024'],
-            ['title' => 'B', 'status' => course_status_resolver::OPEN, 'filterlevel' => 'Pós-Graduação', 'filtercourse' => 'Gestão', 'filtergroup' => 'Turma 2025'],
+            ['title' => 'A', 'status' => course_status_resolver::OPEN, 'filterlevel' => 'Graduação', 'filtercourse' => 'Ciências Sociais', 'filtergroup' => 'Turma 2024', 'filteroffer' => 'Oferta regular'],
+            ['title' => 'B', 'status' => course_status_resolver::OPEN, 'filterlevel' => 'Pós-Graduação', 'filtercourse' => 'Gestão', 'filtergroup' => 'Turma 2025', 'filteroffer' => 'Reoferta'],
         ];
         $perspectives = [
             ['key' => 'student', 'label' => 'Aluno', 'count' => 2, 'isactive' => true],

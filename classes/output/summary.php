@@ -102,6 +102,10 @@ class summary implements renderable, templatable {
                 'label' => get_string('filtergroup', 'block_coursecardsuems'),
                 'field' => 'filtergroup',
             ],
+            'offer' => [
+                'label' => get_string('filteroffer', 'block_coursecardsuems'),
+                'field' => 'filteroffer',
+            ],
         ];
 
         $filters = [];

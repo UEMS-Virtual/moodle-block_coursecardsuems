@@ -142,6 +142,8 @@ class course_card_mapper {
             'filterlevel' => $filtermetadata['level'],
             'filtercourse' => $filtermetadata['course'],
             'filtergroup' => $filtermetadata['group'],
+            'filteroffer' => $isreoferta ? get_string('offerreoferta', 'block_coursecardsuems') :
+                get_string('offerregular', 'block_coursecardsuems'),
             'status' => $status,
             'statuslabel' => $this->statusresolver->get_label($status),
             'hasmissingperiodwarning' => $missingperiod,

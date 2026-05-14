@@ -31,7 +31,7 @@ const SEL_TAB     = '[role="tab"]';
 const SEL_PANEL   = '[role="tabpanel"]';
 const SEL_FILTER  = '[data-filter-key]';
 const SEL_CARD    = '.coursecardsuems-card';
-const FILTER_ORDER = ['level', 'course', 'group'];
+const FILTER_ORDER = ['level', 'course', 'group', 'offer'];
 
 /**
  * Activates the tab matching key and hides all others.
