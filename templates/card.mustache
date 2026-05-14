@@ -46,6 +46,9 @@
 <a class="coursecardsuems-card {{#isclosed}}coursecardsuems-card-closed{{/isclosed}}"
    href="{{url}}"
    aria-label="{{linklabel}}"
+   data-filter-level="{{filterlevel}}"
+   data-filter-course="{{filtercourse}}"
+   data-filter-group="{{filtergroup}}"
    {{#hasstripecolor}}style="{{stripecolorstyle}}"{{/hasstripecolor}}>
     {{> block_coursecardsuems/card_body}}
 </a>
@@ -53,6 +56,9 @@
 {{^hasurl}}
 <article class="coursecardsuems-card coursecardsuems-card-disabled {{#isclosed}}coursecardsuems-card-closed{{/isclosed}}"
          aria-disabled="true"
+         data-filter-level="{{filterlevel}}"
+         data-filter-course="{{filtercourse}}"
+         data-filter-group="{{filtergroup}}"
          {{#hasstripecolor}}style="{{stripecolorstyle}}"{{/hasstripecolor}}>
     {{> block_coursecardsuems/card_body}}
 </article>

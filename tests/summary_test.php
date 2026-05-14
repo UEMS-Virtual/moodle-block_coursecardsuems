@@ -111,6 +111,47 @@ final class summary_test extends \advanced_testcase {
     }
 
     /**
+     * Dynamic filters are exported only for staff/admin perspectives and multiple values.
+     */
+    public function test_exports_dynamic_filters_for_staff_perspectives(): void {
+        global $PAGE;
+
+        $courses = [
+            ['title' => 'A', 'status' => course_status_resolver::OPEN, 'filterlevel' => 'Graduação', 'filtercourse' => 'Ciências Sociais', 'filtergroup' => 'Turma 2024'],
+            ['title' => 'B', 'status' => course_status_resolver::OPEN, 'filterlevel' => 'Graduação', 'filtercourse' => 'Pedagogia', 'filtergroup' => 'Turma 2025'],
+        ];
+        $perspectives = [
+            ['key' => 'teacher', 'label' => 'Docente', 'count' => 2, 'isactive' => true],
+        ];
+
+        $data = (new summary($courses, '2026/1', $perspectives))->export_for_template($PAGE->get_renderer('core'));
+
+        self::assertTrue($data->hasfilters);
+        self::assertCount(2, $data->filters);
+        self::assertSame('course', $data->filters[0]['key']);
+        self::assertSame('group', $data->filters[1]['key']);
+    }
+
+    /**
+     * Dynamic filters are not exported for the student perspective.
+     */
+    public function test_does_not_export_dynamic_filters_for_student_perspective(): void {
+        global $PAGE;
+
+        $courses = [
+            ['title' => 'A', 'status' => course_status_resolver::OPEN, 'filterlevel' => 'Graduação', 'filtercourse' => 'Ciências Sociais', 'filtergroup' => 'Turma 2024'],
+            ['title' => 'B', 'status' => course_status_resolver::OPEN, 'filterlevel' => 'Pós-Graduação', 'filtercourse' => 'Gestão', 'filtergroup' => 'Turma 2025'],
+        ];
+        $perspectives = [
+            ['key' => 'student', 'label' => 'Aluno', 'count' => 2, 'isactive' => true],
+        ];
+
+        $data = (new summary($courses, '2026/1', $perspectives))->export_for_template($PAGE->get_renderer('core'));
+
+        self::assertFalse($data->hasfilters);
+    }
+
+    /**
      * Empty sections are still exported so the UI structure stays stable.
      */
     public function test_exports_empty_sections(): void {

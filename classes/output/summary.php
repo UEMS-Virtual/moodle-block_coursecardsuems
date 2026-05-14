@@ -73,8 +73,107 @@ class summary implements renderable, templatable {
         $data->hassemesterlabel = trim($this->semesterlabel) !== '';
         $data->perspectives = $this->perspectives;
         $data->hasperspectives = count($this->perspectives) > 1;
+        $data->filters = $this->get_filters();
+        $data->hasfilters = !empty($data->filters);
 
         return $data;
+    }
+
+    /**
+     * Builds dynamic filter definitions from the active course set.
+     *
+     * @return array Filter definitions.
+     */
+    private function get_filters(): array {
+        if (!$this->should_show_filters()) {
+            return [];
+        }
+
+        $definitions = [
+            'level' => [
+                'label' => get_string('filterlevel', 'block_coursecardsuems'),
+                'field' => 'filterlevel',
+            ],
+            'course' => [
+                'label' => get_string('filtercourse', 'block_coursecardsuems'),
+                'field' => 'filtercourse',
+            ],
+            'group' => [
+                'label' => get_string('filtergroup', 'block_coursecardsuems'),
+                'field' => 'filtergroup',
+            ],
+        ];
+
+        $filters = [];
+        foreach ($definitions as $key => $definition) {
+            $values = [];
+            foreach ($this->courses as $course) {
+                $value = trim((string) ($course[$definition['field']] ?? ''));
+                if ($value !== '') {
+                    $values[$value] = $value;
+                }
+            }
+
+            if (count($values) <= 1) {
+                continue;
+            }
+
+            natcasesort($values);
+            $options = [[
+                'value' => '',
+                'label' => get_string('filterall', 'block_coursecardsuems'),
+                'selected' => true,
+            ]];
+            foreach ($values as $value) {
+                $options[] = [
+                    'value' => $value,
+                    'label' => $value,
+                    'selected' => false,
+                ];
+            }
+
+            $filters[] = [
+                'key' => $key,
+                'label' => $definition['label'],
+                'options' => $options,
+            ];
+        }
+
+        return $filters;
+    }
+
+    /**
+     * Returns whether dynamic filters should be shown for the selected perspective.
+     *
+     * @return bool
+     */
+    private function should_show_filters(): bool {
+        $active = null;
+        foreach ($this->perspectives as $perspective) {
+            if (!empty($perspective['isactive'])) {
+                $active = $perspective;
+                break;
+            }
+        }
+
+        if ($active === null) {
+            foreach ($this->perspectives as $perspective) {
+                if (!empty($perspective['isdefault'])) {
+                    $active = $perspective;
+                    break;
+                }
+            }
+        }
+
+        if ($active === null) {
+            return false;
+        }
+
+        return in_array($active['key'], [
+            \block_coursecardsuems\local\user_perspective_resolver::TUTOR,
+            \block_coursecardsuems\local\user_perspective_resolver::TEACHER,
+            \block_coursecardsuems\local\user_perspective_resolver::ADMIN,
+        ], true);
     }
 
     /**

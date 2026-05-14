@@ -100,6 +100,7 @@ class course_card_mapper {
         [$code, $title] = $this->extract_display_title(get_course_display_name_for_list($course));
         $group = $this->shortnameparser->get_compact_group($course->shortname ?? '');
         $series = $this->categoryparser->get_series_name($course->category ?? 0);
+        $filtermetadata = $this->categoryparser->get_filter_metadata($course->category ?? 0);
         $isreoferta = $this->shortnameparser->is_reoferta($course->shortname ?? '');
         $supertitleparts = array_filter([$group, $series]);
         $supertitle = implode(' · ', $supertitleparts);
@@ -138,6 +139,9 @@ class course_card_mapper {
                 'startlabel' => $this->format_date($period->startdate),
                 'endlabel' => $this->format_date($period->enddate),
             ],
+            'filterlevel' => $filtermetadata['level'],
+            'filtercourse' => $filtermetadata['course'],
+            'filtergroup' => $filtermetadata['group'],
             'status' => $status,
             'statuslabel' => $this->statusresolver->get_label($status),
             'hasmissingperiodwarning' => $missingperiod,

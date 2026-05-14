@@ -38,6 +38,9 @@ class category_parser {
     /** @var array Cache of distance checks by category id. */
     private $distancecache = [];
 
+    /** @var array Cache of filter metadata by category id. */
+    private $filtermetadatacache = [];
+
     /**
      * Returns whether a category belongs to the EaD branch.
      *
@@ -81,6 +84,73 @@ class category_parser {
 
         $this->distancecache[$categoryid] = $isdistance;
         return $isdistance;
+    }
+
+    /**
+     * Returns category metadata used by dynamic filters.
+     *
+     * In the EaD category layout:
+     * - level is the category immediately above "Distância";
+     * - course is the first category below "Distância";
+     * - group is the category below course whose name starts with "Turma".
+     *
+     * @param int $categoryid Course category id.
+     * @return array{level:string,course:string,group:string}
+     */
+    public function get_filter_metadata($categoryid): array {
+        $categoryid = (int) $categoryid;
+        if (array_key_exists($categoryid, $this->filtermetadatacache)) {
+            return $this->filtermetadatacache[$categoryid];
+        }
+
+        $metadata = [
+            'level' => '',
+            'course' => '',
+            'group' => '',
+        ];
+
+        try {
+            $category = core_course_category::get($categoryid, IGNORE_MISSING, true);
+            if (!$category) {
+                $this->filtermetadatacache[$categoryid] = $metadata;
+                return $metadata;
+            }
+
+            $pathids = array_values(array_filter(explode('/', trim($category->path, '/'))));
+            $pathnames = [];
+            foreach ($pathids as $pathid) {
+                $pathcategory = core_course_category::get((int) $pathid, IGNORE_MISSING, true);
+                if (!$pathcategory) {
+                    continue;
+                }
+                $pathnames[] = trim(strip_tags($pathcategory->get_formatted_name()));
+            }
+
+            foreach ($pathnames as $index => $name) {
+                if (core_text::strtolower($name) !== 'distância') {
+                    continue;
+                }
+
+                $metadata['level'] = $pathnames[$index - 1] ?? '';
+                $metadata['course'] = $pathnames[$index + 1] ?? '';
+                for ($i = $index + 2; $i < count($pathnames); $i++) {
+                    if (preg_match('/^turma\b/iu', $pathnames[$i]) === 1) {
+                        $metadata['group'] = $pathnames[$i];
+                        break;
+                    }
+                }
+                break;
+            }
+        } catch (moodle_exception $exception) {
+            $metadata = [
+                'level' => '',
+                'course' => '',
+                'group' => '',
+            ];
+        }
+
+        $this->filtermetadatacache[$categoryid] = $metadata;
+        return $metadata;
     }
 
     /**

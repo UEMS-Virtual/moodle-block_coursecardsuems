@@ -29,6 +29,8 @@ const STORAGE_KEY = 'block_coursecardsuems_active_tab';
 const SEL_ROOT    = '[data-section-tabs]';
 const SEL_TAB     = '[role="tab"]';
 const SEL_PANEL   = '[role="tabpanel"]';
+const SEL_FILTER  = '[data-filter-key]';
+const SEL_CARD    = '.coursecardsuems-card';
 
 /**
  * Activates the tab matching key and hides all others.
@@ -67,6 +69,38 @@ const activate = (root, key) => {
     } catch (_) {
         // Private browsing or storage quota — silently ignore.
     }
+};
+
+/**
+ * Applies dynamic course filters inside one block instance.
+ *
+ * @param {HTMLElement} root
+ */
+const applyFilters = root => {
+    const filters = [...root.querySelectorAll(SEL_FILTER)];
+    const activeFilters = {};
+    filters.forEach(filter => {
+        if (filter.value) {
+            activeFilters[filter.dataset.filterKey] = filter.value;
+        }
+    });
+
+    root.querySelectorAll(SEL_CARD).forEach(card => {
+        const visible = Object.entries(activeFilters).every(([key, value]) => card.dataset[`filter${key.charAt(0).toUpperCase()}${key.slice(1)}`] === value);
+        card.toggleAttribute('hidden', !visible);
+    });
+
+    root.querySelectorAll(SEL_PANEL).forEach(panel => {
+        const visibleCards = panel.querySelectorAll(`${SEL_CARD}:not([hidden])`);
+        const empty = panel.querySelector('.coursecardsuems-empty');
+        const list = panel.querySelector('.coursecardsuems-grid, .coursecardsuems-list');
+        if (empty) {
+            empty.toggleAttribute('hidden', visibleCards.length > 0);
+        }
+        if (list) {
+            list.toggleAttribute('hidden', visibleCards.length === 0);
+        }
+    });
 };
 
 /**
@@ -125,5 +159,10 @@ export const init = () => {
             tab.addEventListener('click', () => activate(root, tab.dataset.key));
             tab.addEventListener('keydown', e => handleKeydown(root, e));
         });
+
+        root.querySelectorAll(SEL_FILTER).forEach(filter => {
+            filter.addEventListener('change', () => applyFilters(root));
+        });
+        applyFilters(root);
     });
 };

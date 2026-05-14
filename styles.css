@@ -132,6 +132,42 @@
     color: #fff;
 }
 
+/* ─── Filtros dinâmicos ───────────────────────────────────────────────────── */
+.block_coursecardsuems .coursecardsuems-filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: .55rem;
+    margin: 0 0 1rem;
+}
+
+.block_coursecardsuems .coursecardsuems-filter {
+    display: inline-flex;
+    flex-direction: column;
+    gap: .2rem;
+    min-width: min(12rem, 100%);
+    margin: 0;
+}
+
+.block_coursecardsuems .coursecardsuems-filter-label {
+    font-size: .65rem;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+.block_coursecardsuems .coursecardsuems-filter-select {
+    max-width: 100%;
+    min-height: 2.15rem;
+    border: 1px solid #dbe3ef;
+    border-radius: .55rem;
+    background: #fff;
+    color: #334155;
+    font-size: .82rem;
+    font-weight: 650;
+}
+
 /* ─── Abas de navegação (tabs) ────────────────────────────────────────────── */
 .block_coursecardsuems .coursecardsuems-tabs {
     display: flex;

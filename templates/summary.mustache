@@ -66,6 +66,21 @@
         </div>
     {{/hasperspectives}}
 
+    {{#hasfilters}}
+        <div class="coursecardsuems-filters" data-coursecardsuems-filters>
+            {{#filters}}
+                <label class="coursecardsuems-filter">
+                    <span class="coursecardsuems-filter-label">{{label}}</span>
+                    <select class="coursecardsuems-filter-select" data-filter-key="{{key}}">
+                        {{#options}}
+                            <option value="{{value}}"{{#selected}} selected{{/selected}}>{{label}}</option>
+                        {{/options}}
+                    </select>
+                </label>
+            {{/filters}}
+        </div>
+    {{/hasfilters}}
+
     {{#hassections}}
         <div class="coursecardsuems-tabs" role="tablist" aria-label="{{#str}}pluginname, block_coursecardsuems{{/str}}">
             {{#sections}}

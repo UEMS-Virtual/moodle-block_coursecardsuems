@@ -33,8 +33,11 @@ final class course_card_mapper_test extends \advanced_testcase {
         $this->create_period_fields();
 
         $generator = self::getDataGenerator();
-        $distancecategory = $generator->create_category(['name' => 'Distância']);
-        $series = $generator->create_category(['name' => '2ª Série', 'parent' => $distancecategory->id]);
+        $levelcategory = $generator->create_category(['name' => 'Graduação']);
+        $distancecategory = $generator->create_category(['name' => 'Distância', 'parent' => $levelcategory->id]);
+        $coursecategory = $generator->create_category(['name' => 'Licenciatura em Ciências Sociais', 'parent' => $distancecategory->id]);
+        $groupcategory = $generator->create_category(['name' => 'Turma 2024', 'parent' => $coursecategory->id]);
+        $series = $generator->create_category(['name' => '2ª Série', 'parent' => $groupcategory->id]);
         $start = make_timestamp(2026, 3, 1);
         $end = make_timestamp(2026, 4, 1);
         $course = $generator->create_course([
@@ -55,6 +58,9 @@ final class course_card_mapper_test extends \advanced_testcase {
         self::assertSame('Economia Política', $viewmodel['title']);
         self::assertSame('CISOL-23', $viewmodel['group']);
         self::assertSame('2ª Série', $viewmodel['series']);
+        self::assertSame('Graduação', $viewmodel['filterlevel']);
+        self::assertSame('Licenciatura em Ciências Sociais', $viewmodel['filtercourse']);
+        self::assertSame('Turma 2024', $viewmodel['filtergroup']);
         self::assertSame(course_status_resolver::OPEN, $viewmodel['status']);
         self::assertSame(get_string('open', 'block_coursecardsuems'), $viewmodel['statuslabel']);
         self::assertSame('coursecardsuems-status-open', $viewmodel['statusclass']);
