@@ -36,6 +36,7 @@ $string['filtercourse'] = 'Curso';
 $string['filtergroup'] = 'Turma';
 $string['filterlevel'] = 'Nível';
 $string['filteroffer'] = 'Tipo';
+$string['clearfilters'] = 'Limpar filtros';
 $string['offerregular'] = 'Oferta';
 $string['offerreoferta'] = 'Reoferta';
 $string['coursecardsuems:addinstance'] = 'Adicionar bloco Disciplinas EaD UEMS';

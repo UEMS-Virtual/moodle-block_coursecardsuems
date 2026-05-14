@@ -78,6 +78,14 @@
                     </select>
                 </label>
             {{/filters}}
+            <button class="coursecardsuems-filter-reset"
+                    type="button"
+                    data-filter-reset
+                    disabled
+                    title="{{#str}}clearfilters, block_coursecardsuems{{/str}}"
+                    aria-label="{{#str}}clearfilters, block_coursecardsuems{{/str}}">
+                <i class="fa-solid fa-filter-circle-xmark" aria-hidden="true"></i>
+            </button>
         </div>
     {{/hasfilters}}
 

@@ -168,6 +168,33 @@
     font-weight: 650;
 }
 
+.block_coursecardsuems .coursecardsuems-filter-reset {
+    align-self: flex-end;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.15rem;
+    height: 2.15rem;
+    border: 1px solid #dbe3ef;
+    border-radius: 999px;
+    background: #fff;
+    color: #64748b;
+    font-size: .92rem;
+    transition: background .15s ease, border-color .15s ease, color .15s ease, opacity .15s ease;
+}
+
+.block_coursecardsuems .coursecardsuems-filter-reset:hover:not(:disabled),
+.block_coursecardsuems .coursecardsuems-filter-reset:focus-visible:not(:disabled) {
+    border-color: rgba(15, 76, 138, .28);
+    background: rgba(15, 76, 138, .08);
+    color: var(--uems-primary);
+}
+
+.block_coursecardsuems .coursecardsuems-filter-reset:disabled {
+    opacity: .38;
+    cursor: default;
+}
+
 /* ─── Abas de navegação (tabs) ────────────────────────────────────────────── */
 .block_coursecardsuems .coursecardsuems-tabs {
     display: flex;

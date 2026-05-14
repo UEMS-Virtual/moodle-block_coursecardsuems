@@ -30,6 +30,7 @@ const SEL_ROOT    = '[data-section-tabs]';
 const SEL_TAB     = '[role="tab"]';
 const SEL_PANEL   = '[role="tabpanel"]';
 const SEL_FILTER  = '[data-filter-key]';
+const SEL_FILTER_RESET = '[data-filter-reset]';
 const SEL_CARD    = '.coursecardsuems-card';
 const FILTER_ORDER = ['level', 'course', 'group', 'offer'];
 
@@ -155,6 +156,11 @@ const applyFilters = root => {
         }
     });
 
+    const reset = root.querySelector(SEL_FILTER_RESET);
+    if (reset) {
+        reset.disabled = Object.keys(activeFilters).length === 0;
+    }
+
     root.querySelectorAll(SEL_CARD).forEach(card => {
         const visible = cardMatchesFilters(card, activeFilters);
         card.toggleAttribute('hidden', !visible);
@@ -238,6 +244,16 @@ export const init = () => {
         root.querySelectorAll(SEL_FILTER).forEach(filter => {
             filter.addEventListener('change', () => applyFilters(root));
         });
+
+        root.querySelectorAll(SEL_FILTER_RESET).forEach(reset => {
+            reset.addEventListener('click', () => {
+                root.querySelectorAll(SEL_FILTER).forEach(filter => {
+                    filter.value = '';
+                });
+                applyFilters(root);
+            });
+        });
+
         applyFilters(root);
     });
 };
