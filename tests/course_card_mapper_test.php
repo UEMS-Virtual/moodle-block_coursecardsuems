@@ -283,6 +283,8 @@ final class course_card_mapper_test extends \advanced_testcase {
 
         $viewmodel = (new course_card_mapper())->map($course);
 
+        self::assertSame(course_status_resolver::NODATE, $viewmodel['status']);
+        self::assertSame(get_string('nodate', 'block_coursecardsuems'), $viewmodel['statuslabel']);
         self::assertTrue($viewmodel['hasmissingperiodwarning']);
         self::assertTrue($viewmodel['period']['missingperiod']);
         self::assertSame(get_string('missingperiod', 'block_coursecardsuems'), $viewmodel['period']['label']);

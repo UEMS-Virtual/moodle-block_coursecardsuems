@@ -109,6 +109,7 @@ class block_coursecardsuems extends block_base {
                     \block_coursecardsuems\local\course_status_resolver::OPEN => 0,
                     \block_coursecardsuems\local\course_status_resolver::COMINGSOON => 1,
                     \block_coursecardsuems\local\course_status_resolver::CLOSED => 2,
+                    \block_coursecardsuems\local\course_status_resolver::NODATE => 3,
                 ];
                 return $order[$a['status']] <=> $order[$b['status']];
             }

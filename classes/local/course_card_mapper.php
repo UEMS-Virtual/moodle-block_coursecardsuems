@@ -88,12 +88,14 @@ class course_card_mapper {
      */
     public function map(object $course, bool $canaccesshidden = false): array {
         $period = $this->periodreader->get_period((int) $course->id);
-        $temporalstatus = $this->statusresolver->resolve($period, $course, $this->now);
+        $hascompleteperiod = $period->has_complete_range();
+        $temporalstatus = $hascompleteperiod ? $this->statusresolver->resolve($period, $course, $this->now) :
+            course_status_resolver::NODATE;
         $isvisible = !property_exists($course, 'visible') || (bool) $course->visible;
         $status = $this->get_display_status($temporalstatus, $isvisible);
         $isclickable = $this->is_clickable($status, $isvisible, $canaccesshidden);
         $ispreparing = !$isvisible && $temporalstatus === course_status_resolver::OPEN;
-        $missingperiod = !$period->has_any_date();
+        $missingperiod = !$hascompleteperiod;
         $context = context_course::instance($course->id);
         [$code, $title] = $this->extract_display_title(get_course_display_name_for_list($course));
         $group = $this->shortnameparser->get_compact_group($course->shortname ?? '');
@@ -127,11 +129,11 @@ class course_card_mapper {
             'supertitle' => $supertitle,
             'hassupertitle' => $supertitle !== '',
             'period' => [
-                'hasperiod' => $period->has_any_date(),
+                'hasperiod' => $hascompleteperiod,
                 'start' => $period->startdate,
                 'end' => $period->enddate,
                 'label' => $this->get_period_label($period, $ispreparing, $missingperiod),
-                'showdates' => $period->has_any_date() && !$ispreparing,
+                'showdates' => $hascompleteperiod && !$ispreparing,
                 'missingperiod' => $missingperiod,
                 'startlabel' => $this->format_date($period->startdate),
                 'endlabel' => $this->format_date($period->enddate),

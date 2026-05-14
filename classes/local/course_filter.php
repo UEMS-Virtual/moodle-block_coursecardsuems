@@ -86,14 +86,33 @@ class course_filter {
             }
 
             $period = $this->periodreader->get_period((int) $course->id);
-            if (!$period->has_any_date()) {
-                return $includeundated;
+            if (!$period->has_complete_range()) {
+                if (!$includeundated) {
+                    return false;
+                }
+
+                return $this->course_dates_overlap_semester($course, $semesterstart, $semesterend);
             }
 
-            $rangestart = $period->startdate ?: $period->enddate;
-            $rangeend = $period->enddate ?: $period->startdate;
-
-            return $rangestart <= $semesterend && $rangeend >= $semesterstart;
+            return $period->startdate <= $semesterend && $period->enddate >= $semesterstart;
         }));
+    }
+
+    /**
+     * Returns whether Moodle's native course date window overlaps the semester.
+     *
+     * @param object $course Course record.
+     * @param int $semesterstart Semester start timestamp.
+     * @param int $semesterend Semester end timestamp.
+     * @return bool
+     */
+    private function course_dates_overlap_semester(object $course, int $semesterstart, int $semesterend): bool {
+        $startdate = (int) ($course->startdate ?? 0);
+        $enddate = (int) ($course->enddate ?? 0);
+        if (empty($startdate) || empty($enddate)) {
+            return false;
+        }
+
+        return $startdate <= $semesterend && $enddate >= $semesterstart;
     }
 }

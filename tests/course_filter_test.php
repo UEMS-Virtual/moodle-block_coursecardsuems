@@ -141,11 +141,60 @@ final class course_filter_test extends \advanced_testcase {
             'category' => $distanceseries->id,
             'fullname' => 'EaD sem datas para auditoria',
             'shortname' => 'EAD_26_1S_NODATES_abc12',
+            'startdate' => make_timestamp(2026, 2, 1),
+            'enddate' => make_timestamp(2026, 8, 5),
         ]);
 
         $filtered = (new course_filter())->filter_current_semester_distance_courses([$course], '2026/1', true);
 
         self::assertSame([(int) $course->id], $this->course_ids($filtered));
+    }
+
+    /**
+     * Admin audit mode excludes undated EaD disciplines whose Moodle window belongs to another semester.
+     */
+    public function test_filter_excludes_course_without_informative_period_outside_current_semester_for_admin_audit(): void {
+        $this->resetAfterTest(true);
+        $this->create_period_fields();
+
+        $generator = self::getDataGenerator();
+        $distancecategory = $generator->create_category(['name' => 'Distância']);
+        $distanceseries = $generator->create_category(['name' => '3ª Série', 'parent' => $distancecategory->id]);
+        $course = $generator->create_course([
+            'category' => $distanceseries->id,
+            'fullname' => 'EaD sem datas de semestre anterior',
+            'shortname' => 'ADMP_21_1S_TA1_(REO)_abc12',
+            'startdate' => make_timestamp(2025, 7, 24, 20, 0),
+            'enddate' => make_timestamp(2026, 1, 4, 20, 0),
+        ]);
+
+        $filtered = (new course_filter())->filter_current_semester_distance_courses([$course], '2026/1', true);
+
+        self::assertSame([], $filtered);
+    }
+
+    /**
+     * Distance courses with incomplete Cronograma da disciplina are excluded for students.
+     */
+    public function test_filter_excludes_course_with_incomplete_informative_period_for_students(): void {
+        $this->resetAfterTest(true);
+        $this->create_period_fields();
+
+        $generator = self::getDataGenerator();
+        $distancecategory = $generator->create_category(['name' => 'Distância']);
+        $distanceseries = $generator->create_category(['name' => '3ª Série', 'parent' => $distancecategory->id]);
+        $course = $generator->create_course([
+            'category' => $distanceseries->id,
+            'fullname' => 'EaD data incompleta',
+            'shortname' => 'EAD_26_1S_INCOMPLETE_abc12',
+            'startdate' => make_timestamp(2026, 2, 1),
+            'enddate' => make_timestamp(2026, 8, 5),
+            'customfield_ead_inicio' => make_timestamp(2026, 3, 1),
+        ]);
+
+        $filtered = (new course_filter())->filter_current_semester_distance_courses([$course], '2026/1');
+
+        self::assertSame([], $filtered);
     }
 
     /**

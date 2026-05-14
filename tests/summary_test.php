@@ -60,6 +60,25 @@ final class summary_test extends \advanced_testcase {
     }
 
     /**
+     * Sem data section is exported only when there are courses without schedule dates.
+     */
+    public function test_exports_nodate_section_when_needed(): void {
+        global $PAGE;
+
+        $courses = [
+            ['title' => 'No date', 'status' => course_status_resolver::NODATE],
+        ];
+
+        $data = (new summary($courses, '2026/1'))->export_for_template($PAGE->get_renderer('core'));
+
+        self::assertCount(4, $data->sections);
+        self::assertSame(get_string('nodateplural', 'block_coursecardsuems'), $data->sections[3]['title']);
+        self::assertFalse($data->sections[3]['isopen']);
+        self::assertSame('list', $data->sections[3]['layout']);
+        self::assertSame('No date', $data->sections[3]['courses'][0]['title']);
+    }
+
+    /**
      * Empty sections are still exported so the UI structure stays stable.
      */
     public function test_exports_empty_sections(): void {

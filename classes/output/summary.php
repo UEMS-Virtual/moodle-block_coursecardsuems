@@ -92,6 +92,12 @@ class summary implements renderable, templatable {
                 'isopen' => false,
                 'layout' => 'list',
             ],
+            course_status_resolver::NODATE => [
+                'title' => get_string('nodateplural', 'block_coursecardsuems'),
+                'isopen' => false,
+                'layout' => 'list',
+                'hidewhenempty' => true,
+            ],
         ];
 
         $grouped = array_fill_keys(array_keys($definitions), []);
@@ -106,6 +112,10 @@ class summary implements renderable, templatable {
         $sections = [];
         foreach ($definitions as $status => $definition) {
             $courses = $grouped[$status];
+            if (!empty($definition['hidewhenempty']) && empty($courses)) {
+                continue;
+            }
+
             $sections[] = [
                 'key' => $status,
                 'title' => $definition['title'],

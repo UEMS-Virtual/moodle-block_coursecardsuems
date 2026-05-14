@@ -40,6 +40,9 @@ class course_status_resolver {
     /** Status: Encerrada. */
     public const CLOSED = 'closed';
 
+    /** Status: Sem data. */
+    public const NODATE = 'nodate';
+
     /**
      * Resolves the current status.
      *
@@ -109,6 +112,10 @@ class course_status_resolver {
 
         if ($status === self::CLOSED) {
             return get_string('closed', 'block_coursecardsuems');
+        }
+
+        if ($status === self::NODATE) {
+            return get_string('nodate', 'block_coursecardsuems');
         }
 
         return get_string('open', 'block_coursecardsuems');
