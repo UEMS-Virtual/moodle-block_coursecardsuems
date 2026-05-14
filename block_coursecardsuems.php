@@ -137,7 +137,11 @@ class block_coursecardsuems extends block_base {
     }
 
     /**
-     * Returns whether the selected perspective should link this course through Moodle access rules.
+     * Returns whether the selected perspective should link this course.
+     *
+     * Staff perspectives intentionally link their assigned rooms even when Moodle may later
+     * deny access. The Moodle denial page is clearer feedback than hiding a potentially
+     * valid room from the staff-facing workload view.
      *
      * @param object $course Course record.
      * @param string $selectedperspective Selected perspective key.
@@ -145,26 +149,16 @@ class block_coursecardsuems extends block_base {
      * @return bool
      */
     private function can_link_course_for_perspective(object $course, string $selectedperspective, bool $issiteadmin): bool {
-        if ($issiteadmin && $selectedperspective === \block_coursecardsuems\local\user_perspective_resolver::ADMIN) {
-            return true;
-        }
-
-        if ($selectedperspective !== \block_coursecardsuems\local\user_perspective_resolver::TUTOR &&
-                $selectedperspective !== \block_coursecardsuems\local\user_perspective_resolver::TEACHER) {
-            return false;
-        }
-
         if (empty($course->id)) {
             return false;
         }
 
-        $context = context_course::instance((int) $course->id);
-        $isvisible = !property_exists($course, 'visible') || (bool) $course->visible;
-        if (!$isvisible) {
-            return has_capability('moodle/course:viewhiddencourses', $context, null, false);
+        if ($issiteadmin && $selectedperspective === \block_coursecardsuems\local\user_perspective_resolver::ADMIN) {
+            return true;
         }
 
-        return has_capability('moodle/course:view', $context, null, false);
+        return $selectedperspective === \block_coursecardsuems\local\user_perspective_resolver::TUTOR ||
+            $selectedperspective === \block_coursecardsuems\local\user_perspective_resolver::TEACHER;
     }
 
     /**
