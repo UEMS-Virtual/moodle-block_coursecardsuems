@@ -137,6 +137,37 @@ class block_coursecardsuems extends block_base {
     }
 
     /**
+     * Returns whether the selected perspective should link this course through Moodle access rules.
+     *
+     * @param object $course Course record.
+     * @param string $selectedperspective Selected perspective key.
+     * @param bool $issiteadmin Whether the user is site admin.
+     * @return bool
+     */
+    private function can_link_course_for_perspective(object $course, string $selectedperspective, bool $issiteadmin): bool {
+        if ($issiteadmin && $selectedperspective === \block_coursecardsuems\local\user_perspective_resolver::ADMIN) {
+            return true;
+        }
+
+        if ($selectedperspective !== \block_coursecardsuems\local\user_perspective_resolver::TUTOR &&
+                $selectedperspective !== \block_coursecardsuems\local\user_perspective_resolver::TEACHER) {
+            return false;
+        }
+
+        if (empty($course->id)) {
+            return false;
+        }
+
+        $context = context_course::instance((int) $course->id);
+        $isvisible = !property_exists($course, 'visible') || (bool) $course->visible;
+        if (!$isvisible) {
+            return has_capability('moodle/course:viewhiddencourses', $context, null, false);
+        }
+
+        return has_capability('moodle/course:view', $context, null, false);
+    }
+
+    /**
      * Builds the block content.
      *
      * @return stdClass
@@ -179,8 +210,9 @@ class block_coursecardsuems extends block_base {
             return $this->content;
         }
 
-        $courses = array_map(static function($course) use ($mapper, $issiteadmin): array {
-            return $mapper->map($course, $issiteadmin);
+        $courses = array_map(function($course) use ($mapper, $issiteadmin, $selectedperspective): array {
+            $canlinkcourse = $this->can_link_course_for_perspective($course, $selectedperspective, $issiteadmin);
+            return $mapper->map($course, $canlinkcourse);
         }, $courses);
         usort($courses, static function(array $a, array $b): int {
             if ($a['status'] !== $b['status']) {
