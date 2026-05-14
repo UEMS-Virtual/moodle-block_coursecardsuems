@@ -34,4 +34,35 @@ if ($ADMIN->fulltree) {
         60,
         16
     ));
+
+    $settings->add(new admin_setting_configcheckbox(
+        'block_coursecardsuems/customsemesterenabled',
+        get_string('customsemesterenabled', 'block_coursecardsuems'),
+        get_string('customsemesterenabled_desc', 'block_coursecardsuems'),
+        0
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'block_coursecardsuems/customsemesterlabel',
+        get_string('customsemesterlabel', 'block_coursecardsuems'),
+        get_string('customsemesterlabel_desc', 'block_coursecardsuems'),
+        '',
+        PARAM_TEXT
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'block_coursecardsuems/customsemesterstart',
+        get_string('customsemesterstart', 'block_coursecardsuems'),
+        get_string('customsemesterstart_desc', 'block_coursecardsuems'),
+        '',
+        PARAM_ALPHANUMEXT
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'block_coursecardsuems/customsemesterend',
+        get_string('customsemesterend', 'block_coursecardsuems'),
+        get_string('customsemesterend_desc', 'block_coursecardsuems'),
+        '',
+        PARAM_ALPHANUMEXT
+    ));
 }

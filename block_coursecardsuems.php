@@ -75,7 +75,7 @@ class block_coursecardsuems extends block_base {
      * @return stdClass
      */
     public function get_content() {
-        global $PAGE;
+        global $OUTPUT, $PAGE;
 
         if ($this->content !== null) {
             return $this->content;
@@ -124,7 +124,14 @@ class block_coursecardsuems extends block_base {
         $renderer = $PAGE->get_renderer('block_coursecardsuems');
         $summary = new \block_coursecardsuems\output\summary($courses, $semesterlabel);
 
-        $this->content->text = $renderer->render($summary);
+        $this->content->text = '';
+        if ($issiteadmin && \block_coursecardsuems\local\current_semester::has_invalid_custom_window()) {
+            $this->content->text .= $OUTPUT->notification(
+                get_string('invalidcustomsemester', 'block_coursecardsuems'),
+                'notifyproblem'
+            );
+        }
+        $this->content->text .= $renderer->render($summary);
 
         $PAGE->requires->js_call_amd('block_coursecardsuems/section_tabs', 'init');
 

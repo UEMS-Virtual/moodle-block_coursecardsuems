@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Filtros e visões por papel — Course Cards UEMS</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --paper: #ffffff;
+      --ink: #1f2937;
+      --muted: #64748b;
+      --line: #dbe3ef;
+      --brand: #175b9f;
+      --brand-soft: #e8f2fc;
+      --green: #15803d;
+      --green-soft: #dcfce7;
+      --amber: #b45309;
+      --amber-soft: #fef3c7;
+      --red: #b91c1c;
+      --red-soft: #fee2e2;
+      --purple: #6d28d9;
+      --purple-soft: #ede9fe;
+      --gray-soft: #f1f5f9;
+      --shadow: 0 10px 30px rgba(15, 23, 42, .08);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    main { max-width: 1120px; margin: 0 auto; padding: 32px 20px 64px; }
+    header.hero { background: linear-gradient(135deg, #0f4c81, #1873bd); color: #fff; border-radius: 24px; padding: 34px; box-shadow: var(--shadow); margin-bottom: 24px; }
+    .eyebrow { margin: 0 0 8px; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; font-weight: 700; opacity: .85; }
+    h1, h2, h3 { line-height: 1.2; }
+    h1 { margin: 0 0 12px; font-size: clamp(28px, 5vw, 44px); }
+    h2 { margin: 0 0 16px; font-size: 26px; }
+    h3 { margin: 0 0 10px; font-size: 19px; }
+    p { margin: 0 0 14px; }
+    .hero p { max-width: 820px; color: rgba(255,255,255,.9); font-size: 18px; }
+    .card { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 24px; box-shadow: var(--shadow); margin: 20px 0; }
+    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+    .span-4 { grid-column: span 4; } .span-6 { grid-column: span 6; } .span-8 { grid-column: span 8; } .span-12 { grid-column: span 12; }
+    .pill, .issue { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 10px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+    .pill.base { background: var(--brand-soft); color: var(--brand); }
+    .pill.student { background: var(--green-soft); color: var(--green); }
+    .pill.staff { background: var(--purple-soft); color: var(--purple); }
+    .pill.warning { background: var(--amber-soft); color: var(--amber); }
+    .pill.danger { background: var(--red-soft); color: var(--red); }
+    .pill.gray { background: var(--gray-soft); color: var(--muted); }
+    .issues { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .issue { background: #eef2ff; color: #3730a3; text-decoration: none; }
+    .flow { display: grid; grid-template-columns: repeat(5, minmax(120px, 1fr)); gap: 10px; margin-top: 16px; }
+    .step { background: #f8fafc; border: 1px solid var(--line); border-radius: 16px; padding: 14px; min-height: 112px; }
+    .step strong { display: block; margin-bottom: 6px; color: var(--brand); }
+    .step small { color: var(--muted); }
+    table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 14px; border: 1px solid var(--line); margin: 12px 0; background: #fff; }
+    th, td { padding: 12px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: #f8fafc; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+    tr:last-child td { border-bottom: 0; }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: #0f172a; color: #e2e8f0; border-radius: 12px; }
+    code { padding: 2px 6px; font-size: .92em; }
+    pre { padding: 16px; overflow-x: auto; }
+    .callout { border-left: 5px solid var(--brand); background: var(--brand-soft); border-radius: 14px; padding: 16px 18px; margin: 16px 0; }
+    .callout.warning { border-left-color: var(--amber); background: var(--amber-soft); }
+    .callout.success { border-left-color: var(--green); background: var(--green-soft); }
+    .checklist { list-style: none; padding: 0; margin: 0; }
+    .checklist li { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid #eef2f7; }
+    .checklist li:last-child { border-bottom: 0; }
+    .checklist li::before { content: "✓"; color: var(--green); font-weight: 900; }
+    .state { border: 1px solid var(--line); border-radius: 16px; padding: 16px; background: #fff; }
+    .muted { color: var(--muted); }
+    @media (max-width: 860px) {
+      .span-4, .span-6, .span-8 { grid-column: span 12; }
+      .flow { grid-template-columns: 1fr; }
+      header.hero { padding: 24px; }
+      main { padding: 20px 12px 48px; }
+      table { display: block; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header class="hero">
+    <p class="eyebrow">Planejamento validado por grill-me</p>
+    <h1>Filtros e visões por papel</h1>
+    <p>
+      Escopo consolidado para evoluir o bloco Course Cards UEMS de uma visão de aluno para visões por papel, mantendo a proposta de uma interface simples, tranquilizadora e focada no semestre vigente.
+    </p>
+    <div class="issues">
+      <span class="issue">#35 Épico</span>
+      <span class="issue">#36 Mapeamento</span>
+      <span class="issue">#39 Modelo de dados</span>
+      <span class="issue">#40 Alternador</span>
+      <span class="issue">#41 Filtro por perspectiva</span>
+      <span class="issue">#42 Filtros dinâmicos</span>
+    </div>
+  </header>
+
+  <section class="card">
+    <h2>1. Escopo decidido</h2>
+    <div class="grid">
+      <div class="span-6 state">
+        <h3>Entra agora</h3>
+        <ul class="checklist">
+          <li>Perspectiva <strong>Aluno</strong>.</li>
+          <li>Perspectiva <strong>Tutor</strong>.</li>
+          <li>Perspectiva <strong>Docente</strong>.</li>
+          <li>Perspectiva <strong>Administrador</strong>, mantendo a visão administrativa.</li>
+          <li>Filtros de curso, turma e nível para Tutor, Docente e Administrador.</li>
+          <li>Aba complementar <strong>Sem data</strong>.</li>
+        </ul>
+      </div>
+      <div class="span-6 state">
+        <h3>Fora do escopo agora</h3>
+        <ul>
+          <li>Coordenador/gerente de categoria.</li>
+          <li>Presencial.</li>
+          <li>Auditoria administrativa mais avançada.</li>
+          <li>Preferência persistida da última perspectiva escolhida.</li>
+        </ul>
+        <p class="muted">Gerente/coordenador fica para um momento futuro, quando a visão de administrador for ampliada.</p>
+      </div>
+    </div>
+
+    <div class="callout success">
+      <strong>Diretriz de produto:</strong> o plugin deve ser um “relaxante/aliviante”. Ele precisa organizar a informação e reduzir ansiedade, sem transformar a tela em cobrança operacional.
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>2. Pipeline de filtros</h2>
+    <div class="flow" aria-label="Pipeline de filtros">
+      <div class="step"><strong>1. Perspectivas</strong><small>Detectar Aluno, Tutor, Docente e Administrador para o usuário atual.</small></div>
+      <div class="step"><strong>2. Escopo EaD</strong><small>Curso em árvore com categoria Distância e shortname reconhecido.</small></div>
+      <div class="step"><strong>3. Janela vigente</strong><small>Usar cronograma completo ou Janela Moodle conforme o caso.</small></div>
+      <div class="step"><strong>4. Abas</strong><small>Abertas, Em breve, Encerradas e, quando houver, Sem data.</small></div>
+      <div class="step"><strong>5. Filtros UI</strong><small>Curso, turma e nível para Tutor, Docente e Administrador.</small></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>3. Papéis e perspectivas</h2>
+    <table>
+      <thead>
+        <tr><th>Perspectiva</th><th>Como identificar</th><th>Observações</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="pill student">Aluno</span></td>
+          <td>Manter a capability <code>block/coursecardsuems:viewcontent</code> no contexto do curso, concedida ao papel de estudante.</td>
+          <td>Não depender diretamente do shortname do role <code>student</code>.</td>
+        </tr>
+        <tr>
+          <td><span class="pill staff">Tutor</span></td>
+          <td><code>mod_tutor</code> e <code>mod_medpdg</code>.</td>
+          <td>Uma única perspectiva “Tutor”. <code>mod_medpdg</code> é mediador pedagógico, antigo tutor a distância.</td>
+        </tr>
+        <tr>
+          <td><span class="pill staff">Docente</span></td>
+          <td><code>editingteacher</code>, <code>teacher</code> e <code>mod_prof</code>.</td>
+          <td>Tutor e Docente são perspectivas separadas.</td>
+        </tr>
+        <tr>
+          <td><span class="pill danger">Administrador</span></td>
+          <td><code>is_siteadmin()</code>.</td>
+          <td>Administrador entra no alternador. Se também tiver vínculos pessoais, pode ver outras perspectivas.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout warning">
+      <strong>Restrição de domínio:</strong> uma pessoa não deve ser Aluno, Tutor e/ou Docente na mesma disciplina. Se ocorrer por erro de cadastro, a disciplina pode aparecer em todas as perspectivas correspondentes para tornar a inconsistência visível.
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>4. Perspectiva padrão e alternador</h2>
+    <table>
+      <thead><tr><th>Caso</th><th>Regra</th></tr></thead>
+      <tbody>
+        <tr><td>Usuário com uma perspectiva</td><td>Não mostrar alternador.</td></tr>
+        <tr><td>Usuário com múltiplas perspectivas</td><td>Mostrar alternador discreto acima das abas.</td></tr>
+        <tr><td>Administrador do site</td><td>Abrir por padrão em <strong>Administrador</strong>.</td></tr>
+        <tr><td>Não-admin com múltiplas perspectivas</td><td>Abrir na perspectiva com mais disciplinas elegíveis.</td></tr>
+        <tr><td>Empate entre perspectivas</td><td>Desempate: <strong>Docente → Tutor → Aluno</strong>.</td></tr>
+      </tbody>
+    </table>
+    <p>Labels do alternador:</p>
+    <p><span class="pill student">Aluno</span> <span class="pill staff">Tutor</span> <span class="pill staff">Docente</span> <span class="pill danger">Administrador</span></p>
+  </section>
+
+  <section class="card">
+    <h2>5. Cronograma, Janela Moodle e Sem data</h2>
+    <div class="grid">
+      <div class="span-6 state">
+        <h3>Cronograma da disciplina</h3>
+        <p><code>ead_inicio</code> + <code>ead_final</code> completos.</p>
+        <p>Quando completo, define:</p>
+        <ul>
+          <li>se a disciplina pertence ao semestre vigente;</li>
+          <li>o status temporal: Aberta, Em breve ou Encerrada.</li>
+        </ul>
+      </div>
+      <div class="span-6 state">
+        <h3>Janela Moodle do curso</h3>
+        <p><code>course.startdate</code> + <code>course.enddate</code>.</p>
+        <p>Quando o cronograma está ausente ou incompleto, define apenas se a sala pertence à janela vigente.</p>
+      </div>
+    </div>
+
+    <table>
+      <thead><tr><th>Situação</th><th>Aluno</th><th>Tutor/Docente/Admin</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Tem <code>ead_inicio</code> e <code>ead_final</code></td>
+          <td>Aparece se o cronograma cruza a janela vigente.</td>
+          <td>Aparece se o cronograma cruza a janela vigente.</td>
+        </tr>
+        <tr>
+          <td>Não tem nenhuma data do cronograma</td>
+          <td>Não aparece.</td>
+          <td>Vai para <strong>Sem data</strong> se a Janela Moodle cruza a janela vigente.</td>
+        </tr>
+        <tr>
+          <td>Tem apenas uma das datas do cronograma</td>
+          <td>Não aparece.</td>
+          <td>Vai para <strong>Sem data</strong> se a Janela Moodle cruza a janela vigente.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <strong>Texto curto no card/lista:</strong> “Sem data no cronograma”. A aba se chama apenas “Sem data”.
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>6. Calendário acadêmico vigente</h2>
+    <p>O semestre vigente não deve depender somente do semestre civil. O plugin deve ter um calendário padrão e permitir datas personalizadas.</p>
+
+    <table>
+      <thead><tr><th>Modo</th><th>Regra</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Padrão hardcoded</td>
+          <td><strong>YYYY/1</strong>: fevereiro a agosto. <strong>YYYY/2</strong>: setembro a janeiro do ano seguinte.</td>
+        </tr>
+        <tr>
+          <td>Personalizado</td>
+          <td>Admin pode ligar datas personalizadas e informar label, início e fim do semestre vigente.</td>
+        </tr>
+        <tr>
+          <td>Configuração inválida</td>
+          <td>Admin vê aviso discreto; usuários comuns usam o calendário padrão sem quebrar o bloco.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Campos sugeridos:</p>
+    <pre>Usar datas personalizadas: sim/não
+Label do semestre vigente: 2026/1
+Início do semestre vigente: 01/02/2026
+Fim do semestre vigente: 05/08/2026</pre>
+  </section>
+
+  <section class="card">
+    <h2>7. Abas e status</h2>
+    <table>
+      <thead><tr><th>Perspectiva</th><th>Abas</th><th>Aba ativa padrão</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Aluno</td>
+          <td>Abertas, Em breve, Encerradas.</td>
+          <td>Abertas.</td>
+        </tr>
+        <tr>
+          <td>Tutor, Docente, Administrador</td>
+          <td>Abertas, Em breve, Encerradas e Sem data quando houver itens.</td>
+          <td>Abertas, mesmo se estiver vazia.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ul>
+      <li>Abertas, Em breve e Encerradas sempre aparecem.</li>
+      <li>Sem data só aparece quando houver pelo menos uma disciplina sem cronograma completo.</li>
+      <li>Ordem: <strong>Abertas → Em breve → Encerradas → Sem data</strong>.</li>
+      <li>Disciplinas “Sem data” contam para existência da perspectiva e para escolher a perspectiva padrão.</li>
+      <li>Aba Sem data ordena por: <strong>Curso → Turma → Nome da disciplina</strong>.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>8. Regras de link e curso oculto</h2>
+    <table>
+      <thead><tr><th>Perspectiva</th><th>Regra de link</th><th>Curso oculto</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Aluno</td>
+          <td>Abertas e Encerradas têm link se o curso estiver visível. Em breve nunca tem link.</td>
+          <td>Se o cronograma indicaria Aberta, aparece como Em breve sem link. Encerrada oculta fica em Encerradas sem link.</td>
+        </tr>
+        <tr>
+          <td>Tutor/Docente</td>
+          <td>Pode ter link em Abertas, Em breve, Encerradas e Sem data, desde que o Moodle indique acesso real.</td>
+          <td>Se o cronograma indicaria Aberta, aparece como Em breve. Pode ter link se o Moodle permitir acesso.</td>
+        </tr>
+        <tr>
+          <td>Administrador</td>
+          <td>Link liberado.</td>
+          <td>Segue o status apresentado, mas com link.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout success">
+      <strong>Mensagem para curso oculto em Em breve:</strong> “Disponível em breve”. A frase é curta e tranquilizadora, sem expor a operação de diagramação.
+    </div>
+
+    <p class="muted">Detalhe técnico em aberto para implementação: não cravar capability específica neste documento; a intenção é respeitar o acesso real do Moodle para Tutor/Docente.</p>
+  </section>
+
+  <section class="card">
+    <h2>9. Filtros curso, turma e nível</h2>
+    <p>Esses filtros são para <strong>Tutor, Docente e Administrador</strong>. Aluno não recebe esses filtros por enquanto.</p>
+
+    <table>
+      <thead><tr><th>Filtro</th><th>Quando aparece</th><th>Fonte oficial</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Nível</td>
+          <td>Quando houver mais de um nível no conjunto da perspectiva.</td>
+          <td>Categoria imediatamente acima de <strong>Distância</strong>, ex.: Graduação ou Pós-Graduação.</td>
+        </tr>
+        <tr>
+          <td>Curso</td>
+          <td>Quando houver múltiplos cursos relevantes.</td>
+          <td>Primeira categoria abaixo de <strong>Distância</strong>.</td>
+        </tr>
+        <tr>
+          <td>Turma</td>
+          <td>Quando houver múltiplas turmas relevantes.</td>
+          <td>Categoria abaixo do curso cujo nome começa com <strong>Turma</strong>.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout warning">
+      <strong>Fonte principal:</strong> categorias Moodle. O shortname não deve criar filtro de turma. Se a árvore não tiver categoria de turma, o filtro Turma não aparece.
+    </div>
+
+    <h3>Exemplos de árvore EaD</h3>
+    <pre>Graduação
+└─ Distância
+   └─ Licenciatura em Ciências Sociais
+      └─ Turma 2024
+         └─ 3ª Série
+            └─ CISOL_24_3S_TA_95037</pre>
+
+    <pre>Pós-Graduação
+└─ Distância
+   └─ Pós-Graduação Lato Sensu em Gestão e Docência da Educação Infantil
+      └─ 1ª Série
+         └─ PGDEI_T25_PC</pre>
+
+    <pre>Graduação
+└─ Distância
+   └─ Licenciatura em Ciências Sociais
+      └─ Turma 2024
+         └─ Disciplinas de Reoferta
+            └─ disciplina</pre>
+
+    <p><strong>Reoferta:</strong> continua como etiqueta/ribbon e pode aparecer como série/grupo no supertítulo. Não vira filtro próprio agora.</p>
+    <p class="muted">Nota futura: no presencial, pode existir Unidade entre modalidade e curso. Isso fica fora do escopo inicial.</p>
+  </section>
+
+  <section class="card">
+    <h2>10. Estados da view</h2>
+    <div class="grid">
+      <div class="span-6 state"><h3>Sem disciplinas elegíveis</h3><p>Manter bloco vazio ou mensagem mínima, preservando comportamento discreto atual.</p></div>
+      <div class="span-6 state"><h3>Uma perspectiva</h3><p>Sem alternador. Abas normais. Filtros podem aparecer se a perspectiva for Tutor, Docente ou Administrador.</p></div>
+      <div class="span-6 state"><h3>Múltiplas perspectivas</h3><p>Alternador discreto acima das abas.</p></div>
+      <div class="span-6 state"><h3>Somente Sem data com conteúdo</h3><p>Aba ativa ainda é Abertas. Sem data aparece como aba complementar com contador.</p></div>
+      <div class="span-6 state"><h3>Admin com configuração inválida</h3><p>Mostrar aviso discreto e usar calendário padrão.</p></div>
+      <div class="span-6 state"><h3>Mobile</h3><p>Alternador, abas e filtros precisam ser compactos e sem overflow horizontal.</p></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>11. Ordem recomendada de implementação</h2>
+    <ol>
+      <li><strong>Calendário vigente configurável:</strong> padrão fev–ago/set–jan + opção personalizada.</li>
+      <li><strong>Modelo de cronograma:</strong> distinguir cronograma completo, ausente e incompleto.</li>
+      <li><strong>Perspectivas:</strong> Aluno, Tutor, Docente e Administrador.</li>
+      <li><strong>Aba Sem data:</strong> visível para Tutor/Docente/Admin quando houver itens.</li>
+      <li><strong>Alternador de visão:</strong> aparecer só com mais de uma perspectiva.</li>
+      <li><strong>Filtro por perspectiva:</strong> mudar conjunto de disciplinas conforme visão ativa.</li>
+      <li><strong>Filtros de curso/turma/nível:</strong> usando categorias como fonte oficial.</li>
+      <li><strong>Modal de informações:</strong> deixar para depois.</li>
+    </ol>
+  </section>
+
+  <footer class="muted">
+    Documento atualizado em 2026-05-14 a partir de revisão do codebase, issues abertas e decisões de grill-me com o usuário.
+  </footer>
+</main>
+</body>
+</html>

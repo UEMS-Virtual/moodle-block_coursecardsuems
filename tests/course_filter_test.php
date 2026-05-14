@@ -62,8 +62,8 @@ final class course_filter_test extends \advanced_testcase {
             'shortname' => 'EAD_26_2S_NEXT_abc12',
             'startdate' => make_timestamp(2026, 3, 1),
             'enddate' => make_timestamp(2026, 4, 1),
-            'customfield_ead_inicio' => make_timestamp(2026, 8, 1),
-            'customfield_ead_final' => make_timestamp(2026, 9, 1),
+            'customfield_ead_inicio' => make_timestamp(2026, 9, 2),
+            'customfield_ead_final' => make_timestamp(2026, 10, 1),
         ]);
 
         $filtered = (new course_filter())->filter_current_semester_distance_courses(
@@ -90,8 +90,8 @@ final class course_filter_test extends \advanced_testcase {
             'shortname' => 'EAD_26_1S_OVERLAP_abc12',
             'startdate' => make_timestamp(2025, 1, 1),
             'enddate' => make_timestamp(2025, 2, 1),
-            'customfield_ead_inicio' => make_timestamp(2025, 12, 1),
-            'customfield_ead_final' => make_timestamp(2026, 1, 15),
+            'customfield_ead_inicio' => make_timestamp(2026, 1, 25),
+            'customfield_ead_final' => make_timestamp(2026, 2, 15),
         ]);
 
         $filtered = (new course_filter())->filter_current_semester_distance_courses([$course], '2026/1');
