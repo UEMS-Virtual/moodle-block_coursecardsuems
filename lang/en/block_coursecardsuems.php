@@ -25,6 +25,10 @@
 $string['pluginname'] = 'UEMS EaD disciplines';
 $string['currentsemester'] = 'Semester {$a}';
 $string['semesterprefix'] = 'Semester';
+$string['perspective_student'] = 'Student';
+$string['perspective_tutor'] = 'Tutor';
+$string['perspective_teacher'] = 'Teacher';
+$string['perspective_admin'] = 'Administrator';
 $string['coursecardsuems:addinstance'] = 'Add a UEMS EaD disciplines block';
 $string['coursecardsuems:myaddinstance'] = 'Add a UEMS EaD disciplines block to Dashboard';
 $string['coursecardsuems:viewcontent'] = 'View UEMS EaD disciplines block content as a student';
