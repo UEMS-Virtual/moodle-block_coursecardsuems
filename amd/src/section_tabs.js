@@ -94,11 +94,16 @@ const applyFilters = root => {
         const visibleCards = panel.querySelectorAll(`${SEL_CARD}:not([hidden])`);
         const empty = panel.querySelector('.coursecardsuems-empty');
         const list = panel.querySelector('.coursecardsuems-grid, .coursecardsuems-list');
+        const tab = root.querySelector(`${SEL_TAB}[data-key="${panel.dataset.key}"]`);
+        const count = tab ? tab.querySelector('.coursecardsuems-tab-count') : null;
         if (empty) {
             empty.toggleAttribute('hidden', visibleCards.length > 0);
         }
         if (list) {
             list.toggleAttribute('hidden', visibleCards.length === 0);
+        }
+        if (count) {
+            count.textContent = String(visibleCards.length);
         }
     });
 };
