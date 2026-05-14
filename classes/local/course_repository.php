@@ -53,6 +53,41 @@ class course_repository {
     }
 
     /**
+     * Returns courses that can belong to any non-admin perspective for the current user.
+     *
+     * @return array Course records indexed by course id.
+     */
+    public function get_perspective_candidate_courses_for_current_user(): array {
+        global $DB, $USER;
+
+        if (!isloggedin() || isguestuser()) {
+            return [];
+        }
+
+        $courses = $this->get_enrolled_courses_for_current_user();
+        $roles = ['mod_tutor', 'mod_medpdg', 'editingteacher', 'teacher', 'mod_prof'];
+        [$roleinsql, $roleparams] = $DB->get_in_or_equal($roles, SQL_PARAMS_NAMED, 'role');
+        $params = ['userid' => (int) $USER->id, 'contextlevel' => CONTEXT_COURSE] + $roleparams;
+        $sql = "SELECT c.id, c.category, c.shortname, c.fullname, c.startdate, c.enddate, c.visible
+                  FROM {course} c
+                  JOIN {context} ctx ON ctx.instanceid = c.id AND ctx.contextlevel = :contextlevel
+                  JOIN {role_assignments} ra ON ra.contextid = ctx.id AND ra.userid = :userid
+                  JOIN {role} r ON r.id = ra.roleid
+                 WHERE r.shortname $roleinsql
+              ORDER BY c.fullname ASC";
+
+        foreach ($DB->get_records_sql($sql, $params) as $course) {
+            $courses[(int) $course->id] = $course;
+        }
+
+        uasort($courses, static function($a, $b): int {
+            return strnatcasecmp($a->fullname ?? '', $b->fullname ?? '');
+        });
+
+        return $courses;
+    }
+
+    /**
      * Returns all Moodle course records that can be evaluated by product filters.
      *
      * Site admins use this broader source so they can inspect every EaD discipline

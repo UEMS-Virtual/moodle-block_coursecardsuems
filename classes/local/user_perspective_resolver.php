@@ -33,6 +33,9 @@ use context_course;
  */
 class user_perspective_resolver {
 
+    /** @var informative_period_reader Informative period reader. */
+    private $periodreader;
+
     /** Student perspective key. */
     public const STUDENT = 'student';
 
@@ -56,6 +59,15 @@ class user_perspective_resolver {
 
     /** Tie-break order for non-admin users. */
     private const DEFAULT_TIEBREAK = [self::TEACHER, self::TUTOR, self::STUDENT];
+
+    /**
+     * Constructor.
+     *
+     * @param informative_period_reader|null $periodreader Informative period reader.
+     */
+    public function __construct(?informative_period_reader $periodreader = null) {
+        $this->periodreader = $periodreader ?? new informative_period_reader();
+    }
 
     /**
      * Resolves perspectives for a user over an already scoped candidate course list.
@@ -89,7 +101,8 @@ class user_perspective_resolver {
             $courseid = (int) $course->id;
             $context = context_course::instance($courseid);
 
-            if (has_capability(self::VIEW_CONTENT_CAPABILITY, $context, $userid, false)) {
+            if ($this->has_complete_schedule($courseid) &&
+                    has_capability(self::VIEW_CONTENT_CAPABILITY, $context, $userid, false)) {
                 $courseidsbyperspective[self::STUDENT][] = $courseid;
             }
 
@@ -125,6 +138,16 @@ class user_perspective_resolver {
         unset($perspective);
 
         return $perspectives;
+    }
+
+    /**
+     * Returns whether a course has a complete Cronograma da disciplina.
+     *
+     * @param int $courseid Course id.
+     * @return bool
+     */
+    private function has_complete_schedule(int $courseid): bool {
+        return $this->periodreader->get_period($courseid)->has_complete_range();
     }
 
     /**

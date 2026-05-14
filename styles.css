@@ -95,8 +95,16 @@
     background: #fff;
     color: #64748b;
     font-size: .78rem;
+    text-decoration: none;
     font-weight: 700;
     line-height: 1;
+}
+
+.block_coursecardsuems .coursecardsuems-perspective:hover {
+    border-color: #cbd5e1;
+    background: #f8fafc;
+    color: #1e293b;
+    text-decoration: none;
 }
 
 .block_coursecardsuems .coursecardsuems-perspective.is-active {

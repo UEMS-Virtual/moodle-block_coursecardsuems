@@ -85,8 +85,8 @@ final class summary_test extends \advanced_testcase {
         global $PAGE;
 
         $perspectives = [
-            ['key' => 'student', 'label' => 'Aluno', 'count' => 1, 'isdefault' => false],
-            ['key' => 'teacher', 'label' => 'Docente', 'count' => 2, 'isdefault' => true],
+            ['key' => 'student', 'label' => 'Aluno', 'count' => 1, 'isdefault' => false, 'isactive' => false, 'url' => '?coursecardsuemsview=student'],
+            ['key' => 'teacher', 'label' => 'Docente', 'count' => 2, 'isdefault' => true, 'isactive' => true, 'url' => '?coursecardsuemsview=teacher'],
         ];
 
         $data = (new summary([], '2026/1', $perspectives))->export_for_template($PAGE->get_renderer('core'));

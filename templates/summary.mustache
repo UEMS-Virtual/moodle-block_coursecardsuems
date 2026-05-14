@@ -54,12 +54,13 @@
             <span class="coursecardsuems-perspectives-label">{{#str}}viewas, block_coursecardsuems{{/str}}</span>
             <div class="coursecardsuems-perspective-options" role="list">
                 {{#perspectives}}
-                    <span class="coursecardsuems-perspective{{#isdefault}} is-active{{/isdefault}}"
-                          role="listitem"
-                          data-perspective-key="{{key}}">
+                    <a class="coursecardsuems-perspective{{#isactive}} is-active{{/isactive}}"
+                       role="listitem"
+                       href="{{url}}"
+                       data-perspective-key="{{key}}">
                         {{label}}
                         <span class="coursecardsuems-perspective-count" aria-hidden="true">{{count}}</span>
-                    </span>
+                    </a>
                 {{/perspectives}}
             </div>
         </div>

@@ -32,10 +32,15 @@ final class user_perspective_resolver_test extends \advanced_testcase {
      */
     public function test_detects_student_perspective_from_capability(): void {
         $this->resetAfterTest(true);
+        $this->create_period_fields();
 
         $generator = self::getDataGenerator();
         $user = $generator->create_user();
-        $studentcourse = $generator->create_course(['fullname' => 'Student course']);
+        $studentcourse = $generator->create_course([
+            'fullname' => 'Student course',
+            'customfield_ead_inicio' => make_timestamp(2026, 3, 1),
+            'customfield_ead_final' => make_timestamp(2026, 4, 1),
+        ]);
         $othercourse = $generator->create_course(['fullname' => 'Other course']);
         $generator->enrol_user($user->id, $studentcourse->id, 'student');
 
@@ -93,10 +98,15 @@ final class user_perspective_resolver_test extends \advanced_testcase {
      */
     public function test_default_perspective_uses_count_and_tiebreak_for_non_admin(): void {
         $this->resetAfterTest(true);
+        $this->create_period_fields();
 
         $generator = self::getDataGenerator();
         $user = $generator->create_user();
-        $studentcourse = $generator->create_course(['fullname' => 'Student course']);
+        $studentcourse = $generator->create_course([
+            'fullname' => 'Student course',
+            'customfield_ead_inicio' => make_timestamp(2026, 3, 1),
+            'customfield_ead_final' => make_timestamp(2026, 4, 1),
+        ]);
         $tutorcourse = $generator->create_course(['fullname' => 'Tutor course']);
         $teachercourse = $generator->create_course(['fullname' => 'Teacher course']);
         $generator->enrol_user($user->id, $studentcourse->id, 'student');
@@ -122,10 +132,15 @@ final class user_perspective_resolver_test extends \advanced_testcase {
      */
     public function test_admin_perspective_is_default_for_site_admin(): void {
         $this->resetAfterTest(true);
+        $this->create_period_fields();
 
         $generator = self::getDataGenerator();
         $admin = get_admin();
-        $studentcourse = $generator->create_course(['fullname' => 'Student course']);
+        $studentcourse = $generator->create_course([
+            'fullname' => 'Student course',
+            'customfield_ead_inicio' => make_timestamp(2026, 3, 1),
+            'customfield_ead_final' => make_timestamp(2026, 4, 1),
+        ]);
         $admincourse = $generator->create_course(['fullname' => 'Admin course']);
         $generator->enrol_user($admin->id, $studentcourse->id, 'student');
 
@@ -142,10 +157,15 @@ final class user_perspective_resolver_test extends \advanced_testcase {
      */
     public function test_conflicting_roles_are_not_deduplicated_between_perspectives(): void {
         $this->resetAfterTest(true);
+        $this->create_period_fields();
 
         $generator = self::getDataGenerator();
         $user = $generator->create_user();
-        $course = $generator->create_course(['fullname' => 'Conflicting course']);
+        $course = $generator->create_course([
+            'fullname' => 'Conflicting course',
+            'customfield_ead_inicio' => make_timestamp(2026, 3, 1),
+            'customfield_ead_final' => make_timestamp(2026, 4, 1),
+        ]);
         $generator->enrol_user($user->id, $course->id, 'student');
         $tutorroleid = create_role('Tutor presencial', 'mod_tutor', 'Tutor presencial');
         role_assign($tutorroleid, $user->id, context_course::instance($course->id)->id);
@@ -154,6 +174,16 @@ final class user_perspective_resolver_test extends \advanced_testcase {
 
         self::assertSame([(int) $course->id], $this->by_key($perspectives, user_perspective_resolver::STUDENT)['courseids']);
         self::assertSame([(int) $course->id], $this->by_key($perspectives, user_perspective_resolver::TUTOR)['courseids']);
+    }
+
+    /**
+     * Creates the custom fields used by the plugin.
+     */
+    private function create_period_fields(): void {
+        $generator = self::getDataGenerator();
+        $categoryid = $generator->create_custom_field_category(['name' => 'EaD'])->get('id');
+        $generator->create_custom_field(['categoryid' => $categoryid, 'type' => 'date', 'shortname' => 'ead_inicio']);
+        $generator->create_custom_field(['categoryid' => $categoryid, 'type' => 'date', 'shortname' => 'ead_final']);
     }
 
     /**
