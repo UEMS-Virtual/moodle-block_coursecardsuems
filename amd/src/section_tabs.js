@@ -31,6 +31,7 @@ const SEL_TAB     = '[role="tab"]';
 const SEL_PANEL   = '[role="tabpanel"]';
 const SEL_FILTER  = '[data-filter-key]';
 const SEL_CARD    = '.coursecardsuems-card';
+const FILTER_ORDER = ['level', 'course', 'group'];
 
 /**
  * Activates the tab matching key and hides all others.
@@ -72,12 +73,81 @@ const activate = (root, key) => {
 };
 
 /**
+ * Returns the dataset key used by a filter.
+ *
+ * @param {string} key
+ * @returns {string}
+ */
+const getCardFilterDatasetKey = key => `filter${key.charAt(0).toUpperCase()}${key.slice(1)}`;
+
+/**
+ * Returns whether a card matches all filters.
+ *
+ * @param {HTMLElement} card
+ * @param {Object} filters
+ * @returns {boolean}
+ */
+const cardMatchesFilters = (card, filters) => Object.entries(filters).every(([key, value]) =>
+    card.dataset[getCardFilterDatasetKey(key)] === value
+);
+
+/**
+ * Updates dependent filter options so course follows level and group follows course.
+ *
+ * @param {HTMLElement} root
+ * @param {HTMLElement[]} filters
+ */
+const updateFilterOptions = (root, filters) => {
+    const cards = [...root.querySelectorAll(SEL_CARD)];
+    const byKey = Object.fromEntries(filters.map(filter => [filter.dataset.filterKey, filter]));
+    const previousFilters = {};
+
+    FILTER_ORDER.forEach(key => {
+        const filter = byKey[key];
+        if (!filter) {
+            return;
+        }
+
+        const available = new Set(cards
+            .filter(card => cardMatchesFilters(card, previousFilters))
+            .map(card => card.dataset[getCardFilterDatasetKey(key)] ?? '')
+            .filter(Boolean));
+
+        let selectedStillAvailable = filter.value === '';
+        [...filter.options].forEach(option => {
+            if (option.value === '') {
+                option.hidden = false;
+                option.disabled = false;
+                return;
+            }
+
+            const isAvailable = available.has(option.value);
+            option.hidden = !isAvailable;
+            option.disabled = !isAvailable;
+            if (isAvailable && option.value === filter.value) {
+                selectedStillAvailable = true;
+            }
+        });
+
+        if (!selectedStillAvailable) {
+            filter.value = '';
+        }
+
+        if (filter.value) {
+            previousFilters[key] = filter.value;
+        }
+    });
+};
+
+/**
  * Applies dynamic course filters inside one block instance.
  *
  * @param {HTMLElement} root
  */
 const applyFilters = root => {
     const filters = [...root.querySelectorAll(SEL_FILTER)];
+    updateFilterOptions(root, filters);
+
     const activeFilters = {};
     filters.forEach(filter => {
         if (filter.value) {
@@ -86,7 +156,7 @@ const applyFilters = root => {
     });
 
     root.querySelectorAll(SEL_CARD).forEach(card => {
-        const visible = Object.entries(activeFilters).every(([key, value]) => card.dataset[`filter${key.charAt(0).toUpperCase()}${key.slice(1)}`] === value);
+        const visible = cardMatchesFilters(card, activeFilters);
         card.toggleAttribute('hidden', !visible);
     });
 
