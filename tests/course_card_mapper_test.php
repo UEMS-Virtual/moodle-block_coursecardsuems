@@ -62,8 +62,9 @@ final class course_card_mapper_test extends \advanced_testcase {
         self::assertSame($start, $viewmodel['period']['start']);
         self::assertSame($end, $viewmodel['period']['end']);
         self::assertTrue($viewmodel['period']['showdates']);
-        self::assertSame(userdate($start, get_string('strftimedateshort')), $viewmodel['period']['startlabel']);
-        self::assertSame(userdate($end, get_string('strftimedateshort')), $viewmodel['period']['endlabel']);
+        $dateformat = get_string('dateformatshortmonth', 'block_coursecardsuems');
+        self::assertSame(trim(userdate($start, $dateformat)), $viewmodel['period']['startlabel']);
+        self::assertSame(trim(userdate($end, $dateformat)), $viewmodel['period']['endlabel']);
         self::assertSame('Maria Docente', $viewmodel['teachers'][0]['name']);
         self::assertSame('Maria D.', $viewmodel['teachers'][0]['shortname']);
         self::assertSame('MD', $viewmodel['teachers'][0]['initials']);

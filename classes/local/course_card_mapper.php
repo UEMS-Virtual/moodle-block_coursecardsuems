@@ -240,8 +240,11 @@ class course_card_mapper {
      * @return string
      */
     private function format_date(int $timestamp): string {
-        return $timestamp ? userdate($timestamp, get_string('strftimedateshort')) :
-            get_string('dateunknown', 'block_coursecardsuems');
+        if (!$timestamp) {
+            return get_string('dateunknown', 'block_coursecardsuems');
+        }
+
+        return trim(userdate($timestamp, get_string('dateformatshortmonth', 'block_coursecardsuems')));
     }
 
     /**

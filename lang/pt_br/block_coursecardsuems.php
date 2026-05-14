@@ -45,4 +45,5 @@ $string['teacherunknown'] = 'Docente a definir';
 $string['other'] = '+ 1 outro';
 $string['others'] = '+ {$a} outros';
 $string['dateunknown'] = '—';
+$string['dateformatshortmonth'] = '%e %b';
 $string['reoferta'] = 'Reoferta';

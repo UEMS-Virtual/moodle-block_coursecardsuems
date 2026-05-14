@@ -141,20 +141,26 @@
     }
 
     .block_coursecardsuems .coursecardsuems-tab {
-        flex: 0 0 auto;
-        min-width: 7rem;
-        font-size: .78rem;
-        padding: .55rem .7rem;
-        gap: .3rem;
+        flex: 1 0 5.75rem;
+        min-width: 5.75rem;
+        font-size: .76rem;
+        padding: .5rem .45rem;
+        gap: .25rem;
         white-space: nowrap;
     }
 }
 
 @container (max-width: 480px) {
+    .block_coursecardsuems .coursecardsuems-tabs {
+        gap: .35rem;
+    }
+
     .block_coursecardsuems .coursecardsuems-tab {
-        font-size: .78rem;
-        padding: .55rem .55rem;
-        gap: .3rem;
+        flex-basis: 5.35rem;
+        min-width: 5.35rem;
+        font-size: .72rem;
+        padding: .48rem .38rem;
+        gap: .22rem;
     }
 }
 
@@ -611,6 +617,42 @@
     width: 2.25rem;
     height: 2.25rem;
     font-size: .78rem;
+}
+
+/* lista em largura média: prioriza nome da disciplina sobre metadados */
+@container (max-width: 900px) {
+    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-main {
+        grid-template-columns: minmax(14rem, 1.7fr) minmax(10rem, 14rem) minmax(7rem, 9rem) 4.75rem;
+    }
+
+    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-title-group {
+        padding-right: .85rem;
+    }
+
+    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-teacher,
+    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-dates {
+        padding-right: .75rem;
+        padding-left: .75rem;
+    }
+
+    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-avatar {
+        flex-basis: 2rem;
+        width: 2rem;
+        height: 2rem;
+        font-size: .72rem;
+    }
+
+    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-teacher-label {
+        font-size: .56rem;
+    }
+
+    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-teacher-name {
+        font-size: .78rem;
+    }
+
+    .block_coursecardsuems .coursecardsuems-list .coursecardsuems-card .coursecardsuems-dates {
+        font-size: .72rem;
+    }
 }
 
 /* encerrada */

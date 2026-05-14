@@ -45,4 +45,5 @@ $string['teacherunknown'] = 'Teacher to be announced';
 $string['other'] = '+ 1 other';
 $string['others'] = '+ {$a} others';
 $string['dateunknown'] = '—';
+$string['dateformatshortmonth'] = '%e %b';
 $string['reoferta'] = 'Reoferta';
