@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Como funciona o plugin — Disciplinas EaD UEMS</title>
+  <style>
+    :root {
+      --bg: #eef4fb;
+      --paper: #ffffff;
+      --ink: #172033;
+      --muted: #64748b;
+      --line: #d8e4f1;
+      --brand: #0f4c8a;
+      --brand-2: #1873bd;
+      --brand-soft: #e8f2fc;
+      --green: #15803d;
+      --green-soft: #dcfce7;
+      --amber: #b45309;
+      --amber-soft: #fef3c7;
+      --purple: #6d28d9;
+      --purple-soft: #ede9fe;
+      --slate-soft: #f8fafc;
+      --shadow: 0 18px 45px rgba(15, 23, 42, .10);
+      --shadow-soft: 0 8px 24px rgba(15, 23, 42, .07);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 5%, rgba(24,115,189,.16), transparent 28rem),
+        radial-gradient(circle at 95% 12%, rgba(21,128,61,.12), transparent 26rem),
+        linear-gradient(180deg, #f8fbff, var(--bg));
+      font: 16px/1.55 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main { max-width: 1180px; margin: 0 auto; padding: 32px 20px 72px; }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+      background: linear-gradient(135deg, #0b3767 0%, #0f4c8a 52%, #1873bd 100%);
+      border-radius: 30px;
+      padding: 42px;
+      box-shadow: var(--shadow);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -80px -140px auto;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.10);
+    }
+    .eyebrow { margin: 0 0 10px; text-transform: uppercase; letter-spacing: .12em; font-size: 12px; font-weight: 850; opacity: .86; }
+    h1, h2, h3 { margin-top: 0; line-height: 1.15; }
+    h1 { max-width: 820px; margin-bottom: 14px; font-size: clamp(32px, 5vw, 56px); letter-spacing: -.035em; }
+    h2 { margin-bottom: 18px; font-size: clamp(24px, 3vw, 34px); letter-spacing: -.02em; }
+    h3 { margin-bottom: 10px; font-size: 19px; }
+    p { margin: 0 0 14px; }
+    .hero p { max-width: 850px; color: rgba(255,255,255,.90); font-size: 19px; }
+    .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 28px; }
+    .kpi { padding: 16px; border: 1px solid rgba(255,255,255,.20); border-radius: 18px; background: rgba(255,255,255,.11); backdrop-filter: blur(10px); }
+    .kpi strong { display: block; font-size: 28px; line-height: 1; }
+    .kpi span { display: block; margin-top: 6px; color: rgba(255,255,255,.82); font-size: 13px; font-weight: 700; }
+    .card { margin: 22px 0; padding: 26px; background: rgba(255,255,255,.94); border: 1px solid var(--line); border-radius: 24px; box-shadow: var(--shadow-soft); }
+    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+    .span-3 { grid-column: span 3; } .span-4 { grid-column: span 4; } .span-5 { grid-column: span 5; } .span-6 { grid-column: span 6; } .span-7 { grid-column: span 7; } .span-8 { grid-column: span 8; } .span-12 { grid-column: span 12; }
+    .muted { color: var(--muted); }
+    .pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; font-size: 12px; font-weight: 850; white-space: nowrap; }
+    .pill.blue { background: var(--brand-soft); color: var(--brand); }
+    .pill.green { background: var(--green-soft); color: var(--green); }
+    .pill.amber { background: var(--amber-soft); color: var(--amber); }
+    .pill.purple { background: var(--purple-soft); color: var(--purple); }
+    .pillrow { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+    .box { padding: 18px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
+    .box.soft { background: var(--slate-soft); }
+    .box strong.big { display: block; color: var(--brand); font-size: 28px; line-height: 1.1; }
+    .diagram { position: relative; padding: 22px; border-radius: 24px; background: linear-gradient(180deg, #ffffff, #f8fbff); border: 1px solid var(--line); overflow: hidden; }
+    .pipeline { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; align-items: stretch; }
+    .node { position: relative; padding: 18px 16px; min-height: 154px; border: 1px solid var(--line); border-radius: 20px; background: #fff; box-shadow: 0 8px 18px rgba(15,23,42,.05); }
+    .node::after { content: "→"; position: absolute; right: -18px; top: 50%; transform: translateY(-50%); color: var(--brand); font-size: 25px; font-weight: 900; z-index: 2; }
+    .node:last-child::after { display: none; }
+    .node .num { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; margin-bottom: 10px; border-radius: 50%; background: var(--brand); color: #fff; font-weight: 900; font-size: 13px; }
+    .node h3 { margin-bottom: 6px; font-size: 17px; }
+    .node p { color: var(--muted); font-size: 14px; }
+    .swimlane { display: grid; grid-template-columns: 190px repeat(4, 1fr); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: #fff; }
+    .lane-head, .lane-cell { padding: 14px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .lane-head { background: #f8fafc; font-weight: 850; color: var(--brand); }
+    .lane-cell { min-height: 92px; }
+    .swimlane > :nth-child(5n) { border-right: 0; }
+    .swimlane > :nth-last-child(-n+5) { border-bottom: 0; }
+    .mini-title { font-weight: 850; display: block; margin-bottom: 4px; }
+    .feature { display: flex; gap: 12px; align-items: flex-start; }
+    .icon { flex: 0 0 38px; width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; background: var(--brand-soft); color: var(--brand); font-weight: 950; }
+    .mock { padding: 18px; border-radius: 22px; background: #f8fafc; border: 1px solid var(--line); }
+    .mock-top { display: flex; justify-content: center; margin-bottom: 12px; }
+    .semester { text-align: center; }
+    .semester small { display: block; color: #94a3b8; text-transform: uppercase; letter-spacing: .18em; font-size: 10px; font-weight: 900; }
+    .semester strong { display: block; color: var(--brand); font-size: 32px; line-height: 1; }
+    .chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; margin: 14px 0; }
+    .chip { padding: 7px 11px; border-radius: 999px; background: #fff; border: 1px solid var(--line); color: var(--muted); font-size: 13px; font-weight: 800; }
+    .chip.active { color: var(--brand); background: var(--brand-soft); border-color: rgba(15,76,138,.25); }
+    .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 14px 0; }
+    .tab { padding: 10px 8px; text-align: center; border-radius: 12px; background: #e8eef6; color: #64748b; font-weight: 850; font-size: 13px; }
+    .tab.active { background: var(--brand); color: #fff; }
+    .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .course { min-height: 82px; padding: 12px 12px 12px 18px; border-radius: 14px; background: #fff; border: 1px solid var(--line); border-left: 8px solid var(--brand); }
+    .course strong { display: block; font-size: 13px; line-height: 1.25; }
+    .course small { color: var(--muted); }
+    table { width: 100%; border-collapse: collapse; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: #fff; }
+    th, td { padding: 13px 14px; border-bottom: 1px solid var(--line); vertical-align: top; text-align: left; }
+    th { background: #f8fafc; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; font-size: 12px; }
+    tr:last-child td { border-bottom: 0; }
+    .footer-note { text-align: center; color: var(--muted); margin-top: 28px; }
+    @media (max-width: 960px) {
+      .kpis, .pipeline, .cards, .tabs { grid-template-columns: 1fr; }
+      .node::after { content: "↓"; right: 50%; top: auto; bottom: -24px; transform: translateX(50%); }
+      .span-3, .span-4, .span-5, .span-6, .span-7, .span-8 { grid-column: span 12; }
+      .swimlane { display: block; }
+      .lane-head, .lane-cell { border-right: 0; }
+      main { padding: 18px 12px 48px; }
+      .hero { padding: 28px; border-radius: 24px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header class="hero">
+    <p class="eyebrow">Mapa executivo do plugin</p>
+    <h1>Uma camada inteligente para transformar cursos Moodle em uma visão acadêmica clara</h1>
+    <p>
+      O bloco organiza disciplinas a partir de vínculos reais, calendário acadêmico, categorias e cronogramas,
+      entregando para cada pessoa uma visão limpa do que precisa de atenção — sem expor a complexidade operacional do Moodle.
+    </p>
+    <div class="kpis">
+      <div class="kpi"><strong>4</strong><span>perspectivas por papel</span></div>
+      <div class="kpi"><strong>4</strong><span>estados de acompanhamento</span></div>
+      <div class="kpi"><strong>1</strong><span>janela acadêmica vigente</span></div>
+      <div class="kpi"><strong>0</strong><span>ruído operacional para o aluno</span></div>
+    </div>
+  </header>
+
+  <section class="card">
+    <h2>1. O que o plugin faz</h2>
+    <div class="grid">
+      <div class="span-7">
+        <p>
+          O plugin funciona como uma <strong>camada de interpretação acadêmica</strong> sobre os cursos do Moodle.
+          Ele lê dados técnicos dispersos — permissões, papéis, categorias, datas e campos customizados — e converte tudo em uma interface orientada ao usuário.
+        </p>
+        <div class="pillrow">
+          <span class="pill blue">Moodle roles/capabilities</span>
+          <span class="pill green">Cronograma da disciplina</span>
+          <span class="pill purple">Categorias acadêmicas</span>
+          <span class="pill amber">Janela vigente</span>
+        </div>
+        <p class="muted">
+          A proposta não é listar cursos: é reduzir ansiedade, priorizar o semestre certo e mostrar somente o que faz sentido para cada papel.
+        </p>
+      </div>
+      <div class="span-5 box soft">
+        <strong class="big">Do Moodle técnico para uma agenda acadêmica</strong>
+        <p class="muted">O bloco traduz uma estrutura complexa em quatro perguntas simples:</p>
+        <ol>
+          <li>Quem é esta pessoa?</li>
+          <li>Quais disciplinas importam agora?</li>
+          <li>Em que estado cada disciplina está?</li>
+          <li>Quais filtros ajudam sem poluir?</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>2. Pipeline de decisão</h2>
+    <div class="diagram">
+      <div class="pipeline">
+        <div class="node">
+          <span class="num">1</span>
+          <h3>Coleta Moodle</h3>
+          <p>Cursos, categorias, datas, campos customizados, vínculos e capacidades.</p>
+        </div>
+        <div class="node">
+          <span class="num">2</span>
+          <h3>Janela vigente</h3>
+          <p>Define o semestre acadêmico relevante, sem depender apenas do semestre civil.</p>
+        </div>
+        <div class="node">
+          <span class="num">3</span>
+          <h3>Perspectiva</h3>
+          <p>Resolve Aluno, Tutor, Docente ou Administrador conforme vínculos reais.</p>
+        </div>
+        <div class="node">
+          <span class="num">4</span>
+          <h3>Status</h3>
+          <p>Classifica em Abertas, Em breve, Encerradas ou Sem data.</p>
+        </div>
+        <div class="node">
+          <span class="num">5</span>
+          <h3>Interface</h3>
+          <p>Renderiza cards, filtros, contadores e links de forma discreta.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>3. Visões por papel</h2>
+    <div class="swimlane">
+      <div class="lane-head">Papel</div>
+      <div class="lane-head">Fonte do vínculo</div>
+      <div class="lane-head">O que vê</div>
+      <div class="lane-head">Sem data</div>
+      <div class="lane-head">Objetivo de UX</div>
+
+      <div class="lane-head">Aluno</div>
+      <div class="lane-cell"><span class="mini-title">Capability do bloco</span><span class="muted">Não depende do nome do role.</span></div>
+      <div class="lane-cell">Disciplinas com cronograma completo e relevantes no semestre.</div>
+      <div class="lane-cell">Não vê.</div>
+      <div class="lane-cell">Clareza e segurança: mostrar só o necessário.</div>
+
+      <div class="lane-head">Tutor</div>
+      <div class="lane-cell"><span class="mini-title">mod_tutor + mod_medpdg</span><span class="muted">Tutor presencial e mediador pedagógico.</span></div>
+      <div class="lane-cell">Disciplinas sob acompanhamento, com filtros de navegação.</div>
+      <div class="lane-cell">Vê quando o cronograma está ausente/incompleto.</div>
+      <div class="lane-cell">Apoiar acompanhamento sem esconder pendências.</div>
+
+      <div class="lane-head">Docente</div>
+      <div class="lane-cell"><span class="mini-title">editingteacher, teacher, mod_prof</span></div>
+      <div class="lane-cell">Disciplinas vinculadas como docente/professor.</div>
+      <div class="lane-cell">Vê quando há problema de cronograma.</div>
+      <div class="lane-cell">Dar visão operacional sem excesso administrativo.</div>
+
+      <div class="lane-head">Administrador</div>
+      <div class="lane-cell"><span class="mini-title">Site admin</span></div>
+      <div class="lane-cell">Visão ampla do semestre e pendências estruturais.</div>
+      <div class="lane-cell">Vê para identificar lacunas de dados.</div>
+      <div class="lane-cell">Governança e homologação rápida.</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>4. Como o usuário enxerga</h2>
+    <div class="grid">
+      <div class="span-6 mock">
+        <div class="mock-top">
+          <div class="semester"><small>Semestre</small><strong>2026/1</strong></div>
+        </div>
+        <div class="chips">
+          <span class="chip">Aluno 3</span>
+          <span class="chip active">Docente 12</span>
+          <span class="chip">Administrador 48</span>
+        </div>
+        <div class="chips">
+          <span class="chip active">Graduação</span>
+          <span class="chip">Distância</span>
+          <span class="chip">Mais filtros</span>
+        </div>
+        <div class="tabs">
+          <div class="tab active">Abertas 5</div>
+          <div class="tab">Em breve 2</div>
+          <div class="tab">Encerradas 4</div>
+          <div class="tab">Sem data 1</div>
+        </div>
+        <div class="cards">
+          <div class="course"><strong>Teorias da Administração 1</strong><small>Licenciatura · Turma 2024</small></div>
+          <div class="course" style="border-left-color:#15803d"><strong>Didática e Tecnologias</strong><small>Pedagogia · Oferta</small></div>
+        </div>
+      </div>
+      <div class="span-6">
+        <div class="box">
+          <h3>O que está escondido nessa simplicidade</h3>
+          <ul>
+            <li>Escolha automática da perspectiva padrão.</li>
+            <li>Contagem por abas atualizada pelos filtros.</li>
+            <li>Separação entre cronograma completo e ausência de dados.</li>
+            <li>Filtros em cascata por categoria acadêmica.</li>
+            <li>Links respeitando a decisão de produto para cada papel.</li>
+          </ul>
+        </div>
+        <div class="box soft" style="margin-top:14px">
+          <h3>Princípio visual</h3>
+          <p class="muted">A interface deve ser “aliviante”: o usuário vê uma organização confiável, não a bagunça dos dados de origem.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>5. Capacidades atuais</h2>
+    <div class="grid">
+      <div class="span-4 box feature"><span class="icon">✓</span><div><h3>Janela acadêmica</h3><p class="muted">Semestre padrão fevereiro–agosto e setembro–janeiro, com configuração customizada.</p></div></div>
+      <div class="span-4 box feature"><span class="icon">👥</span><div><h3>Perspectivas</h3><p class="muted">Aluno, Tutor, Docente e Administrador com resolução por vínculo real.</p></div></div>
+      <div class="span-4 box feature"><span class="icon">⌁</span><div><h3>Sem data</h3><p class="muted">Separa pendências de cronograma sem contaminar a visão do aluno.</p></div></div>
+      <div class="span-4 box feature"><span class="icon">▦</span><div><h3>Filtros dinâmicos</h3><p class="muted">Nível, Curso, Turma e Tipo em cascata, derivados da árvore de categorias.</p></div></div>
+      <div class="span-4 box feature"><span class="icon">#</span><div><h3>Contadores vivos</h3><p class="muted">Abas atualizam quantidades conforme a filtragem aplicada.</p></div></div>
+      <div class="span-4 box feature"><span class="icon">↗</span><div><h3>Links por contexto</h3><p class="muted">A experiência respeita o papel ativo e decisões de acesso do Moodle.</p></div></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>6. Regras de dados que viraram produto</h2>
+    <table>
+      <thead>
+        <tr><th>Dado técnico</th><th>Interpretação do plugin</th><th>Benefício para gestão</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>ead_inicio</code> + <code>ead_final</code></td>
+          <td>Cronograma completo da disciplina EaD.</td>
+          <td>Permite identificar o que está aberto, futuro ou encerrado.</td>
+        </tr>
+        <tr>
+          <td>Ausência parcial/total de cronograma</td>
+          <td>Estado complementar “Sem data”.</td>
+          <td>Expõe lacunas para equipe sem gerar ansiedade no aluno.</td>
+        </tr>
+        <tr>
+          <td>Árvore de categorias</td>
+          <td>Nível, modalidade, curso, turma e reoferta.</td>
+          <td>Transforma organização institucional em filtros úteis.</td>
+        </tr>
+        <tr>
+          <td>Roles e capabilities</td>
+          <td>Perspectiva disponível para o usuário.</td>
+          <td>Evita telas genéricas: cada pessoa vê o que seu papel demanda.</td>
+        </tr>
+        <tr>
+          <td><code>course.startdate/enddate</code></td>
+          <td>Janela Moodle auxiliar quando falta cronograma.</td>
+          <td>Ajuda a localizar disciplinas prováveis do semestre mesmo com dados incompletos.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>7. Próxima fronteira: Presencial</h2>
+    <div class="grid">
+      <div class="span-6 box">
+        <h3>O que muda</h3>
+        <ul>
+          <li>Shortname não é confiável.</li>
+          <li>Categoria passa a ser a fonte principal.</li>
+          <li>Não existe Oferta/Reoferta.</li>
+          <li>Datas vêm do sistema acadêmico via Moodle.</li>
+          <li>Filtros precisam mudar por modalidade.</li>
+        </ul>
+      </div>
+      <div class="span-6 box soft">
+        <h3>Nova proposta de filtro</h3>
+        <p class="muted">Manter visível apenas o que governa o contexto:</p>
+        <div class="pillrow">
+          <span class="pill blue">Visão</span>
+          <span class="pill blue">Nível</span>
+          <span class="pill blue">Modalidade</span>
+          <span class="pill purple">Mais filtros</span>
+        </div>
+        <p class="muted">O conteúdo de “Mais filtros” muda entre EaD e Presencial.</p>
+      </div>
+    </div>
+  </section>
+
+  <p class="footer-note">Course Cards UEMS — visão executiva gerada para apresentação de contexto, capacidades e evolução do plugin.</p>
+</main>
+</body>
+</html>
