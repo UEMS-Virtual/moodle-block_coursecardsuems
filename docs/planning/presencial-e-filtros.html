@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Presencial e nova experiência de filtros — Course Cards UEMS</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --paper: #ffffff;
+      --ink: #1f2937;
+      --muted: #64748b;
+      --line: #dbe3ef;
+      --brand: #175b9f;
+      --brand-soft: #e8f2fc;
+      --green: #15803d;
+      --green-soft: #dcfce7;
+      --amber: #b45309;
+      --amber-soft: #fef3c7;
+      --red: #b91c1c;
+      --red-soft: #fee2e2;
+      --purple: #6d28d9;
+      --purple-soft: #ede9fe;
+      --gray-soft: #f1f5f9;
+      --shadow: 0 10px 30px rgba(15, 23, 42, .08);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    main { max-width: 1120px; margin: 0 auto; padding: 32px 20px 64px; }
+    header.hero { background: linear-gradient(135deg, #0f4c81, #1873bd); color: #fff; border-radius: 24px; padding: 34px; box-shadow: var(--shadow); margin-bottom: 24px; }
+    .eyebrow { margin: 0 0 8px; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; font-weight: 800; opacity: .85; }
+    h1, h2, h3 { line-height: 1.2; }
+    h1 { margin: 0 0 12px; font-size: clamp(28px, 5vw, 44px); }
+    h2 { margin: 0 0 16px; font-size: 26px; }
+    h3 { margin: 0 0 10px; font-size: 19px; }
+    p { margin: 0 0 14px; }
+    .hero p { max-width: 850px; color: rgba(255,255,255,.9); font-size: 18px; }
+    .card { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 24px; box-shadow: var(--shadow); margin: 20px 0; }
+    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+    .span-4 { grid-column: span 4; } .span-5 { grid-column: span 5; } .span-6 { grid-column: span 6; } .span-7 { grid-column: span 7; } .span-8 { grid-column: span 8; } .span-12 { grid-column: span 12; }
+    .pill { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 10px; font-size: 13px; font-weight: 800; white-space: nowrap; }
+    .pill.base { background: var(--brand-soft); color: var(--brand); }
+    .pill.good { background: var(--green-soft); color: var(--green); }
+    .pill.warn { background: var(--amber-soft); color: var(--amber); }
+    .pill.bad { background: var(--red-soft); color: var(--red); }
+    .pill.purple { background: var(--purple-soft); color: var(--purple); }
+    .pill.gray { background: var(--gray-soft); color: var(--muted); }
+    .pillrow { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+    .state { border: 1px solid var(--line); border-radius: 16px; padding: 16px; background: #fff; }
+    .soft { background: #f8fafc; }
+    .muted { color: var(--muted); }
+    .callout { border-left: 5px solid var(--brand); background: var(--brand-soft); border-radius: 14px; padding: 16px 18px; margin: 16px 0; }
+    .callout.warning { border-left-color: var(--amber); background: var(--amber-soft); }
+    .callout.danger { border-left-color: var(--red); background: var(--red-soft); }
+    .callout.success { border-left-color: var(--green); background: var(--green-soft); }
+    table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 14px; border: 1px solid var(--line); margin: 12px 0; background: #fff; }
+    th, td { padding: 12px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: #f8fafc; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+    tr:last-child td { border-bottom: 0; }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: #0f172a; color: #e2e8f0; border-radius: 12px; }
+    code { padding: 2px 6px; font-size: .92em; }
+    pre { padding: 16px; overflow-x: auto; white-space: pre-wrap; }
+    .flow { display: grid; grid-template-columns: repeat(4, minmax(150px, 1fr)); gap: 10px; margin-top: 16px; }
+    .step { background: #f8fafc; border: 1px solid var(--line); border-radius: 16px; padding: 14px; min-height: 110px; }
+    .step strong { display: block; margin-bottom: 6px; color: var(--brand); }
+    .step small { color: var(--muted); }
+    .issue { border: 1px solid var(--line); border-radius: 16px; padding: 16px; background: #fff; }
+    .issue h3 { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .issue .meta { margin-bottom: 10px; }
+    ul { margin-top: 8px; }
+    @media (max-width: 860px) {
+      .span-4, .span-5, .span-6, .span-7, .span-8 { grid-column: span 12; }
+      .flow { grid-template-columns: 1fr; }
+      header.hero { padding: 24px; }
+      main { padding: 20px 12px 48px; }
+      table { display: block; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header class="hero">
+    <p class="eyebrow">Plano de expansão</p>
+    <h1>Presencial e nova experiência de filtros</h1>
+    <p>
+      Documento de alinhamento para levar o bloco <strong>Disciplinas EaD UEMS</strong> além da modalidade a distância,
+      sem importar regras que só existem no EaD e sem poluir a interface com filtros que nem sempre fazem sentido.
+    </p>
+    <div class="pillrow">
+      <span class="pill base">UX tranquila</span>
+      <span class="pill good">Categoria como fonte principal</span>
+      <span class="pill warn">Shortname não confiável</span>
+      <span class="pill purple">Filtros em duas camadas</span>
+    </div>
+  </header>
+
+  <section class="card">
+    <h2>1. Problema</h2>
+    <p>
+      A implementação atual foi desenhada para o EaD, onde existe mais padronização: categorias mais previsíveis,
+      cronograma da disciplina com <code>ead_inicio</code>/<code>ead_final</code>, e o conceito de <strong>Oferta</strong>/<strong>Reoferta</strong>.
+      No Presencial, esses critérios não se sustentam.
+    </p>
+    <div class="grid">
+      <div class="span-6 state">
+        <h3>O que o EaD tem hoje</h3>
+        <ul>
+          <li>Categoria <strong>Distância</strong> como marco de modalidade.</li>
+          <li>Curso e turma extraídos de uma árvore relativamente estável.</li>
+          <li>Cronograma gerido pela UEMS Virtual.</li>
+          <li>Datas de status baseadas em <code>ead_inicio</code>/<code>ead_final</code>.</li>
+          <li>Conceito de <strong>Oferta</strong> e <strong>Reoferta</strong>.</li>
+        </ul>
+      </div>
+      <div class="span-6 state">
+        <h3>O que muda no Presencial</h3>
+        <ul>
+          <li>O <code>shortname</code> pode ter código gerado, mas não é garantido.</li>
+          <li>Salas manuais podem não seguir sigla correta.</li>
+          <li>A única fonte consistente é a <strong>categoria</strong>.</li>
+          <li>Não há cronograma da UEMS Virtual.</li>
+          <li>Datas vêm do sistema acadêmico via script Python + webservice Moodle.</li>
+          <li>Não existe Reoferta como categoria funcional do bloco.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout warning">
+      <strong>Decisão de domínio:</strong> Presencial não deve reaproveitar cegamente filtros, status e rótulos do EaD.
+      A expansão precisa ser por modalidade, com regras próprias e interface adaptativa.
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>2. Exemplos reais de categorias presenciais</h2>
+    <p>Os exemplos abaixo mostram por que não dá para assumir uma estrutura única depois de <strong>Presencial</strong>.</p>
+    <pre>Graduação
+└─ Presencial
+   └─ Campo Grande
+      └─ Direito
+         └─ 3ª Série
+            └─ 2026
+               └─ 2026_CGR_DIR_3S_DV_17168_37d59</pre>
+    <pre>Pós-Graduação
+└─ Presencial
+   └─ Dourados
+      └─ Pós Graduação em Recursos Naturais
+         └─ DDOS-PGRN-RPE</pre>
+    <pre>Pós-Graduação
+└─ Presencial
+   └─ Dourados
+      └─ Mestrado Profissional em Educação Científica e Matemática
+         └─ 2026
+            └─ 2026-PG-DOU-MPECM_PAECM</pre>
+    <table>
+      <thead>
+        <tr>
+          <th>Elemento</th>
+          <th>Confiabilidade</th>
+          <th>Observação</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Nível</td>
+          <td><span class="pill good">Alta</span></td>
+          <td>Normalmente aparece acima de Presencial: Graduação ou Pós-Graduação.</td>
+        </tr>
+        <tr>
+          <td>Modalidade</td>
+          <td><span class="pill good">Alta</span></td>
+          <td>Categoria Presencial é o principal marcador.</td>
+        </tr>
+        <tr>
+          <td>Unidade/Cidade</td>
+          <td><span class="pill good">Alta</span></td>
+          <td>Exemplos: Campo Grande, Dourados.</td>
+        </tr>
+        <tr>
+          <td>Curso</td>
+          <td><span class="pill good">Alta</span></td>
+          <td>Primeira categoria abaixo da unidade/cidade.</td>
+        </tr>
+        <tr>
+          <td>Série</td>
+          <td><span class="pill warn">Média</span></td>
+          <td>Existe em alguns cursos, mas não em todos.</td>
+        </tr>
+        <tr>
+          <td>Ano</td>
+          <td><span class="pill warn">Média</span></td>
+          <td>Pode aparecer como categoria intermediária, mas nem sempre.</td>
+        </tr>
+        <tr>
+          <td>Shortname</td>
+          <td><span class="pill bad">Baixa</span></td>
+          <td>Não deve ser fonte primária para filtros ou identificação do curso.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>3. Modelo de filtros em duas camadas</h2>
+    <p>
+      Para manter a interface relaxante, os filtros devem sair do modelo “tudo sempre visível”.
+      A tela deve exibir apenas os controles estruturantes e esconder os filtros específicos atrás de um botão discreto.
+    </p>
+
+    <div class="flow">
+      <div class="step">
+        <strong>1. Visão</strong>
+        <small>Aluno, Tutor, Docente ou Administrador.</small>
+      </div>
+      <div class="step">
+        <strong>2. Nível</strong>
+        <small>Graduação ou Pós-Graduação.</small>
+      </div>
+      <div class="step">
+        <strong>3. Modalidade/Formato</strong>
+        <small>Distância ou Presencial.</small>
+      </div>
+      <div class="step">
+        <strong>4. Mais filtros</strong>
+        <small>Abre filtros dependentes do nível e da modalidade.</small>
+      </div>
+    </div>
+
+    <div class="callout success">
+      <strong>Decisão de UX:</strong> Visão, Nível e Modalidade são filtros principais.
+      Curso, turma, tipo, unidade, série e ano ficam em <strong>Mais filtros</strong>.
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Contexto</th>
+          <th>Filtros principais</th>
+          <th>Mais filtros</th>
+          <th>Não mostrar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Distância</td>
+          <td>Visão, Nível, Modalidade</td>
+          <td>Curso, Turma, Tipo</td>
+          <td>Unidade/Cidade, Série, Ano</td>
+        </tr>
+        <tr>
+          <td>Presencial</td>
+          <td>Visão, Nível, Modalidade</td>
+          <td>Unidade/Cidade, Curso, Série quando existir, Ano quando existir</td>
+          <td>Tipo, Oferta, Reoferta</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>4. Comportamento esperado da UI</h2>
+    <div class="grid">
+      <div class="span-6 state soft">
+        <h3>Estado inicial limpo</h3>
+        <ul>
+          <li>Mostrar o alternador de visão somente quando houver mais de uma perspectiva.</li>
+          <li>Mostrar Nível e Modalidade quando houver mais de uma opção relevante.</li>
+          <li>Manter “Mais filtros” recolhido por padrão.</li>
+          <li>Botão de limpar filtros permanece pequeno e discreto.</li>
+        </ul>
+      </div>
+      <div class="span-6 state soft">
+        <h3>Mais filtros</h3>
+        <ul>
+          <li>Abre/fecha por clique.</li>
+          <li>Conteúdo muda conforme Nível + Modalidade.</li>
+          <li>Não exibe filtro sem opções úteis.</li>
+          <li>Em mobile, deve empilhar sem overflow horizontal.</li>
+        </ul>
+      </div>
+      <div class="span-6 state soft">
+        <h3>Filtros dependentes</h3>
+        <ul>
+          <li>Escolher Nível reduz Modalidades, cursos e demais filtros.</li>
+          <li>Escolher Modalidade troca o conjunto de filtros avançados.</li>
+          <li>Escolhas inválidas são limpas automaticamente.</li>
+          <li>Contadores das abas continuam atualizados.</li>
+        </ul>
+      </div>
+      <div class="span-6 state soft">
+        <h3>Sem ruído</h3>
+        <ul>
+          <li>Não mostrar “Desconhecido” como filtro se isso gerar ansiedade.</li>
+          <li>Preferir omitir filtros incompletos.</li>
+          <li>Usar supertítulo parcial quando categoria estiver incompleta.</li>
+          <li>Não misturar conceitos do EaD no Presencial.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>5. Datas e status por modalidade</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Modalidade</th>
+          <th>Fonte de datas</th>
+          <th>Status</th>
+          <th>Sem data</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Distância</td>
+          <td><code>ead_inicio</code> + <code>ead_final</code></td>
+          <td>Abertas, Em breve, Encerradas com base no cronograma EaD.</td>
+          <td>Tutor/Docente/Admin veem quando cronograma está ausente/incompleto e janela Moodle cruza o semestre vigente.</td>
+        </tr>
+        <tr>
+          <td>Presencial</td>
+          <td><code>course.startdate</code> + <code>course.enddate</code>, alimentados pelo sistema acadêmico.</td>
+          <td>Abertas, Em breve, Encerradas com base na janela Moodle do curso.</td>
+          <td>Precisa decisão: exibir só para staff/admin ou também para aluno quando a categoria indicar vínculo vigente.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout warning">
+      <strong>Ponto pendente:</strong> definir a regra de “Sem data” no Presencial. Como as datas vêm do sistema acadêmico,
+      ausência de data pode indicar problema de integração, sala manual, ou curso fora do fluxo automatizado.
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>6. Decisões propostas</h2>
+    <ol>
+      <li><strong>Categoria é fonte primária</strong> para modalidade, unidade, curso, série e ano no Presencial.</li>
+      <li><strong>Shortname é apenas auxiliar</strong>, nunca critério obrigatório para Presencial.</li>
+      <li><strong>Tipo/Oferta/Reoferta não existe no Presencial</strong> e não deve aparecer nessa modalidade.</li>
+      <li><strong>Datas do Presencial vêm da janela Moodle</strong>, não do cronograma EaD.</li>
+      <li><strong>Filtros devem ter duas camadas</strong>: principais visíveis e “Mais filtros” recolhido.</li>
+      <li><strong>Filtros avançados são governados por Nível + Modalidade</strong>.</li>
+      <li><strong>Presencial deve entrar atrás de configuração</strong> inicialmente, para homologar sem impactar o uso EaD.</li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <h2>7. Quebra sugerida em issues</h2>
+    <div class="grid">
+      <div class="span-6 issue">
+        <h3><span class="pill purple">HITL</span> Modelo de integração do Presencial</h3>
+        <p class="meta muted">Blocked by: nenhum</p>
+        <p>Consolidar regras mínimas para a modalidade presencial: fonte de dados, categorias, datas, ausência de reoferta e filtros válidos.</p>
+        <ul>
+          <li>Registrar exemplos reais de categorias.</li>
+          <li>Confirmar que shortname não é fonte confiável.</li>
+          <li>Decidir regra de “Sem data” para Presencial.</li>
+        </ul>
+      </div>
+      <div class="span-6 issue">
+        <h3><span class="pill purple">HITL</span> Redesenhar UX dos filtros em duas camadas</h3>
+        <p class="meta muted">Blocked by: nenhum</p>
+        <p>Documentar e validar a nova UI: Visão, Nível e Modalidade visíveis; filtros específicos em “Mais filtros”.</p>
+        <ul>
+          <li>Definir estados recolhido/expandido.</li>
+          <li>Definir comportamento mobile.</li>
+          <li>Definir persistência ou não do painel aberto.</li>
+        </ul>
+      </div>
+      <div class="span-6 issue">
+        <h3><span class="pill base">AFK</span> Generalizar parser de categorias por modalidade</h3>
+        <p class="meta muted">Blocked by: modelo Presencial</p>
+        <p>Extrair metadados de EaD e Presencial a partir da árvore de categorias, preservando regras específicas de cada modalidade.</p>
+      </div>
+      <div class="span-6 issue">
+        <h3><span class="pill base">AFK</span> Adicionar Presencial atrás de configuração</h3>
+        <p class="meta muted">Blocked by: modelo Presencial + parser</p>
+        <p>Criar configuração administrativa para habilitar a exibição do Presencial sem alterar o comportamento padrão do EaD.</p>
+      </div>
+      <div class="span-6 issue">
+        <h3><span class="pill base">AFK</span> Implementar datas/status do Presencial</h3>
+        <p class="meta muted">Blocked by: decisão de datas</p>
+        <p>Usar <code>course.startdate</code>/<code>course.enddate</code> para classificar salas presenciais em Abertas, Em breve, Encerradas ou Sem data.</p>
+      </div>
+      <div class="span-6 issue">
+        <h3><span class="pill base">AFK</span> Adaptar filtros por modalidade</h3>
+        <p class="meta muted">Blocked by: UX dos filtros + parser</p>
+        <p>Fazer “Mais filtros” mostrar Curso/Turma/Tipo no EaD e Unidade/Curso/Série/Ano no Presencial.</p>
+      </div>
+      <div class="span-6 issue">
+        <h3><span class="pill base">AFK</span> Fallback visual para categorias incompletas</h3>
+        <p class="meta muted">Blocked by: parser</p>
+        <p>Evitar ruído visual quando série, ano ou outro dado opcional estiver ausente. Omitir filtros vazios e usar supertítulos parciais.</p>
+      </div>
+      <div class="span-6 issue">
+        <h3><span class="pill base">AFK</span> Testes com categorias reais do Presencial</h3>
+        <p class="meta muted">Blocked by: parser + datas/status</p>
+        <p>Cobrir Direito/Campo Grande, Pós em Recursos Naturais/Dourados e Mestrado Profissional/Dourados com os formatos conhecidos.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>8. Perguntas para fechar antes de implementar</h2>
+    <ol>
+      <li>Presencial deve aparecer junto com EaD na mesma listagem, ou a Modalidade deve funcionar como filtro principal obrigatório?</li>
+      <li>Quando houver apenas uma modalidade para o usuário, escondemos o filtro Modalidade?</li>
+      <li>Aluno presencial pode ver sala sem <code>course.startdate</code>/<code>course.enddate</code>?</li>
+      <li>Para Presencial, “Ano” deve ser filtro quando existir categoria de ano ou pode ser inferido da data de início?</li>
+      <li>O painel “Mais filtros” deve lembrar estado aberto/fechado no navegador?</li>
+      <li>Presencial entra primeiro só para Admin/Docente/Tutor ou já para Aluno?</li>
+    </ol>
+  </section>
+</main>
+</body>
+</html>
