@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DER conceitual — Disciplinas EaD UEMS</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --paper: #ffffff;
+      --ink: #172033;
+      --muted: #64748b;
+      --line: #d8e4f1;
+      --brand: #0f4c8a;
+      --brand-soft: #e8f2fc;
+      --green: #15803d;
+      --green-soft: #dcfce7;
+      --amber: #b45309;
+      --amber-soft: #fef3c7;
+      --purple: #6d28d9;
+      --purple-soft: #ede9fe;
+      --red: #b91c1c;
+      --red-soft: #fee2e2;
+      --shadow: 0 14px 34px rgba(15, 23, 42, .09);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: radial-gradient(circle at 10% 0, rgba(15,76,138,.13), transparent 24rem), var(--bg);
+      font: 15px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main { max-width: 1240px; margin: 0 auto; padding: 28px 18px 64px; }
+    .hero {
+      color: #fff;
+      background: linear-gradient(135deg, #0b3767, #0f4c8a 55%, #1873bd);
+      border-radius: 26px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+    .eyebrow { margin: 0 0 8px; text-transform: uppercase; letter-spacing: .12em; font-size: 12px; font-weight: 850; opacity: .86; }
+    h1, h2, h3 { margin-top: 0; line-height: 1.18; }
+    h1 { margin-bottom: 10px; font-size: clamp(30px, 5vw, 50px); letter-spacing: -.035em; }
+    h2 { margin-bottom: 16px; font-size: 26px; }
+    h3 { margin-bottom: 8px; font-size: 17px; }
+    p { margin: 0 0 12px; }
+    .hero p { max-width: 850px; color: rgba(255,255,255,.9); font-size: 18px; }
+    .card { margin: 20px 0; padding: 24px; background: rgba(255,255,255,.96); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); }
+    .pill { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 850; white-space: nowrap; }
+    .pill.blue { background: var(--brand-soft); color: var(--brand); }
+    .pill.green { background: var(--green-soft); color: var(--green); }
+    .pill.amber { background: var(--amber-soft); color: var(--amber); }
+    .pill.purple { background: var(--purple-soft); color: var(--purple); }
+    .pill.red { background: var(--red-soft); color: var(--red); }
+    .pillrow { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+    .muted { color: var(--muted); }
+
+    .diagram-wrap {
+      overflow-x: auto;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: linear-gradient(180deg, #fff, #f8fbff);
+    }
+    .diagram {
+      position: relative;
+      width: 1160px;
+      height: 820px;
+      margin: 0 auto;
+    }
+    svg.lines {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .rel { stroke: #8aa8c5; stroke-width: 2.2; fill: none; }
+    .rel-strong { stroke: var(--brand); stroke-width: 3; fill: none; }
+    .rel-dashed { stroke: #b6c7d8; stroke-width: 2; fill: none; stroke-dasharray: 7 6; }
+    .label {
+      position: absolute;
+      z-index: 3;
+      padding: 3px 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 850;
+      box-shadow: 0 4px 12px rgba(15,23,42,.06);
+    }
+    .entity {
+      position: absolute;
+      z-index: 2;
+      width: 220px;
+      border: 1px solid #cbdced;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 10px 24px rgba(15,23,42,.08);
+      overflow: hidden;
+    }
+    .entity.core { border-color: rgba(15,76,138,.34); }
+    .entity.derived { border-style: dashed; }
+    .entity.future { opacity: .92; border-color: rgba(180,83,9,.35); }
+    .entity h3 {
+      margin: 0;
+      padding: 10px 12px;
+      color: #fff;
+      background: var(--brand);
+      font-size: 15px;
+      letter-spacing: -.01em;
+    }
+    .entity.derived h3 { background: var(--purple); }
+    .entity.future h3 { background: var(--amber); }
+    .entity.system h3 { background: #334155; }
+    .entity ul { list-style: none; padding: 10px 12px 12px; margin: 0; }
+    .entity li { display: flex; justify-content: space-between; gap: 8px; padding: 4px 0; border-bottom: 1px solid #eef3f8; font-size: 12.5px; }
+    .entity li:last-child { border-bottom: 0; }
+    .key { color: var(--brand); font-weight: 900; }
+    .calc { color: var(--purple); font-weight: 900; }
+    .opt { color: var(--muted); }
+    .badge { color: var(--muted); font-size: 11px; font-weight: 800; }
+
+    .user { left: 40px; top: 60px; }
+    .enrol { left: 330px; top: 60px; }
+    .course { left: 620px; top: 60px; }
+    .category { left: 900px; top: 60px; }
+    .semester { left: 40px; top: 340px; }
+    .schedule { left: 330px; top: 340px; }
+    .perspective { left: 620px; top: 330px; }
+    .cardnode { left: 900px; top: 330px; }
+    .filters { left: 330px; top: 610px; }
+    .ui { left: 620px; top: 610px; }
+    .presencial { left: 900px; top: 610px; }
+
+    .legend { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px; }
+    .legend .box { padding: 14px; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
+    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+    .span-4 { grid-column: span 4; } .span-6 { grid-column: span 6; } .span-12 { grid-column: span 12; }
+    table { width: 100%; border-collapse: collapse; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: #fff; }
+    th, td { padding: 12px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: #f8fafc; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; font-size: 12px; }
+    tr:last-child td { border-bottom: 0; }
+    @media (max-width: 900px) {
+      main { padding: 18px 10px 48px; }
+      .hero { padding: 24px; }
+      .legend, .grid { grid-template-columns: 1fr; }
+      .span-4, .span-6 { grid-column: span 12; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header class="hero">
+    <p class="eyebrow">Diagrama entidade-relacionamento conceitual</p>
+    <h1>Modelo de contexto do plugin</h1>
+    <p>
+      Uma visão em formato DER para explicar como o bloco transforma dados do Moodle em perspectivas, filtros,
+      cards e estados acadêmicos compreensíveis para aluno, tutor, docente e administração.
+    </p>
+    <div class="pillrow">
+      <span class="pill blue">Entidades Moodle</span>
+      <span class="pill purple">Entidades derivadas pelo plugin</span>
+      <span class="pill amber">Expansão Presencial</span>
+      <span class="pill green">UI orientada ao semestre</span>
+    </div>
+  </header>
+
+  <section class="card">
+    <h2>DER conceitual</h2>
+    <p class="muted">
+      Caixas azuis/cinza representam dados de origem do Moodle. Caixas roxas são interpretações criadas pelo plugin.
+      A caixa laranja mostra a expansão planejada para Presencial.
+    </p>
+
+    <div class="diagram-wrap">
+      <div class="diagram">
+        <svg class="lines" viewBox="0 0 1160 820" preserveAspectRatio="none" aria-hidden="true">
+          <path class="rel-strong" d="M260 135 C290 135 300 135 330 135" />
+          <path class="rel-strong" d="M550 135 C580 135 590 135 620 135" />
+          <path class="rel" d="M840 135 C865 135 875 135 900 135" />
+          <path class="rel" d="M730 246 C730 280 730 295 730 330" />
+          <path class="rel" d="M440 246 C440 280 440 305 440 340" />
+          <path class="rel" d="M260 430 C290 430 300 430 330 430" />
+          <path class="rel-strong" d="M550 430 C585 430 590 420 620 420" />
+          <path class="rel-strong" d="M840 420 C870 420 875 420 900 420" />
+          <path class="rel" d="M730 532 C730 565 730 580 730 610" />
+          <path class="rel" d="M550 700 C585 700 590 700 620 700" />
+          <path class="rel" d="M1010 246 C1010 280 1010 300 1010 330" />
+          <path class="rel-dashed" d="M1010 532 C1010 565 1010 580 1010 610" />
+          <path class="rel-dashed" d="M900 700 C865 700 850 700 840 700" />
+          <path class="rel-dashed" d="M900 700 C820 660 760 610 730 532" />
+        </svg>
+
+        <span class="label" style="left:275px;top:108px">possui vínculos</span>
+        <span class="label" style="left:565px;top:108px">em cursos</span>
+        <span class="label" style="left:850px;top:108px">organizado em</span>
+        <span class="label" style="left:745px;top:278px">resolve</span>
+        <span class="label" style="left:455px;top:278px">tem cronograma</span>
+        <span class="label" style="left:565px;top:394px">alimenta</span>
+        <span class="label" style="left:850px;top:394px">vira</span>
+        <span class="label" style="left:745px;top:568px">renderiza</span>
+        <span class="label" style="left:560px;top:672px">controla</span>
+        <span class="label" style="left:1028px;top:278px">metadados</span>
+        <span class="label" style="left:1000px;top:568px">futuro</span>
+
+        <article class="entity core system user">
+          <h3>Usuário Moodle</h3>
+          <ul>
+            <li><span class="key">id</span><span class="badge">PK</span></li>
+            <li><span>nome</span><span class="badge">perfil</span></li>
+            <li><span>siteadmin</span><span class="badge">bool</span></li>
+          </ul>
+        </article>
+
+        <article class="entity core system enrol">
+          <h3>Vínculo / papel</h3>
+          <ul>
+            <li><span class="key">userid</span><span class="badge">FK</span></li>
+            <li><span class="key">courseid</span><span class="badge">FK</span></li>
+            <li><span>role/capability</span><span class="badge">Moodle</span></li>
+            <li><span>contexto</span><span class="badge">curso</span></li>
+          </ul>
+        </article>
+
+        <article class="entity core system course">
+          <h3>Curso Moodle</h3>
+          <ul>
+            <li><span class="key">id</span><span class="badge">PK</span></li>
+            <li><span>fullname</span><span class="badge">nome</span></li>
+            <li><span>shortname</span><span class="badge opt">auxiliar</span></li>
+            <li><span>startdate/enddate</span><span class="badge">janela</span></li>
+            <li><span>visible</span><span class="badge">acesso</span></li>
+          </ul>
+        </article>
+
+        <article class="entity core system category">
+          <h3>Categoria Moodle</h3>
+          <ul>
+            <li><span class="key">id</span><span class="badge">PK</span></li>
+            <li><span>path</span><span class="badge">árvore</span></li>
+            <li><span>nível</span><span class="badge">Grad/Pós</span></li>
+            <li><span>modalidade</span><span class="badge">EaD/Presencial</span></li>
+          </ul>
+        </article>
+
+        <article class="entity core semester">
+          <h3>Janela acadêmica</h3>
+          <ul>
+            <li><span class="key">label</span><span class="badge">2026/1</span></li>
+            <li><span>início</span><span class="badge">data</span></li>
+            <li><span>fim</span><span class="badge">data</span></li>
+            <li><span>customizada</span><span class="badge opt">config</span></li>
+          </ul>
+        </article>
+
+        <article class="entity core schedule">
+          <h3>Cronograma EaD</h3>
+          <ul>
+            <li><span class="key">courseid</span><span class="badge">FK</span></li>
+            <li><span>ead_inicio</span><span class="badge">data</span></li>
+            <li><span>ead_final</span><span class="badge">data</span></li>
+            <li><span>completo?</span><span class="badge">derivado</span></li>
+          </ul>
+        </article>
+
+        <article class="entity derived perspective">
+          <h3>Perspectiva do usuário</h3>
+          <ul>
+            <li><span class="calc">key</span><span class="badge">student/tutor/teacher/admin</span></li>
+            <li><span>label</span><span class="badge">UI</span></li>
+            <li><span>count</span><span class="badge">disciplinas</span></li>
+            <li><span>default?</span><span class="badge">regra</span></li>
+          </ul>
+        </article>
+
+        <article class="entity derived cardnode">
+          <h3>Card de disciplina</h3>
+          <ul>
+            <li><span class="calc">courseid</span><span class="badge">origem</span></li>
+            <li><span>status</span><span class="badge">aberta/em breve</span></li>
+            <li><span>link</span><span class="badge">acesso</span></li>
+            <li><span>supertítulo</span><span class="badge">categoria</span></li>
+            <li><span>ribbon</span><span class="badge opt">reoferta</span></li>
+          </ul>
+        </article>
+
+        <article class="entity derived filters">
+          <h3>Filtros dinâmicos</h3>
+          <ul>
+            <li><span class="calc">nível</span><span class="badge">categoria</span></li>
+            <li><span>curso</span><span class="badge">categoria</span></li>
+            <li><span>turma</span><span class="badge">EaD</span></li>
+            <li><span>tipo</span><span class="badge">Oferta/Reoferta</span></li>
+          </ul>
+        </article>
+
+        <article class="entity derived ui">
+          <h3>Resumo renderizado</h3>
+          <ul>
+            <li><span class="calc">abas</span><span class="badge">4 estados</span></li>
+            <li><span>contadores</span><span class="badge">dinâmicos</span></li>
+            <li><span>cards</span><span class="badge">lista/grid</span></li>
+            <li><span>limpar filtros</span><span class="badge">ação</span></li>
+          </ul>
+        </article>
+
+        <article class="entity future presencial">
+          <h3>Presencial planejado</h3>
+          <ul>
+            <li><span class="calc">unidade/cidade</span><span class="badge">categoria</span></li>
+            <li><span>curso</span><span class="badge">categoria</span></li>
+            <li><span>série</span><span class="badge opt">opcional</span></li>
+            <li><span>ano</span><span class="badge opt">categoria/data</span></li>
+            <li><span>sem tipo</span><span class="badge">não há reoferta</span></li>
+          </ul>
+        </article>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="box"><span class="pill blue">Origem Moodle</span><p class="muted">Dados existentes: usuário, curso, categoria, vínculos e datas.</p></div>
+      <div class="box"><span class="pill purple">Derivado</span><p class="muted">Objetos calculados pelo plugin para simplificar a experiência.</p></div>
+      <div class="box"><span class="pill amber">Planejado</span><p class="muted">Expansão do modelo para Presencial, ainda em decisão.</p></div>
+      <div class="box"><span class="pill green">Produto</span><p class="muted">O resultado final é uma tela clara por semestre, papel e contexto.</p></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Leitura executiva do diagrama</h2>
+    <div class="grid">
+      <div class="span-6">
+        <h3>O plugin não cria um novo cadastro acadêmico</h3>
+        <p class="muted">Ele interpreta dados já existentes no Moodle e os reorganiza em uma visão acadêmica confiável.</p>
+      </div>
+      <div class="span-6">
+        <h3>O valor está nas entidades derivadas</h3>
+        <p class="muted">Perspectiva, Card, Filtros e Resumo são a camada inteligente que transforma dados técnicos em decisão visual.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Cardinalidades e decisões principais</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Relação</th>
+          <th>Cardinalidade conceitual</th>
+          <th>Regra importante</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Usuário → Vínculo/Papel → Curso</td>
+          <td>Usuário pode ter muitos vínculos em muitos cursos.</td>
+          <td>O plugin resolve a perspectiva a partir dos vínculos reais.</td>
+        </tr>
+        <tr>
+          <td>Curso → Categoria</td>
+          <td>Curso pertence a uma posição na árvore de categorias.</td>
+          <td>Categoria é fonte principal para filtros acadêmicos.</td>
+        </tr>
+        <tr>
+          <td>Curso → Cronograma EaD</td>
+          <td>Curso EaD pode ter cronograma completo, incompleto ou ausente.</td>
+          <td>Completo exige <code>ead_inicio</code> + <code>ead_final</code>.</td>
+        </tr>
+        <tr>
+          <td>Janela acadêmica → Card</td>
+          <td>A janela decide se uma disciplina pertence ao semestre vigente.</td>
+          <td>Evita que cursos de janeiro contaminem o semestre seguinte.</td>
+        </tr>
+        <tr>
+          <td>Card → Resumo renderizado</td>
+          <td>Muitos cards são agrupados em abas por status.</td>
+          <td>Contadores mudam conforme filtros e perspectiva.</td>
+        </tr>
+        <tr>
+          <td>Presencial planejado → Filtros</td>
+          <td>Presencial terá filtros próprios derivados da categoria.</td>
+          <td>Não usa Tipo/Oferta/Reoferta.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+</body>
+</html>
