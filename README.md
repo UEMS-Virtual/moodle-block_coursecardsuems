@@ -22,6 +22,34 @@ Se um usuário comum não tiver nenhuma disciplina elegível como estudante, o b
 
 Para administradores, o bloco também funciona como auditoria de cadastro: disciplinas EaD reconhecidas pelo shortname/categoria podem aparecer mesmo sem `ead_inicio`/`ead_final`, com aviso de período informativo ausente.
 
+## Quando uma disciplina aparece
+
+### Para aluno
+
+A disciplina aparece somente se passar por todos os filtros abaixo:
+
+1. O usuário está matriculado no curso.
+2. O usuário tem a capability `block/coursecardsuems:viewcontent` no contexto do curso (por padrão, papel `student`).
+3. A categoria do curso está dentro de uma árvore que contém uma categoria chamada `Distância`.
+4. O `shortname` segue um formato reconhecido:
+   - graduação: `PEDG_24_2S_D_df970`, `CISOL_20_4S_TEA_(REO2)_f1c8e`;
+   - pós: `PGGU_T24_GARC`, `PGSP_T25_DEJDF_(REO2)_abc12`.
+5. O curso tem `ead_inicio` ou `ead_final` preenchido.
+6. O período `ead_inicio` → `ead_final` cruza o semestre vigente.
+
+Se `ead_inicio` e `ead_final` estiverem vazios, a disciplina não aparece para aluno.
+
+### Para admin do site
+
+O admin vê uma visão de inspeção/auditoria. A disciplina aparece se:
+
+1. A categoria do curso está dentro de uma árvore que contém uma categoria chamada `Distância`.
+2. O `shortname` segue um formato reconhecido.
+3. Se houver `ead_inicio` ou `ead_final`, o período cruza o semestre vigente.
+4. Se não houver `ead_inicio` nem `ead_final`, a disciplina ainda aparece para auditoria com o aviso `Sem período informativo`.
+
+Admin não precisa estar matriculado no curso e os cards ficam clicáveis mesmo para cursos ocultos.
+
 ## Dados exibidos
 
 - **Período informativo**: campos customizados `ead_inicio` e `ead_final`.
