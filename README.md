@@ -8,7 +8,7 @@ O bloco mostra, para o aluno, apenas disciplinas **EaD** do **semestre vigente**
 
 - **Abertas** — exibidas em cards (grid). Clicáveis quando o curso Moodle estiver visível.
 - **Em breve** — exibidas em lista. Nunca clicáveis.
-- **Encerradas** — exibidas em lista, tom apagado. Clicáveis quando o Moodle ainda permitir acesso.
+- **Últimas atividades** — disciplinas cujo período informativo terminou; exibidas em lista, tom apagado. Clicáveis quando o Moodle ainda permitir acesso.
 
 Disciplina temporalmente aberta mas oculta/indisponível no Moodle aparece em **Em breve**, sem link.
 

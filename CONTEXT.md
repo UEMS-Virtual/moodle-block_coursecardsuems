@@ -2,7 +2,7 @@
 
 ## Escopo
 
-O bloco exibe, para o aluno, as disciplinas EaD do **semestre vigente** organizadas em três abas: **Abertas**, **Em breve**, **Encerradas**.
+O bloco exibe, para o aluno, as disciplinas EaD do **semestre vigente** organizadas em três abas: **Abertas**, **Em breve**, **Últimas atividades**.
 
 Fora do escopo: cursos presenciais, visão de tutor/docente, histórico de semestres, filtros avançados.
 
@@ -26,7 +26,7 @@ Administradores do site são exceção operacional: veem todas as disciplinas Ea
 | **Status da disciplina** | Estado temporal: **Em breve**, **Aberta** ou **Encerrada**. |
 | **Reoferta** | Oferta identificada pelo `shortname` (presença de `REO`, incluindo `REO2`). Exibida como ribbon no card. |
 | **Mapa de cores por curso/turma** | Configuração JSON do plugin que associa siglas normalizadas (`PEDG24`, `PEDG24-REO`) a cores hexadecimais para a faixa do card. Sem correspondência válida, usa fallback azul. |
-| **Aba de status** | Cada aba (Abertas / Em breve / Encerradas) agrupa as disciplinas por status e controla o layout. |
+| **Aba de status** | Cada aba (Abertas / Em breve / Últimas atividades) agrupa as disciplinas por status e controla o layout. |
 
 ## Regras por status
 
@@ -40,10 +40,12 @@ Administradores do site são exceção operacional: veem todas as disciplinas Ea
 - Nunca clicáveis.
 - Prioridade: disciplinas que abrem primeiro.
 
-### Encerradas
+### Últimas atividades
+- Corresponde ao status temporal interno **Encerrada** (`closed`): o período informativo terminou, mas isso não garante que todas as atividades da sala Moodle terminaram.
 - Exibição em lista, tom apagado.
 - Clicáveis quando o Moodle ainda permitir acesso.
-- Se oculta/indisponível: sem link, mas permanece na seção Encerradas.
+- Se oculta/indisponível: sem link, mas permanece na seção Últimas atividades.
+- Possível evolução futura: sinalizar no item quando houver atividade futura/aberta na sala Moodle. Ver `docs/adr/0003-rotulo-aba-apos-periodo-e-atividades-remanescentes.md`.
 
 Regra completa: `docs/adr/0002-links-e-visibilidade-por-status.md`.
 

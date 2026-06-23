@@ -37,7 +37,7 @@ Cobertura atual:
 | `tests/informative_period_reader_test.php` | Leitura de `ead_inicio` e `ead_final`. |
 | `tests/course_status_resolver_test.php` | Status temporal e ordenação por status. |
 | `tests/course_card_mapper_test.php` | View model, disponibilidade, links e curso oculto. |
-| `tests/summary_test.php` | Seções Abertas, Em breve e Encerradas. |
+| `tests/summary_test.php` | Seções Abertas, Em breve e Últimas atividades. |
 | `tests/course_repository_test.php` | Repositório de cursos matriculados. |
 
 ## Lint PHP
@@ -74,5 +74,5 @@ Validar no dashboard local que:
 
 - `Abertas` abre por padrão e usa grid;
 - `Em breve` começa fechada, usa lista e não tem links;
-- `Encerradas` começa fechada, usa lista apagada e mantém links quando disponíveis;
+- `Últimas atividades` começa fechada, usa lista apagada e mantém links quando disponíveis;
 - disciplina aberta pelas datas, mas oculta no Moodle, aparece em `Em breve` sem link e com a mensagem `Disponível em breve`.
