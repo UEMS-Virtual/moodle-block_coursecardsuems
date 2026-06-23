@@ -59,6 +59,7 @@ $string['opencourse'] = 'Abrir disciplina {$a}';
 $string['open'] = 'Aberta';
 $string['comingsoon'] = 'Em breve';
 $string['closed'] = 'Encerrada';
+$string['evaluation'] = 'Avaliação';
 $string['nodate'] = 'Sem data';
 $string['openplural'] = 'Abertas';
 $string['comingsoonplural'] = 'Em breve';

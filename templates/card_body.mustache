@@ -8,7 +8,7 @@
     {{#isreoferta}}
         <span class="coursecardsuems-ribbon-reoferta">{{#str}}reoferta, block_coursecardsuems{{/str}}</span>
     {{/isreoferta}}
-    <span class="coursecardsuems-ribbon {{statusclass}}">{{statuslabel}}</span>
+    <span class="coursecardsuems-ribbon {{statusclass}}{{#haspendingactivity}} coursecardsuems-status-evaluation{{/haspendingactivity}}">{{statuslabel}}</span>
 </div>
 <div class="coursecardsuems-main">
     <div class="coursecardsuems-title-group">

@@ -57,6 +57,7 @@ Admin não precisa estar matriculado no curso e os cards ficam clicáveis mesmo 
 - **Supertítulo**: agrupamento compacto do `shortname` (ex: `PEDG-24`) + série da categoria Moodle.
 - **Reoferta**: identificada pelo `shortname` (presença de `REO`).
 - **Docente**: usuários com papel `editingteacher`, `teacher` ou `mod_prof`.
+- **Avaliação pendente**: disciplina em **Últimas atividades** com atividade datada futura ou ainda aberta exibe o rótulo do item como **Avaliação**, mantendo o status interno `closed`.
 - **Cor da faixa**: pode ser configurada nas configurações do plugin por JSON de siglas para cores hexadecimais. Exemplo: `{"PEDG24":"#ec407a","PEDG24-REO":"#f8bbd0"}`. Chaves como `PEDG24`, `PEDG-24` e `PEDG_24` são normalizadas; para `REO` e `REO2`, use `-REO`. Sem cor válida, a faixa usa o azul padrão.
 
 Regra completa de links e visibilidade: `docs/adr/0002-links-e-visibilidade-por-status.md`.
@@ -70,6 +71,7 @@ classes/
     course_repository.php       — busca cursos matriculados
     current_semester.php        — calcula semestre vigente
     course_status_resolver.php  — resolve status (open/comingsoon/closed)
+    course_activity_resolver.php — detecta atividades datadas futuras/abertas
     course_card_mapper.php      — monta view model de cada disciplina
     informative_period_reader.php
     course_filter.php

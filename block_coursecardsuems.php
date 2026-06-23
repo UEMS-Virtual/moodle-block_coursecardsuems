@@ -219,6 +219,13 @@ class block_coursecardsuems extends block_base {
                 return $order[$a['status']] <=> $order[$b['status']];
             }
 
+            if ($a['status'] === \block_coursecardsuems\local\course_status_resolver::CLOSED) {
+                $pendingcomparison = (int) !empty($b['haspendingactivity']) <=> (int) !empty($a['haspendingactivity']);
+                if ($pendingcomparison !== 0) {
+                    return $pendingcomparison;
+                }
+            }
+
             $datecomparison = $a['sortkey'] <=> $b['sortkey'];
             if ($datecomparison !== 0) {
                 return $datecomparison;

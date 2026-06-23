@@ -45,7 +45,7 @@ Administradores do site são exceção operacional: veem todas as disciplinas Ea
 - Exibição em lista, tom apagado.
 - Clicáveis quando o Moodle ainda permitir acesso.
 - Se oculta/indisponível: sem link, mas permanece na seção Últimas atividades.
-- Possível evolução futura: sinalizar no item quando houver atividade futura/aberta na sala Moodle. Ver `docs/adr/0003-rotulo-aba-apos-periodo-e-atividades-remanescentes.md`.
+- Quando houver atividade datada futura ou ainda aberta na sala Moodle, o item mantém o status interno `closed`, mas o rótulo visual do card/lista muda para **Avaliação**. Ver `docs/adr/0003-rotulo-aba-apos-periodo-e-atividades-remanescentes.md`.
 
 Regra completa: `docs/adr/0002-links-e-visibilidade-por-status.md`.
 

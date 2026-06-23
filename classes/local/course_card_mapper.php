@@ -53,6 +53,9 @@ class course_card_mapper {
     /** @var course_color_map Configured stripe color map. */
     private $colormap;
 
+    /** @var course_activity_resolver Activity resolver. */
+    private $activityresolver;
+
     /**
      * Constructor.
      *
@@ -62,6 +65,7 @@ class course_card_mapper {
      * @param int|null $now Timestamp used to resolve status.
      * @param course_shortname_parser|null $shortnameparser Shortname parser.
      * @param course_color_map|null $colormap Configured stripe color map.
+     * @param course_activity_resolver|null $activityresolver Activity resolver.
      */
     public function __construct(
         ?informative_period_reader $periodreader = null,
@@ -69,13 +73,15 @@ class course_card_mapper {
         ?category_parser $categoryparser = null,
         ?int $now = null,
         ?course_shortname_parser $shortnameparser = null,
-        ?course_color_map $colormap = null
+        ?course_color_map $colormap = null,
+        ?course_activity_resolver $activityresolver = null
     ) {
         $this->periodreader = $periodreader ?? new informative_period_reader();
         $this->statusresolver = $statusresolver ?? new course_status_resolver();
         $this->categoryparser = $categoryparser ?? new category_parser();
         $this->shortnameparser = $shortnameparser ?? new course_shortname_parser();
         $this->colormap = $colormap ?? course_color_map::from_config();
+        $this->activityresolver = $activityresolver ?? new course_activity_resolver();
         $this->now = $now;
     }
 
@@ -95,6 +101,8 @@ class course_card_mapper {
         $status = $this->get_display_status($temporalstatus, $isvisible);
         $isclickable = $this->is_clickable($status, $isvisible, $canaccesshidden);
         $ispreparing = !$isvisible && $temporalstatus === course_status_resolver::OPEN;
+        $haspendingactivity = $status === course_status_resolver::CLOSED &&
+            $this->activityresolver->has_pending_activity((int) $course->id, $this->now);
         $missingperiod = !$hascompleteperiod;
         $context = context_course::instance($course->id);
         [$code, $title] = $this->extract_display_title(get_course_display_name_for_list($course));
@@ -145,7 +153,8 @@ class course_card_mapper {
             'filteroffer' => $isreoferta ? get_string('offerreoferta', 'block_coursecardsuems') :
                 get_string('offerregular', 'block_coursecardsuems'),
             'status' => $status,
-            'statuslabel' => $this->statusresolver->get_label($status),
+            'statuslabel' => $this->get_status_label($status, $haspendingactivity),
+            'haspendingactivity' => $haspendingactivity,
             'hasmissingperiodwarning' => $missingperiod,
             'statusclass' => 'coursecardsuems-status-' . $status,
             'isclosed' => $status === course_status_resolver::CLOSED,
@@ -173,6 +182,21 @@ class course_card_mapper {
         }
 
         return $temporalstatus;
+    }
+
+    /**
+     * Returns the visible status label for the card/list item.
+     *
+     * @param string $status Display status.
+     * @param bool $haspendingactivity Whether the closed course has future/open dated activities.
+     * @return string Status label.
+     */
+    private function get_status_label(string $status, bool $haspendingactivity): string {
+        if ($status === course_status_resolver::CLOSED && $haspendingactivity) {
+            return get_string('evaluation', 'block_coursecardsuems');
+        }
+
+        return $this->statusresolver->get_label($status);
     }
 
     /**

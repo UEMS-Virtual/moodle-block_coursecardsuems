@@ -471,6 +471,10 @@
     background: var(--uems-status-closed);
 }
 
+.block_coursecardsuems .coursecardsuems-status-evaluation {
+    background: var(--uems-primary);
+}
+
 .block_coursecardsuems .coursecardsuems-status-nodate {
     background: #64748b;
 }

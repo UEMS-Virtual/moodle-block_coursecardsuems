@@ -176,10 +176,41 @@ final class course_card_mapper_test extends \advanced_testcase {
 
         self::assertSame(course_status_resolver::CLOSED, $viewmodel['temporalstatus']);
         self::assertSame(course_status_resolver::CLOSED, $viewmodel['status']);
+        self::assertSame(get_string('closed', 'block_coursecardsuems'), $viewmodel['statuslabel']);
+        self::assertFalse($viewmodel['haspendingactivity']);
         self::assertFalse($viewmodel['hasurl']);
         self::assertFalse($viewmodel['isavailable']);
         self::assertFalse($viewmodel['ispreparing']);
         self::assertTrue($viewmodel['period']['showdates']);
+    }
+
+    /**
+     * A closed discipline with a future dated activity is labelled as Avaliação.
+     */
+    public function test_closed_course_with_pending_activity_uses_evaluation_label(): void {
+        $this->resetAfterTest(true);
+        $this->create_period_fields();
+
+        $generator = self::getDataGenerator();
+        $course = $generator->create_course([
+            'fullname' => '[CISOL-23-2S-EP] Economia Política',
+            'shortname' => 'CISOL_23_2S_EP_df970',
+            'customfield_ead_inicio' => make_timestamp(2026, 3, 1),
+            'customfield_ead_final' => make_timestamp(2026, 4, 1),
+        ]);
+        $generator->create_module('assign', [
+            'course' => $course->id,
+            'name' => 'Exame final',
+            'allowsubmissionsfromdate' => make_timestamp(2026, 4, 10, 9),
+            'duedate' => make_timestamp(2026, 4, 10, 12),
+            'cutoffdate' => make_timestamp(2026, 4, 10, 12),
+        ]);
+
+        $viewmodel = (new course_card_mapper(null, null, null, make_timestamp(2026, 4, 2)))->map($course);
+
+        self::assertSame(course_status_resolver::CLOSED, $viewmodel['status']);
+        self::assertTrue($viewmodel['haspendingactivity']);
+        self::assertSame(get_string('evaluation', 'block_coursecardsuems'), $viewmodel['statuslabel']);
     }
 
     /**

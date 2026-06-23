@@ -59,6 +59,7 @@ $string['opencourse'] = 'Open course {$a}';
 $string['open'] = 'Open';
 $string['comingsoon'] = 'Coming soon';
 $string['closed'] = 'Closed';
+$string['evaluation'] = 'Assessment';
 $string['nodate'] = 'No date';
 $string['openplural'] = 'Open';
 $string['comingsoonplural'] = 'Coming soon';

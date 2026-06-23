@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposta aceita para a primeira etapa; segunda etapa em estudo.
+Aceita.
 
 ## Contexto
 
@@ -18,23 +18,16 @@ Alterar apenas o rótulo da aba superior em português de **Encerradas** para **
 
 Esse rótulo remete a provas, exames, recuperação e outras atividades finais que podem existir após o período informativo principal, sem alterar o status exibido no card neste momento.
 
-## Direção futura — etapa 2
+## Decisão — etapa 2
 
-Avaliar uma regra complementar baseada nas atividades configuradas na sala Moodle.
+Adicionar uma regra complementar baseada nas atividades configuradas na sala Moodle.
 
-A ideia é calcular, por curso, se existe alguma atividade avaliável ou relevante com data futura ou ainda aberta. Esse resultado deve virar uma propriedade booleana no view model, por exemplo:
+O bloco calcula, por curso, se existe alguma atividade suportada com data futura ou ainda aberta. Esse resultado vira a propriedade booleana `haspendingactivity` no view model:
 
-- `haspendingactivity`, ou nome equivalente definido na implementação;
 - `true` quando houver atividade restante/futura/aberta;
 - `false` quando não houver evidência de atividade restante.
 
-Com essa propriedade, o card/list item poderia trocar o rótulo visual do status de **Encerrada** para uma palavra curta que indique continuidade, sem mudar necessariamente a seção ou o status temporal interno.
-
-Possíveis nomes de interface para essa condição devem ser validados antes da implementação, por exemplo:
-
-- **Atividade pendente**;
-- **Com atividade**;
-- **Ainda ativa**.
+Com essa propriedade, o card/list item troca o rótulo visual do status de **Encerrada** para **Avaliação**, sem mudar a seção ou o status temporal interno.
 
 ## Consequências
 
@@ -43,5 +36,5 @@ Possíveis nomes de interface para essa condição devem ser validados antes da 
 - Documentação e validação manual devem distinguir entre:
   - status temporal interno: `Encerrada`/`closed`;
   - rótulo da aba: **Últimas atividades**;
-  - possível sinalização futura de atividade remanescente.
-- A etapa 2 deve ser implementada com cuidado para não tornar o bloco dependente de todos os tipos de módulo do Moodle sem uma estratégia clara de datas e relevância.
+  - sinalização de atividade remanescente: **Avaliação**.
+- A detecção inicial cobre módulos Moodle com campos de data conhecidos e visíveis, como `assign`, `quiz`, `choice`, `lesson`, `feedback`, `data` e `workshop`.

@@ -36,7 +36,8 @@ Cobertura atual:
 | `tests/course_filter_test.php` | Filtro de disciplina EaD do semestre vigente. |
 | `tests/informative_period_reader_test.php` | Leitura de `ead_inicio` e `ead_final`. |
 | `tests/course_status_resolver_test.php` | Status temporal e ordenação por status. |
-| `tests/course_card_mapper_test.php` | View model, disponibilidade, links e curso oculto. |
+| `tests/course_card_mapper_test.php` | View model, disponibilidade, links, curso oculto e rótulo de Avaliação. |
+| `tests/course_activity_resolver_test.php` | Detecção de atividades datadas futuras/abertas no curso. |
 | `tests/summary_test.php` | Seções Abertas, Em breve e Últimas atividades. |
 | `tests/course_repository_test.php` | Repositório de cursos matriculados. |
 
@@ -75,4 +76,5 @@ Validar no dashboard local que:
 - `Abertas` abre por padrão e usa grid;
 - `Em breve` começa fechada, usa lista e não tem links;
 - `Últimas atividades` começa fechada, usa lista apagada e mantém links quando disponíveis;
+- item em `Últimas atividades` com atividade futura/aberta exibe rótulo `Avaliação`;
 - disciplina aberta pelas datas, mas oculta no Moodle, aparece em `Em breve` sem link e com a mensagem `Disponível em breve`.

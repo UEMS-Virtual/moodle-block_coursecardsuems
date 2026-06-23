@@ -23,7 +23,7 @@ Use estes termos em documentação, issues e código de interface.
 | **Supertítulo** | Linha acima do nome da disciplina; composta por `agrupamento · série`. | cabeçalho, tag lateral |
 | **Período informativo** | Datas `ead_inicio` e `ead_final` dos campos customizados; comunicam quando a disciplina acontece. | data de início/término, datas Moodle |
 | **Janela de acesso Moodle** | `course.startdate`/`course.enddate`; usados só como fallback de status. Nunca exibidos ao aluno. | período da disciplina |
-| **Status da disciplina** | Estado temporal interno: **Em breve**, **Aberta** ou **Encerrada**. A aba de itens encerrados usa o rótulo mais brando **Últimas atividades**. | situação, visibilidade |
+| **Status da disciplina** | Estado temporal interno: **Em breve**, **Aberta** ou **Encerrada**. A aba de itens encerrados usa o rótulo mais brando **Últimas atividades**; o item pode exibir **Avaliação** quando houver atividade datada futura/aberta. | situação, visibilidade |
 | **Tipo de oferta** | **Oferta** ou **Reoferta**; classificação da oferta acadêmica. | badge, status |
 | **Reoferta** | Oferta identificada pelo `shortname` (presença de `REO`). Exibida como ribbon no card. | segunda oferta, repetição |
 | **Docente** | Usuário com papel `editingteacher` ou `teacher` exibido no card. | professor, tutor |
