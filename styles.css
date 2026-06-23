@@ -270,17 +270,18 @@
 @container (max-width: 560px) {
     .block_coursecardsuems .coursecardsuems-tabs {
         overflow-x: auto;
+        overflow-y: hidden;
         padding-bottom: .2rem;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: thin;
     }
 
     .block_coursecardsuems .coursecardsuems-tab {
-        flex: 1 0 5.75rem;
-        min-width: 5.75rem;
-        font-size: .76rem;
-        padding: .5rem .45rem;
-        gap: .25rem;
+        flex: 0 0 auto;
+        min-width: max-content;
+        font-size: .82rem;
+        padding: .5rem .75rem;
+        gap: .3rem;
         white-space: nowrap;
     }
 }
@@ -291,19 +292,17 @@
     }
 
     .block_coursecardsuems .coursecardsuems-tab {
-        flex-basis: 5.35rem;
-        min-width: 5.35rem;
-        font-size: .72rem;
-        padding: .48rem .38rem;
-        gap: .22rem;
+        font-size: .78rem;
+        padding: .48rem .65rem;
+        gap: .25rem;
     }
 }
 
 @container (max-width: 360px) {
     .block_coursecardsuems .coursecardsuems-tab {
-        font-size: .68rem;
-        padding: .5rem .3rem;
-        gap: .2rem;
+        font-size: .74rem;
+        padding: .5rem .55rem;
+        gap: .22rem;
     }
     .block_coursecardsuems .coursecardsuems-tab-count {
         min-width: 1.2rem;
