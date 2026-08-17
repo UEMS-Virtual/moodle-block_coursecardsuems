@@ -40,7 +40,7 @@ class course_shortname_parser {
      * @return bool
      */
     public function is_discipline_shortname(string $shortname): bool {
-        return preg_match('/^[A-Z]+_\d{2}_\d+S_[A-Z0-9]+(?:_\(REO\d?\))?_/i', $shortname) === 1 ||
+        return preg_match('/^[A-Z]+_\d{2}_\d+S_[A-Z0-9]+(?:_\(REO\d?\))?(?:_|$)/i', $shortname) === 1 ||
             preg_match('/^[A-Z]+_T\d{2}_[A-Z0-9]+(?:_\(REO\d?\))?(?:_|$)/i', $shortname) === 1;
     }
 

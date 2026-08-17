@@ -61,6 +61,9 @@ final class course_shortname_parser_test extends \advanced_testcase {
     public static function valid_shortname_provider(): array {
         return [
             ['CISOL_23_2S_EP_df970'],
+            ['CISOL_24_3S_ECSI'],
+            ['PEDG_23_4S_ESAIEF'],
+            ['PEDG_24_3S_ESEI'],
             ['PEDG_24_2S_D_(REO)_d74cd'],
             ['CISOL_20_4S_TEA_(REO2)_f1c8e'],
             ['PGGU_T24_GARC'],
