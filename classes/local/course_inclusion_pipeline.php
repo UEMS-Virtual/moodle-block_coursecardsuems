@@ -119,7 +119,8 @@ class course_inclusion_pipeline {
             true
         );
         $courseid = (int) $course->id;
-        $accessapplicable = $state['selectedperspective'] === user_perspective_resolver::STUDENT;
+        $selectedperspective = $requestedperspective ?: $state['selectedperspective'];
+        $accessapplicable = $selectedperspective === user_perspective_resolver::STUDENT;
         $gates = [
             'repository' => $this->contains_course($state['sourcecourses'], $courseid),
             'category' => $evaluation['category'],
@@ -127,13 +128,12 @@ class course_inclusion_pipeline {
             'period' => $evaluation['period'],
             'perspective' => $this->perspective_contains_course(
                 $state['perspectives'],
-                $state['selectedperspective'],
+                $selectedperspective,
                 $courseid
             ),
             'access' => !$accessapplicable || $this->accessfilter->can_user_view_course($course, $userid, false),
             'accessapplicable' => $accessapplicable,
         ];
-        $included = $this->contains_course($state['courses'], $courseid);
         $excludedat = null;
         foreach (['repository', 'category', 'shortname', 'period', 'perspective', 'access'] as $gate) {
             if (!$gates[$gate]) {
@@ -141,6 +141,7 @@ class course_inclusion_pipeline {
                 break;
             }
         }
+        $included = $excludedat === null;
 
         return [
             'semesterlabel' => $state['semesterlabel'],
@@ -150,7 +151,7 @@ class course_inclusion_pipeline {
             'periodend' => $evaluation['periodend'],
             'periodcomplete' => $evaluation['periodcomplete'],
             'perspectives' => $state['perspectives'],
-            'selectedperspective' => $state['selectedperspective'],
+            'selectedperspective' => $selectedperspective,
             'gates' => $gates,
             'included' => $included,
             'excludedat' => $excludedat,
