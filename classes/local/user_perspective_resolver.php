@@ -141,6 +141,27 @@ class user_perspective_resolver {
     }
 
     /**
+     * Returns the requested perspective when available, otherwise the resolved default.
+     *
+     * @param array $perspectives Available perspectives.
+     * @param string $requested Requested perspective key.
+     * @return string Selected perspective key or empty string.
+     */
+    public function get_selected_perspective_key(array $perspectives, string $requested = ''): string {
+        $default = '';
+        foreach ($perspectives as $perspective) {
+            if (!empty($perspective['isdefault'])) {
+                $default = $perspective['key'];
+            }
+            if ($requested !== '' && $perspective['key'] === $requested) {
+                return $requested;
+            }
+        }
+
+        return $default;
+    }
+
+    /**
      * Returns whether a course has a complete Cronograma da disciplina.
      *
      * @param int $courseid Course id.

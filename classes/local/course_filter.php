@@ -74,28 +74,46 @@ class course_filter {
         string $semesterlabel,
         bool $includeundated = false
     ): array {
-        [$semesterstart, $semesterend] = current_semester::bounds_from_label($semesterlabel);
+        return array_values(array_filter($courses, function($course) use ($semesterlabel, $includeundated): bool {
+            $evaluation = $this->evaluate_current_semester_distance_course($course, $semesterlabel, $includeundated);
 
-        return array_values(array_filter($courses, function($course) use ($semesterstart, $semesterend, $includeundated): bool {
-            if (empty($course->category) || !$this->categoryparser->is_distance_category((int) $course->category)) {
-                return false;
-            }
-
-            if (empty($course->shortname) || !$this->shortnameparser->is_discipline_shortname($course->shortname)) {
-                return false;
-            }
-
-            $period = $this->periodreader->get_period((int) $course->id);
-            if (!$period->has_complete_range()) {
-                if (!$includeundated) {
-                    return false;
-                }
-
-                return $this->course_dates_overlap_semester($course, $semesterstart, $semesterend);
-            }
-
-            return $period->startdate <= $semesterend && $period->enddate >= $semesterstart;
+            return $evaluation['category'] && $evaluation['shortname'] && $evaluation['period'];
         }));
+    }
+
+    /**
+     * Evaluates each product-scope gate for one Moodle course.
+     *
+     * @param object $course Course record.
+     * @param string $semesterlabel Semester label in YYYY/S format.
+     * @param bool $includeundated Whether Moodle dates may place an incomplete schedule in the semester.
+     * @return array Gate results and date values used by the filter.
+     */
+    public function evaluate_current_semester_distance_course(
+        object $course,
+        string $semesterlabel,
+        bool $includeundated = false
+    ): array {
+        [$semesterstart, $semesterend] = current_semester::bounds_from_label($semesterlabel);
+        $categoryaccepted = !empty($course->category) &&
+            $this->categoryparser->is_distance_category((int) $course->category);
+        $shortnameaccepted = !empty($course->shortname) &&
+            $this->shortnameparser->is_discipline_shortname($course->shortname);
+        $period = $this->periodreader->get_period((int) $course->id);
+        $periodaccepted = $period->has_complete_range() ?
+            $period->startdate <= $semesterend && $period->enddate >= $semesterstart :
+            $includeundated && $this->course_dates_overlap_semester($course, $semesterstart, $semesterend);
+
+        return [
+            'category' => $categoryaccepted,
+            'shortname' => $shortnameaccepted,
+            'period' => $periodaccepted,
+            'periodstart' => $period->startdate,
+            'periodend' => $period->enddate,
+            'periodcomplete' => $period->has_complete_range(),
+            'semesterstart' => $semesterstart,
+            'semesterend' => $semesterend,
+        ];
     }
 
     /**

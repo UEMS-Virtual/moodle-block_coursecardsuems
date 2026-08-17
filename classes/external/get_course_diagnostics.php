@@ -24,9 +24,12 @@
 
 namespace block_coursecardsuems\external;
 
+use block_coursecardsuems\local\course_inclusion_pipeline;
+use block_coursecardsuems\local\user_perspective_resolver;
 use context_system;
 use core_external\external_api;
 use core_external\external_function_parameters;
+use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
 
@@ -57,6 +60,8 @@ class get_course_diagnostics extends external_api {
      * @return array
      */
     public static function execute(int $courseid, int $userid = 0, string $perspective = ''): array {
+        global $DB, $USER;
+
         $params = self::validate_parameters(self::execute_parameters(), [
             'courseid' => $courseid,
             'userid' => $userid,
@@ -67,7 +72,64 @@ class get_course_diagnostics extends external_api {
         self::validate_context($context);
         require_capability('block/coursecardsuems:viewdiagnostics', $context);
 
-        return [];
+        $validperspectives = [
+            user_perspective_resolver::STUDENT,
+            user_perspective_resolver::TUTOR,
+            user_perspective_resolver::TEACHER,
+            user_perspective_resolver::ADMIN,
+        ];
+        if ($params['perspective'] !== '' && !in_array($params['perspective'], $validperspectives, true)) {
+            throw new \invalid_parameter_exception('Invalid perspective.');
+        }
+
+        $targetuserid = $params['userid'] ?: (int) $USER->id;
+        $DB->get_record('user', ['id' => $targetuserid, 'deleted' => 0], 'id', MUST_EXIST);
+        $course = $DB->get_record(
+            'course',
+            ['id' => $params['courseid']],
+            'id, category, shortname, fullname, startdate, enddate, visible',
+            MUST_EXIST
+        );
+        $diagnostic = (new course_inclusion_pipeline())->diagnose_course(
+            $course,
+            $targetuserid,
+            $params['perspective']
+        );
+        $perspectives = array_map(static function(array $item): array {
+            return [
+                'key' => $item['key'],
+                'count' => $item['count'],
+                'isdefault' => $item['isdefault'],
+            ];
+        }, $diagnostic['perspectives']);
+
+        return [
+            'course' => [
+                'id' => (int) $course->id,
+                'shortname' => $course->shortname,
+                'categoryid' => (int) $course->category,
+                'visible' => (bool) $course->visible,
+            ],
+            'target' => [
+                'userid' => $targetuserid,
+                'issiteadmin' => is_siteadmin($targetuserid),
+            ],
+            'semester' => [
+                'label' => $diagnostic['semesterlabel'],
+                'startdate' => $diagnostic['semesterstart'],
+                'enddate' => $diagnostic['semesterend'],
+            ],
+            'informativeperiod' => [
+                'startdate' => $diagnostic['periodstart'],
+                'enddate' => $diagnostic['periodend'],
+                'complete' => $diagnostic['periodcomplete'],
+            ],
+            'perspectives' => $perspectives,
+            'selectedperspective' => $diagnostic['selectedperspective'] ?: null,
+            'gates' => $diagnostic['gates'],
+            'included' => $diagnostic['included'],
+            'excludedat' => $diagnostic['excludedat'],
+        ];
     }
 
     /**
@@ -76,6 +138,56 @@ class get_course_diagnostics extends external_api {
      * @return external_single_structure
      */
     public static function execute_returns(): external_single_structure {
-        return new external_single_structure([]);
+        return new external_single_structure([
+            'course' => new external_single_structure([
+                'id' => new external_value(PARAM_INT, 'Course id.'),
+                'shortname' => new external_value(PARAM_RAW, 'Course shortname.'),
+                'categoryid' => new external_value(PARAM_INT, 'Course category id.'),
+                'visible' => new external_value(PARAM_BOOL, 'Whether the course is visible.'),
+            ]),
+            'target' => new external_single_structure([
+                'userid' => new external_value(PARAM_INT, 'Target user id.'),
+                'issiteadmin' => new external_value(PARAM_BOOL, 'Whether the target user is a site admin.'),
+            ]),
+            'semester' => new external_single_structure([
+                'label' => new external_value(PARAM_RAW, 'Current semester label.'),
+                'startdate' => new external_value(PARAM_INT, 'Current semester start timestamp.'),
+                'enddate' => new external_value(PARAM_INT, 'Current semester end timestamp.'),
+            ]),
+            'informativeperiod' => new external_single_structure([
+                'startdate' => new external_value(PARAM_INT, 'Informative period start timestamp.'),
+                'enddate' => new external_value(PARAM_INT, 'Informative period end timestamp.'),
+                'complete' => new external_value(PARAM_BOOL, 'Whether both informative dates exist.'),
+            ]),
+            'perspectives' => new external_multiple_structure(new external_single_structure([
+                'key' => new external_value(PARAM_ALPHA, 'Perspective key.'),
+                'count' => new external_value(PARAM_INT, 'Course count.'),
+                'isdefault' => new external_value(PARAM_BOOL, 'Whether this is the default perspective.'),
+            ])),
+            'selectedperspective' => new external_value(
+                PARAM_ALPHA,
+                'Selected perspective key.',
+                VALUE_REQUIRED,
+                null,
+                NULL_ALLOWED
+            ),
+            'gates' => new external_single_structure([
+                'repository' => new external_value(PARAM_BOOL, 'Course belongs to the target source.'),
+                'category' => new external_value(PARAM_BOOL, 'Course belongs to the Distance branch.'),
+                'shortname' => new external_value(PARAM_BOOL, 'Course shortname is recognised.'),
+                'period' => new external_value(PARAM_BOOL, 'Course overlaps the current semester.'),
+                'perspective' => new external_value(PARAM_BOOL, 'Course belongs to the selected perspective.'),
+                'access' => new external_value(PARAM_BOOL, 'Target user passes the student access gate.'),
+                'accessapplicable' => new external_value(PARAM_BOOL, 'Whether student access applies.'),
+            ]),
+            'included' => new external_value(PARAM_BOOL, 'Whether the course is included.'),
+            'excludedat' => new external_value(
+                PARAM_ALPHA,
+                'First exclusion stage.',
+                VALUE_REQUIRED,
+                null,
+                NULL_ALLOWED
+            ),
+        ]);
     }
 }
