@@ -69,10 +69,17 @@ class course_inclusion_pipeline {
      * @return array Pipeline state.
      */
     public function select_for_user(int $userid, string $requestedperspective = ''): array {
+        global $USER;
+
         $issiteadmin = is_siteadmin($userid);
         $semesterlabel = current_semester::from_timestamp();
-        $sourcecourses = $issiteadmin ? $this->repository->get_all_courses() :
-            $this->repository->get_perspective_candidate_courses_for_user($userid);
+        if ($issiteadmin) {
+            $sourcecourses = $this->repository->get_all_courses();
+        } else if ((int) $USER->id === $userid) {
+            $sourcecourses = $this->repository->get_perspective_candidate_courses_for_current_user();
+        } else {
+            $sourcecourses = $this->repository->get_perspective_candidate_courses_for_user($userid);
+        }
         $scopedcourses = $this->coursefilter->filter_current_semester_distance_courses(
             $sourcecourses,
             $semesterlabel,

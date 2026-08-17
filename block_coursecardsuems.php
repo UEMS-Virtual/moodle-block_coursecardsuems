@@ -70,27 +70,6 @@ class block_coursecardsuems extends block_base {
     }
 
     /**
-     * Returns the selected perspective key.
-     *
-     * @param array $perspectives Available perspectives.
-     * @param string $requested Requested perspective key.
-     * @return string
-     */
-    private function get_selected_perspective(array $perspectives, string $requested): string {
-        $default = '';
-        foreach ($perspectives as $perspective) {
-            if (!empty($perspective['isdefault'])) {
-                $default = $perspective['key'];
-            }
-            if ($requested !== '' && $perspective['key'] === $requested) {
-                return $requested;
-            }
-        }
-
-        return $default;
-    }
-
-    /**
      * Adds active state and URLs to perspective options.
      *
      * @param array $perspectives Available perspectives.
@@ -108,32 +87,6 @@ class block_coursecardsuems extends block_base {
         unset($perspective);
 
         return $perspectives;
-    }
-
-    /**
-     * Keeps only courses that belong to the selected perspective.
-     *
-     * @param array $courses Course records.
-     * @param array $perspectives Available perspectives.
-     * @param string $selected Selected perspective key.
-     * @return array
-     */
-    private function filter_courses_by_perspective(array $courses, array $perspectives, string $selected): array {
-        $selectedids = [];
-        foreach ($perspectives as $perspective) {
-            if ($perspective['key'] === $selected) {
-                $selectedids = array_flip(array_map('intval', $perspective['courseids']));
-                break;
-            }
-        }
-
-        if (empty($selectedids)) {
-            return [];
-        }
-
-        return array_values(array_filter($courses, static function($course) use ($selectedids): bool {
-            return !empty($course->id) && array_key_exists((int) $course->id, $selectedids);
-        }));
     }
 
     /**
@@ -167,7 +120,7 @@ class block_coursecardsuems extends block_base {
      * @return stdClass
      */
     public function get_content() {
-        global $OUTPUT, $PAGE;
+        global $OUTPUT, $PAGE, $USER;
 
         if ($this->content !== null) {
             return $this->content;
@@ -176,28 +129,22 @@ class block_coursecardsuems extends block_base {
         $this->content = new stdClass();
         $this->content->footer = '';
 
-        $semesterlabel = \block_coursecardsuems\local\current_semester::from_timestamp();
-        $repository = new \block_coursecardsuems\local\course_repository();
         $periodreader = new \block_coursecardsuems\local\informative_period_reader();
         $mapper = new \block_coursecardsuems\local\course_card_mapper($periodreader);
-        $coursefilter = new \block_coursecardsuems\local\course_filter(null, null, $periodreader);
-        $accessfilter = new \block_coursecardsuems\local\course_access_filter();
-        $issiteadmin = is_siteadmin();
-        $sourcecourses = $issiteadmin ? $repository->get_all_courses() :
-            $repository->get_perspective_candidate_courses_for_current_user();
-        $courses = $coursefilter->filter_current_semester_distance_courses($sourcecourses, $semesterlabel, true);
-        $perspectives = (new \block_coursecardsuems\local\user_perspective_resolver($periodreader))->resolve(
-            $courses,
+        $pipeline = new \block_coursecardsuems\local\course_inclusion_pipeline(
             null,
-            $issiteadmin
+            new \block_coursecardsuems\local\course_filter(null, null, $periodreader),
+            new \block_coursecardsuems\local\user_perspective_resolver($periodreader)
         );
-        $selectedperspective = optional_param('coursecardsuemsview', '', PARAM_ALPHA);
-        $selectedperspective = $this->get_selected_perspective($perspectives, $selectedperspective);
-        $perspectives = $this->prepare_perspective_links($perspectives, $selectedperspective);
-        $courses = $this->filter_courses_by_perspective($courses, $perspectives, $selectedperspective);
-        if ($selectedperspective === \block_coursecardsuems\local\user_perspective_resolver::STUDENT) {
-            $courses = $accessfilter->filter_courses_for_current_user($courses, false);
-        }
+        $selection = $pipeline->select_for_user(
+            (int) $USER->id,
+            optional_param('coursecardsuemsview', '', PARAM_ALPHA)
+        );
+        $semesterlabel = $selection['semesterlabel'];
+        $issiteadmin = $selection['issiteadmin'];
+        $selectedperspective = $selection['selectedperspective'];
+        $perspectives = $this->prepare_perspective_links($selection['perspectives'], $selectedperspective);
+        $courses = $selection['courses'];
 
         if (empty($courses) && !$issiteadmin) {
             $this->content->text = '';
