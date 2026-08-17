@@ -66,6 +66,26 @@ final class get_course_diagnostics_test extends \externallib_advanced_testcase {
     }
 
     /**
+     * A support account with the dedicated capability can call the diagnostic service.
+     */
+    public function test_support_user_with_capability_can_diagnose_own_course(): void {
+        $this->resetAfterTest(true);
+        $course = $this->create_distance_course();
+        $support = self::getDataGenerator()->create_user();
+        self::getDataGenerator()->enrol_user($support->id, $course->id, 'student');
+        $roleid = create_role('Course card diagnostics', 'coursecarddiagnostics', 'Course card diagnostics');
+        $systemcontext = \context_system::instance();
+        assign_capability('block/coursecardsuems:viewdiagnostics', CAP_ALLOW, $roleid, $systemcontext->id, true);
+        role_assign($roleid, $support->id, $systemcontext->id);
+        $this->setUser($support);
+
+        $result = get_course_diagnostics::execute((int) $course->id, 0, 'student');
+
+        self::assertSame((int) $support->id, $result['target']['userid']);
+        self::assertTrue($result['included']);
+    }
+
+    /**
      * Site administrators can inspect a course included in their default admin perspective.
      */
     public function test_admin_can_diagnose_included_course(): void {
