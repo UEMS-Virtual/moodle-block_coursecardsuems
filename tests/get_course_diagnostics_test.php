@@ -68,6 +68,34 @@ final class get_course_diagnostics_test extends \externallib_advanced_testcase {
     }
 
     /**
+     * A structurally valid student course reports the access capability gate separately.
+     */
+    public function test_reports_student_access_exclusion(): void {
+        global $DB;
+
+        $this->resetAfterTest(true);
+        $course = $this->create_distance_course();
+        $student = self::getDataGenerator()->create_user();
+        self::getDataGenerator()->enrol_user($student->id, $course->id, 'student');
+        $studentroleid = $DB->get_field('role', 'id', ['shortname' => 'student'], MUST_EXIST);
+        assign_capability(
+            'block/coursecardsuems:viewcontent',
+            CAP_PROHIBIT,
+            $studentroleid,
+            \context_course::instance($course->id)->id,
+            true
+        );
+        $this->setAdminUser();
+
+        $result = get_course_diagnostics::execute((int) $course->id, (int) $student->id, 'student');
+
+        self::assertTrue($result['gates']['perspective']);
+        self::assertFalse($result['gates']['access']);
+        self::assertFalse($result['included']);
+        self::assertSame('access', $result['excludedat']);
+    }
+
+    /**
      * A course outside an explicitly requested perspective reports the perspective gate.
      */
     public function test_reports_perspective_exclusion(): void {
