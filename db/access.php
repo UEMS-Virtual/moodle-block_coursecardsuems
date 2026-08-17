@@ -48,4 +48,9 @@ $capabilities = [
             'student' => CAP_ALLOW,
         ],
     ],
+    'block/coursecardsuems:viewdiagnostics' => [
+        'riskbitmask' => RISK_PERSONAL,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+    ],
 ];
