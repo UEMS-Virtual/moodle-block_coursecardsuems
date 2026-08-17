@@ -68,6 +68,20 @@ final class get_course_diagnostics_test extends \externallib_advanced_testcase {
     }
 
     /**
+     * A Distance course with an unknown shortname reports the shortname gate.
+     */
+    public function test_reports_shortname_exclusion(): void {
+        $this->resetAfterTest(true);
+        $course = $this->create_distance_course(['shortname' => 'curso_manual']);
+
+        $result = $this->diagnose_for_enrolled_student($course);
+
+        self::assertFalse($result['included']);
+        self::assertSame('shortname', $result['excludedat']);
+        self::assertFalse($result['gates']['shortname']);
+    }
+
+    /**
      * A course outside the Distance branch reports the category gate.
      */
     public function test_reports_category_exclusion(): void {
