@@ -68,6 +68,23 @@ final class get_course_diagnostics_test extends \externallib_advanced_testcase {
     }
 
     /**
+     * A course outside the current semester reports the period gate.
+     */
+    public function test_reports_period_exclusion(): void {
+        $this->resetAfterTest(true);
+        $course = $this->create_distance_course([
+            'customfield_ead_inicio' => make_timestamp(2026, 9, 1),
+            'customfield_ead_final' => make_timestamp(2026, 10, 1),
+        ]);
+
+        $result = $this->diagnose_for_enrolled_student($course);
+
+        self::assertFalse($result['included']);
+        self::assertSame('period', $result['excludedat']);
+        self::assertFalse($result['gates']['period']);
+    }
+
+    /**
      * A Distance course with an unknown shortname reports the shortname gate.
      */
     public function test_reports_shortname_exclusion(): void {
