@@ -126,15 +126,18 @@ class course_inclusion_pipeline {
             true
         );
         $courseid = (int) $course->id;
-        $selectedperspective = $requestedperspective ?: $state['selectedperspective'];
+        $selectedperspective = $state['selectedperspective'];
         $accessapplicable = $selectedperspective === user_perspective_resolver::STUDENT;
         $perspectiveaccepted = $this->perspective_contains_course(
             $state['perspectives'],
             $selectedperspective,
             $courseid
         );
-        if ($requestedperspective === user_perspective_resolver::STUDENT) {
-            $perspectiveaccepted = $evaluation['periodcomplete'];
+        // The student resolver combines schedule and capability. Split those gates when
+        // capability denial leaves no resolved perspective, so diagnostics name access.
+        if ($selectedperspective === '' && $evaluation['periodcomplete']) {
+            $perspectiveaccepted = true;
+            $accessapplicable = true;
         }
         $gates = [
             'repository' => $this->contains_course($state['sourcecourses'], $courseid),
