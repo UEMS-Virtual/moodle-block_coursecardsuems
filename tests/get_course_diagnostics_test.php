@@ -52,6 +52,7 @@ final class get_course_diagnostics_test extends \externallib_advanced_testcase {
         $this->setAdminUser();
 
         $result = get_course_diagnostics::execute((int) $course->id);
+        $result = \core_external\external_api::clean_returnvalue(get_course_diagnostics::execute_returns(), $result);
 
         self::assertTrue($result['included']);
         self::assertNull($result['excludedat']);
