@@ -121,16 +121,20 @@ class course_inclusion_pipeline {
         $courseid = (int) $course->id;
         $selectedperspective = $requestedperspective ?: $state['selectedperspective'];
         $accessapplicable = $selectedperspective === user_perspective_resolver::STUDENT;
+        $perspectiveaccepted = $this->perspective_contains_course(
+            $state['perspectives'],
+            $selectedperspective,
+            $courseid
+        );
+        if ($requestedperspective === user_perspective_resolver::STUDENT) {
+            $perspectiveaccepted = $evaluation['periodcomplete'];
+        }
         $gates = [
             'repository' => $this->contains_course($state['sourcecourses'], $courseid),
             'category' => $evaluation['category'],
             'shortname' => $evaluation['shortname'],
             'period' => $evaluation['period'],
-            'perspective' => $this->perspective_contains_course(
-                $state['perspectives'],
-                $selectedperspective,
-                $courseid
-            ),
+            'perspective' => $perspectiveaccepted,
             'access' => !$accessapplicable || $this->accessfilter->can_user_view_course($course, $userid, false),
             'accessapplicable' => $accessapplicable,
         ];
