@@ -16,6 +16,11 @@
 
 namespace block_coursecardsuems\external;
 
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+require_once($CFG->dirroot . '/webservice/tests/helpers.php');
+
 /**
  * Tests for the course inclusion diagnostic external function.
  *
