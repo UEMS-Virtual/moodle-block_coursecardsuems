@@ -139,6 +139,21 @@ final class get_course_diagnostics_test extends \externallib_advanced_testcase {
     }
 
     /**
+     * An incomplete schedule can pass the semester gate but not the student perspective.
+     */
+    public function test_reports_incomplete_student_schedule_as_perspective_exclusion(): void {
+        $this->resetAfterTest(true);
+        $course = $this->create_distance_course(['customfield_ead_final' => 0]);
+
+        $result = $this->diagnose_for_enrolled_student($course);
+
+        self::assertTrue($result['gates']['period']);
+        self::assertFalse($result['informativeperiod']['complete']);
+        self::assertFalse($result['gates']['perspective']);
+        self::assertSame('perspective', $result['excludedat']);
+    }
+
+    /**
      * A course outside an explicitly requested perspective reports the perspective gate.
      */
     public function test_reports_perspective_exclusion(): void {
