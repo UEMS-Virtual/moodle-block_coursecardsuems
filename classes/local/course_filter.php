@@ -75,9 +75,11 @@ class course_filter {
         bool $includeundated = false
     ): array {
         return array_values(array_filter($courses, function($course) use ($semesterlabel, $includeundated): bool {
-            $evaluation = $this->evaluate_current_semester_distance_course($course, $semesterlabel, $includeundated);
+            if (!$this->is_distance_course($course) || !$this->has_discipline_shortname($course)) {
+                return false;
+            }
 
-            return $evaluation['category'] && $evaluation['shortname'] && $evaluation['period'];
+            return $this->evaluate_current_semester_distance_course($course, $semesterlabel, $includeundated)['period'];
         }));
     }
 
@@ -95,10 +97,8 @@ class course_filter {
         bool $includeundated = false
     ): array {
         [$semesterstart, $semesterend] = current_semester::bounds_from_label($semesterlabel);
-        $categoryaccepted = !empty($course->category) &&
-            $this->categoryparser->is_distance_category((int) $course->category);
-        $shortnameaccepted = !empty($course->shortname) &&
-            $this->shortnameparser->is_discipline_shortname($course->shortname);
+        $categoryaccepted = $this->is_distance_course($course);
+        $shortnameaccepted = $this->has_discipline_shortname($course);
         $period = $this->periodreader->get_period((int) $course->id);
         $periodaccepted = $period->has_complete_range() ?
             $period->startdate <= $semesterend && $period->enddate >= $semesterstart :
@@ -114,6 +114,28 @@ class course_filter {
             'semesterstart' => $semesterstart,
             'semesterend' => $semesterend,
         ];
+    }
+
+    /**
+     * Returns whether a course belongs to the Distance category branch.
+     *
+     * @param object $course Course record.
+     * @return bool
+     */
+    private function is_distance_course(object $course): bool {
+        return !empty($course->category) &&
+            $this->categoryparser->is_distance_category((int) $course->category);
+    }
+
+    /**
+     * Returns whether a course has a recognised discipline shortname.
+     *
+     * @param object $course Course record.
+     * @return bool
+     */
+    private function has_discipline_shortname(object $course): bool {
+        return !empty($course->shortname) &&
+            $this->shortnameparser->is_discipline_shortname($course->shortname);
     }
 
     /**

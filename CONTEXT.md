@@ -52,6 +52,8 @@ Regra completa: `docs/adr/0002-links-e-visibilidade-por-status.md`.
 ## Arquitetura vigente
 
 - **Abas AMD**: `amd/src/section_tabs.js` gerencia a alternância; o Mustache renderiza todos os painéis e oculta os inativos com `hidden`.
+- **Pipeline de inclusão**: `course_inclusion_pipeline.php` aplica fonte, escopo, perspectiva e acesso tanto no bloco quanto no diagnóstico.
+- **Diagnóstico REST**: `block_coursecardsuems_get_course_diagnostics` informa os gates e a primeira exclusão, restrito à capability administrativa dedicada.
 - **View model**: `course_card_mapper.php` produz o array de cada disciplina; `summary.php` agrupa em seções.
 - **Templates**: `summary.mustache` (abas + painéis) e `card.mustache` (card individual).
 - **Supertítulo**: `agrupamento · série`, derivado de `shortname` e categoria Moodle.

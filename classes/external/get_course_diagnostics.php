@@ -26,6 +26,7 @@ namespace block_coursecardsuems\external;
 
 use block_coursecardsuems\local\course_inclusion_pipeline;
 use block_coursecardsuems\local\user_perspective_resolver;
+use context_course;
 use context_system;
 use core_external\external_api;
 use core_external\external_function_parameters;
@@ -90,6 +91,7 @@ class get_course_diagnostics extends external_api {
             'id, category, shortname, fullname, startdate, enddate, visible',
             MUST_EXIST
         );
+        self::validate_context(context_course::instance((int) $course->id));
         $diagnostic = (new course_inclusion_pipeline())->diagnose_course(
             $course,
             $targetuserid,
