@@ -68,6 +68,22 @@ final class get_course_diagnostics_test extends \externallib_advanced_testcase {
     }
 
     /**
+     * A course outside the target user's source reports the repository gate first.
+     */
+    public function test_reports_repository_exclusion(): void {
+        $this->resetAfterTest(true);
+        $course = $this->create_distance_course();
+        $student = self::getDataGenerator()->create_user();
+        $this->setAdminUser();
+
+        $result = get_course_diagnostics::execute((int) $course->id, (int) $student->id, 'student');
+
+        self::assertFalse($result['included']);
+        self::assertSame('repository', $result['excludedat']);
+        self::assertFalse($result['gates']['repository']);
+    }
+
+    /**
      * Administrators can diagnose another user without changing the active session.
      */
     public function test_diagnoses_target_student_without_changing_current_user(): void {
