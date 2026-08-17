@@ -31,6 +31,28 @@ require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 final class get_course_diagnostics_test extends \externallib_advanced_testcase {
 
     /**
+     * The dedicated diagnostic service is restricted and disabled by default.
+     */
+    public function test_diagnostic_service_is_restricted_and_disabled_by_default(): void {
+        global $DB;
+
+        $service = $DB->get_record(
+            'external_services',
+            ['shortname' => 'block_coursecardsuems_diagnostics'],
+            '*',
+            MUST_EXIST
+        );
+
+        self::assertSame('0', (string) $service->enabled);
+        self::assertSame('1', (string) $service->restrictedusers);
+        self::assertSame('block/coursecardsuems:viewdiagnostics', $service->requiredcapability);
+        self::assertTrue($DB->record_exists(
+            'external_functions',
+            ['name' => 'block_coursecardsuems_get_course_diagnostics']
+        ));
+    }
+
+    /**
      * Users without the diagnostic capability cannot inspect course eligibility.
      */
     public function test_rejects_user_without_diagnostic_capability(): void {
