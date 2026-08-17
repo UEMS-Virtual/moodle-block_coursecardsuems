@@ -166,18 +166,46 @@ final class get_course_diagnostics_test extends \externallib_advanced_testcase {
     }
 
     /**
-     * A course outside an explicitly requested perspective reports the perspective gate.
+     * A course outside an available selected perspective reports the perspective gate.
      */
     public function test_reports_perspective_exclusion(): void {
         $this->resetAfterTest(true);
+        $generator = self::getDataGenerator();
         $course = $this->create_distance_course();
+        $tutorcourse = $generator->create_course([
+            'category' => $course->category,
+            'shortname' => 'PEDG_24_3S_TUTOR_abc12',
+            'startdate' => make_timestamp(2026, 3, 1),
+            'enddate' => make_timestamp(2026, 4, 30),
+            'customfield_ead_inicio' => make_timestamp(2026, 3, 1),
+            'customfield_ead_final' => make_timestamp(2026, 4, 30),
+        ]);
+        $user = $generator->create_user();
+        $generator->enrol_user($user->id, $course->id, 'student');
+        $tutorroleid = create_role('Tutor presencial', 'mod_tutor', 'Tutor presencial');
+        role_assign($tutorroleid, $user->id, \context_course::instance($tutorcourse->id)->id);
+        $this->setAdminUser();
 
-        $result = $this->diagnose_for_enrolled_student($course, 'tutor');
+        $result = get_course_diagnostics::execute((int) $course->id, (int) $user->id, 'tutor');
 
         self::assertSame('tutor', $result['selectedperspective']);
         self::assertFalse($result['included']);
         self::assertSame('perspective', $result['excludedat']);
         self::assertFalse($result['gates']['perspective']);
+    }
+
+    /**
+     * An unavailable requested perspective falls back exactly as the production block does.
+     */
+    public function test_unavailable_requested_perspective_falls_back_to_default(): void {
+        $this->resetAfterTest(true);
+        $course = $this->create_distance_course();
+
+        $result = $this->diagnose_for_enrolled_student($course, 'tutor');
+
+        self::assertSame('student', $result['selectedperspective']);
+        self::assertTrue($result['included']);
+        self::assertNull($result['excludedat']);
     }
 
     /**
