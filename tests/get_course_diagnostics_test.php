@@ -86,6 +86,18 @@ final class get_course_diagnostics_test extends \externallib_advanced_testcase {
     }
 
     /**
+     * Unknown perspective keys are rejected at the external boundary.
+     */
+    public function test_rejects_unknown_perspective(): void {
+        $this->resetAfterTest(true);
+        $course = self::getDataGenerator()->create_course();
+        $this->setAdminUser();
+
+        $this->expectException(\invalid_parameter_exception::class);
+        get_course_diagnostics::execute((int) $course->id, 0, 'manager');
+    }
+
+    /**
      * Site administrators can inspect a course included in their default admin perspective.
      */
     public function test_admin_can_diagnose_included_course(): void {
