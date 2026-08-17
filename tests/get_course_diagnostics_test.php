@@ -68,6 +68,28 @@ final class get_course_diagnostics_test extends \externallib_advanced_testcase {
     }
 
     /**
+     * Administrators can diagnose another user without changing the active session.
+     */
+    public function test_diagnoses_target_student_without_changing_current_user(): void {
+        global $USER;
+
+        $this->resetAfterTest(true);
+        $course = $this->create_distance_course();
+        $student = self::getDataGenerator()->create_user();
+        self::getDataGenerator()->enrol_user($student->id, $course->id, 'student');
+        $this->setAdminUser();
+        $callerid = (int) $USER->id;
+
+        $result = get_course_diagnostics::execute((int) $course->id, (int) $student->id, 'student');
+
+        self::assertSame($callerid, (int) $USER->id);
+        self::assertSame((int) $student->id, $result['target']['userid']);
+        self::assertSame('student', $result['selectedperspective']);
+        self::assertTrue($result['gates']['accessapplicable']);
+        self::assertTrue($result['included']);
+    }
+
+    /**
      * Creates a current-semester course below the Distance category branch.
      *
      * @param array $overrides Course field overrides.
