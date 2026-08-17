@@ -68,6 +68,21 @@ final class get_course_diagnostics_test extends \externallib_advanced_testcase {
     }
 
     /**
+     * A course outside an explicitly requested perspective reports the perspective gate.
+     */
+    public function test_reports_perspective_exclusion(): void {
+        $this->resetAfterTest(true);
+        $course = $this->create_distance_course();
+
+        $result = $this->diagnose_for_enrolled_student($course, 'tutor');
+
+        self::assertSame('tutor', $result['selectedperspective']);
+        self::assertFalse($result['included']);
+        self::assertSame('perspective', $result['excludedat']);
+        self::assertFalse($result['gates']['perspective']);
+    }
+
+    /**
      * A course outside the current semester reports the period gate.
      */
     public function test_reports_period_exclusion(): void {
