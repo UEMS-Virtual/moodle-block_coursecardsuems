@@ -68,6 +68,21 @@ final class get_course_diagnostics_test extends \externallib_advanced_testcase {
     }
 
     /**
+     * A course outside the Distance branch reports the category gate.
+     */
+    public function test_reports_category_exclusion(): void {
+        $this->resetAfterTest(true);
+        $onsitecategory = self::getDataGenerator()->create_category(['name' => 'Presencial']);
+        $course = $this->create_distance_course(['category' => $onsitecategory->id]);
+
+        $result = $this->diagnose_for_enrolled_student($course);
+
+        self::assertFalse($result['included']);
+        self::assertSame('category', $result['excludedat']);
+        self::assertFalse($result['gates']['category']);
+    }
+
+    /**
      * A course outside the target user's source reports the repository gate first.
      */
     public function test_reports_repository_exclusion(): void {
@@ -103,6 +118,21 @@ final class get_course_diagnostics_test extends \externallib_advanced_testcase {
         self::assertSame('student', $result['selectedperspective']);
         self::assertTrue($result['gates']['accessapplicable']);
         self::assertTrue($result['included']);
+    }
+
+    /**
+     * Diagnoses a course for an enrolled student while calling as site administrator.
+     *
+     * @param object $course Course record.
+     * @param string $perspective Requested perspective.
+     * @return array Diagnostic result.
+     */
+    private function diagnose_for_enrolled_student(object $course, string $perspective = 'student'): array {
+        $student = self::getDataGenerator()->create_user();
+        self::getDataGenerator()->enrol_user($student->id, $course->id, 'student');
+        $this->setAdminUser();
+
+        return get_course_diagnostics::execute((int) $course->id, (int) $student->id, $perspective);
     }
 
     /**
