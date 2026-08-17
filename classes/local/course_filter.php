@@ -74,13 +74,18 @@ class course_filter {
         string $semesterlabel,
         bool $includeundated = false
     ): array {
-        return array_values(array_filter($courses, function($course) use ($semesterlabel, $includeundated): bool {
-            if (!$this->is_distance_course($course) || !$this->has_discipline_shortname($course)) {
-                return false;
-            }
+        [$semesterstart, $semesterend] = current_semester::bounds_from_label($semesterlabel);
 
-            return $this->evaluate_current_semester_distance_course($course, $semesterlabel, $includeundated)['period'];
-        }));
+        return array_values(array_filter(
+            $courses,
+            function($course) use ($semesterstart, $semesterend, $includeundated): bool {
+                if (!$this->is_distance_course($course) || !$this->has_discipline_shortname($course)) {
+                    return false;
+                }
+
+                return $this->evaluate_period_gate($course, $semesterstart, $semesterend, $includeundated)['period'];
+            }
+        ));
     }
 
     /**
@@ -99,20 +104,41 @@ class course_filter {
         [$semesterstart, $semesterend] = current_semester::bounds_from_label($semesterlabel);
         $categoryaccepted = $this->is_distance_course($course);
         $shortnameaccepted = $this->has_discipline_shortname($course);
+        $periodevaluation = $this->evaluate_period_gate($course, $semesterstart, $semesterend, $includeundated);
+
+        return [
+            'category' => $categoryaccepted,
+            'shortname' => $shortnameaccepted,
+            'semesterstart' => $semesterstart,
+            'semesterend' => $semesterend,
+        ] + $periodevaluation;
+    }
+
+    /**
+     * Evaluates the informative or fallback Moodle date window.
+     *
+     * @param object $course Course record.
+     * @param int $semesterstart Semester start timestamp.
+     * @param int $semesterend Semester end timestamp.
+     * @param bool $includeundated Whether Moodle dates may be used as fallback.
+     * @return array Period gate and source dates.
+     */
+    private function evaluate_period_gate(
+        object $course,
+        int $semesterstart,
+        int $semesterend,
+        bool $includeundated
+    ): array {
         $period = $this->periodreader->get_period((int) $course->id);
         $periodaccepted = $period->has_complete_range() ?
             $period->startdate <= $semesterend && $period->enddate >= $semesterstart :
             $includeundated && $this->course_dates_overlap_semester($course, $semesterstart, $semesterend);
 
         return [
-            'category' => $categoryaccepted,
-            'shortname' => $shortnameaccepted,
             'period' => $periodaccepted,
             'periodstart' => $period->startdate,
             'periodend' => $period->enddate,
             'periodcomplete' => $period->has_complete_range(),
-            'semesterstart' => $semesterstart,
-            'semesterend' => $semesterend,
         ];
     }
 

@@ -122,8 +122,8 @@ class get_course_diagnostics extends external_api {
                 'enddate' => $diagnostic['semesterend'],
             ],
             'informativeperiod' => [
-                'startdate' => $diagnostic['periodstart'],
-                'enddate' => $diagnostic['periodend'],
+                'ead_inicio' => $diagnostic['periodstart'],
+                'ead_final' => $diagnostic['periodend'],
                 'complete' => $diagnostic['periodcomplete'],
             ],
             'perspectives' => $perspectives,
@@ -157,8 +157,8 @@ class get_course_diagnostics extends external_api {
                 'enddate' => new external_value(PARAM_INT, 'Current semester end timestamp.'),
             ]),
             'informativeperiod' => new external_single_structure([
-                'startdate' => new external_value(PARAM_INT, 'Informative period start timestamp.'),
-                'enddate' => new external_value(PARAM_INT, 'Informative period end timestamp.'),
+                'ead_inicio' => new external_value(PARAM_INT, 'Informative period start timestamp.'),
+                'ead_final' => new external_value(PARAM_INT, 'Informative period end timestamp.'),
                 'complete' => new external_value(PARAM_BOOL, 'Whether both informative dates exist.'),
             ]),
             'perspectives' => new external_multiple_structure(new external_single_structure([
