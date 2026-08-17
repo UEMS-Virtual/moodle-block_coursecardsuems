@@ -89,6 +89,35 @@ lang/en/ lang/pt_br/
 tests/
 ```
 
+## Webservice de diagnóstico
+
+A função REST `block_coursecardsuems_get_course_diagnostics` informa se uma disciplina seria exibida para um usuário e qual foi a primeira etapa de exclusão. O serviço dedicado `block_coursecardsuems_diagnostics` é instalado **desabilitado** e restrito a usuários autorizados.
+
+Para habilitar com segurança:
+
+1. Em `Administração do site > Servidor > Serviços web > Serviços externos`, habilite `Course Cards UEMS diagnostics`.
+2. Conceda a capability de sistema `block/coursecardsuems:viewdiagnostics` somente à conta administrativa de suporte.
+3. Adicione essa conta aos usuários autorizados do serviço.
+4. Gere um token específico para o serviço e revogue-o quando o diagnóstico terminar.
+
+Exemplo sem token real:
+
+```bash
+export MOODLE_URL='https://ead.example/moodle'
+export MOODLE_WS_TOKEN='substitua-pelo-token'
+
+curl --silent --show-error --request POST \
+  "$MOODLE_URL/webservice/rest/server.php" \
+  --data-urlencode "wstoken=$MOODLE_WS_TOKEN" \
+  --data-urlencode 'moodlewsrestformat=json' \
+  --data-urlencode 'wsfunction=block_coursecardsuems_get_course_diagnostics' \
+  --data-urlencode 'courseid=13289' \
+  --data-urlencode 'userid=123' \
+  --data-urlencode 'perspective=student'
+```
+
+`courseid` é obrigatório. `userid` usa o usuário do token quando omitido. `perspective` aceita `student`, `tutor`, `teacher` ou `admin`; quando omitida, o plugin usa a perspectiva padrão resolvida para o usuário. A resposta inclui os gates `repository`, `category`, `shortname`, `period`, `perspective` e `access`, além de `included` e `excludedat`.
+
 ## Fora do escopo
 
 - Cursos presenciais.

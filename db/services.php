@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details for the Course Cards UEMS block.
+ * Web service definitions for Course Cards UEMS diagnostics.
  *
  * @package    block_coursecardsuems
  * @copyright  2026 UEMS Virtual
@@ -24,6 +24,24 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2026081701;
-$plugin->requires  = 2024100700;
-$plugin->component = 'block_coursecardsuems';
+$functions = [
+    'block_coursecardsuems_get_course_diagnostics' => [
+        'classname' => 'block_coursecardsuems\external\get_course_diagnostics',
+        'methodname' => 'execute',
+        'description' => 'Reports why a course is included in or excluded from the UEMS course cards.',
+        'type' => 'read',
+        'capabilities' => 'block/coursecardsuems:viewdiagnostics',
+    ],
+];
+
+$services = [
+    'Course Cards UEMS diagnostics' => [
+        'functions' => ['block_coursecardsuems_get_course_diagnostics'],
+        'restrictedusers' => 1,
+        'enabled' => 0,
+        'shortname' => 'block_coursecardsuems_diagnostics',
+        'requiredcapability' => 'block/coursecardsuems:viewdiagnostics',
+        'downloadfiles' => 0,
+        'uploadfiles' => 0,
+    ],
+];

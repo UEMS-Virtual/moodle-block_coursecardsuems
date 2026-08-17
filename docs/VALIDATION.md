@@ -40,6 +40,7 @@ Cobertura atual:
 | `tests/course_activity_resolver_test.php` | Detecção de atividades datadas futuras/abertas no curso. |
 | `tests/summary_test.php` | Seções Abertas, Em breve e Últimas atividades. |
 | `tests/course_repository_test.php` | Repositório de cursos matriculados. |
+| `tests/get_course_diagnostics_test.php` | Webservice de diagnóstico, gates de exclusão e controle de acesso. |
 
 ## Lint PHP
 

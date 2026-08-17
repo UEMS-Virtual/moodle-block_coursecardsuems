@@ -48,18 +48,42 @@ class course_access_filter {
      * @return array Filtered course records, preserving original order.
      */
     public function filter_courses_for_current_user(array $courses, bool $issiteadmin = false): array {
+        return $this->filter_courses_for_user($courses, null, $issiteadmin);
+    }
+
+    /**
+     * Keeps courses available to a target user without changing the Moodle session.
+     *
+     * @param array $courses Course records.
+     * @param int|null $userid Target user id; null means current user.
+     * @param bool $issiteadmin Whether the target user is a site admin.
+     * @return array Filtered course records.
+     */
+    public function filter_courses_for_user(array $courses, ?int $userid, bool $issiteadmin = false): array {
+        return array_values(array_filter($courses, function($course) use ($userid, $issiteadmin): bool {
+            return $this->can_user_view_course($course, $userid, $issiteadmin);
+        }));
+    }
+
+    /**
+     * Returns whether one course belongs to the student-facing audience for a target user.
+     *
+     * @param object $course Course record.
+     * @param int|null $userid Target user id; null means current user.
+     * @param bool $issiteadmin Whether the target user is a site admin.
+     * @return bool
+     */
+    public function can_user_view_course(object $course, ?int $userid, bool $issiteadmin = false): bool {
         if ($issiteadmin) {
-            return array_values($courses);
+            return true;
         }
 
-        return array_values(array_filter($courses, static function($course): bool {
-            if (empty($course->id)) {
-                return false;
-            }
+        if (empty($course->id)) {
+            return false;
+        }
 
-            $context = context_course::instance((int) $course->id);
+        $context = context_course::instance((int) $course->id);
 
-            return has_capability(self::VIEW_CONTENT_CAPABILITY, $context, null, false);
-        }));
+        return has_capability(self::VIEW_CONTENT_CAPABILITY, $context, $userid, false);
     }
 }

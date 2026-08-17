@@ -76,26 +76,92 @@ class course_filter {
     ): array {
         [$semesterstart, $semesterend] = current_semester::bounds_from_label($semesterlabel);
 
-        return array_values(array_filter($courses, function($course) use ($semesterstart, $semesterend, $includeundated): bool {
-            if (empty($course->category) || !$this->categoryparser->is_distance_category((int) $course->category)) {
-                return false;
-            }
-
-            if (empty($course->shortname) || !$this->shortnameparser->is_discipline_shortname($course->shortname)) {
-                return false;
-            }
-
-            $period = $this->periodreader->get_period((int) $course->id);
-            if (!$period->has_complete_range()) {
-                if (!$includeundated) {
+        return array_values(array_filter(
+            $courses,
+            function($course) use ($semesterstart, $semesterend, $includeundated): bool {
+                if (!$this->is_distance_course($course) || !$this->has_discipline_shortname($course)) {
                     return false;
                 }
 
-                return $this->course_dates_overlap_semester($course, $semesterstart, $semesterend);
+                return $this->evaluate_period_gate($course, $semesterstart, $semesterend, $includeundated)['period'];
             }
+        ));
+    }
 
-            return $period->startdate <= $semesterend && $period->enddate >= $semesterstart;
-        }));
+    /**
+     * Evaluates each product-scope gate for one Moodle course.
+     *
+     * @param object $course Course record.
+     * @param string $semesterlabel Semester label in YYYY/S format.
+     * @param bool $includeundated Whether Moodle dates may place an incomplete schedule in the semester.
+     * @return array Gate results and date values used by the filter.
+     */
+    public function evaluate_current_semester_distance_course(
+        object $course,
+        string $semesterlabel,
+        bool $includeundated = false
+    ): array {
+        [$semesterstart, $semesterend] = current_semester::bounds_from_label($semesterlabel);
+        $categoryaccepted = $this->is_distance_course($course);
+        $shortnameaccepted = $this->has_discipline_shortname($course);
+        $periodevaluation = $this->evaluate_period_gate($course, $semesterstart, $semesterend, $includeundated);
+
+        return [
+            'category' => $categoryaccepted,
+            'shortname' => $shortnameaccepted,
+            'semesterstart' => $semesterstart,
+            'semesterend' => $semesterend,
+        ] + $periodevaluation;
+    }
+
+    /**
+     * Evaluates the informative or fallback Moodle date window.
+     *
+     * @param object $course Course record.
+     * @param int $semesterstart Semester start timestamp.
+     * @param int $semesterend Semester end timestamp.
+     * @param bool $includeundated Whether Moodle dates may be used as fallback.
+     * @return array Period gate and source dates.
+     */
+    private function evaluate_period_gate(
+        object $course,
+        int $semesterstart,
+        int $semesterend,
+        bool $includeundated
+    ): array {
+        $period = $this->periodreader->get_period((int) $course->id);
+        $periodaccepted = $period->has_complete_range() ?
+            $period->startdate <= $semesterend && $period->enddate >= $semesterstart :
+            $includeundated && $this->course_dates_overlap_semester($course, $semesterstart, $semesterend);
+
+        return [
+            'period' => $periodaccepted,
+            'periodstart' => $period->startdate,
+            'periodend' => $period->enddate,
+            'periodcomplete' => $period->has_complete_range(),
+        ];
+    }
+
+    /**
+     * Returns whether a course belongs to the Distance category branch.
+     *
+     * @param object $course Course record.
+     * @return bool
+     */
+    private function is_distance_course(object $course): bool {
+        return !empty($course->category) &&
+            $this->categoryparser->is_distance_category((int) $course->category);
+    }
+
+    /**
+     * Returns whether a course has a recognised discipline shortname.
+     *
+     * @param object $course Course record.
+     * @return bool
+     */
+    private function has_discipline_shortname(object $course): bool {
+        return !empty($course->shortname) &&
+            $this->shortnameparser->is_discipline_shortname($course->shortname);
     }
 
     /**

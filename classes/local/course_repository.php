@@ -58,16 +58,53 @@ class course_repository {
      * @return array Course records indexed by course id.
      */
     public function get_perspective_candidate_courses_for_current_user(): array {
-        global $DB, $USER;
+        global $USER;
 
         if (!isloggedin() || isguestuser()) {
             return [];
         }
 
-        $courses = $this->get_enrolled_courses_for_current_user();
+        return $this->add_direct_staff_courses(
+            $this->get_enrolled_courses_for_current_user(),
+            (int) $USER->id
+        );
+    }
+
+    /**
+     * Returns courses that can belong to a target user's non-admin perspectives.
+     *
+     * Unlike the current-user method, this does not change the Moodle session while an
+     * administrator diagnoses another user's course list.
+     *
+     * @param int $userid Target user id.
+     * @return array Course records indexed by course id.
+     */
+    public function get_perspective_candidate_courses_for_user(int $userid): array {
+        require_once($GLOBALS['CFG']->libdir . '/enrollib.php');
+
+        $courses = enrol_get_users_courses(
+            $userid,
+            true,
+            'id, category, shortname, fullname, startdate, enddate, visible',
+            'fullname ASC'
+        );
+
+        return $this->add_direct_staff_courses($courses, $userid);
+    }
+
+    /**
+     * Adds direct tutor and teacher role assignments to an enrolled-course source.
+     *
+     * @param array $courses Course records indexed by id.
+     * @param int $userid Target user id.
+     * @return array Candidate courses sorted by full name.
+     */
+    private function add_direct_staff_courses(array $courses, int $userid): array {
+        global $DB;
+
         $roles = ['mod_tutor', 'mod_medpdg', 'editingteacher', 'teacher', 'mod_prof'];
         [$roleinsql, $roleparams] = $DB->get_in_or_equal($roles, SQL_PARAMS_NAMED, 'role');
-        $params = ['userid' => (int) $USER->id, 'contextlevel' => CONTEXT_COURSE] + $roleparams;
+        $params = ['userid' => $userid, 'contextlevel' => CONTEXT_COURSE] + $roleparams;
         $sql = "SELECT c.id, c.category, c.shortname, c.fullname, c.startdate, c.enddate, c.visible
                   FROM {course} c
                   JOIN {context} ctx ON ctx.instanceid = c.id AND ctx.contextlevel = :contextlevel
